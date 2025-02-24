@@ -17,7 +17,7 @@ resource "azurerm_resource_group" "fd-jh" {
 }
 
 resource "azurerm_storage_account" "sa-jhv" {
-  name                     = "jhv1234"
+  name                     = "test65246426"
   resource_group_name      = azurerm_resource_group.fd-jh.name
   location                 = azurerm_resource_group.fd-jh.location
   account_tier             = "Standard"

@@ -12,7 +12,7 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "fd-jh" {
-  name     = "fd-test"
+  name     = "fd-testtest"
   location = "West Europe"
 }
 

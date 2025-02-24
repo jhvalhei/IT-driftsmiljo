@@ -21,7 +21,7 @@ env:
   WORKING_DIR: ./terraform/FirstDeploy
 
 jobs:
-  prod:
+  apply:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

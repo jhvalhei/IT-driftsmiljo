@@ -4,7 +4,7 @@ if [[ -n $1 ]]; then
 
     echo "variable \"${1}-containerapp-name\" {
     type = string
-    Descridescription = "Name of container app"  
+    Description = "Name of container app"  
 }"
 
 else

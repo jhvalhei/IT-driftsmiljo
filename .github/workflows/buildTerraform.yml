@@ -35,7 +35,7 @@ env:
 
 jobs:
   # Appender terraformkode for studentoppgave
-  getConfig:
+  buildTerraform:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

@@ -4,7 +4,7 @@ name: Start bt workflow
 on:
   push:
     branches: [ "buildterraformwf" ]
-      paths: '**'
+    paths: '**'
 
 
 jobs:

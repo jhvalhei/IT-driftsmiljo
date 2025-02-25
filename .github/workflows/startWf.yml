@@ -9,6 +9,6 @@ on:
 
 jobs:
   startWF:
-    uses: Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo/.github/workflows/buildTerraform.yml
+    uses: Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo/.github/workflows/buildTerraform.yml@buildterraformwf
     with:
       soNavn: testEks

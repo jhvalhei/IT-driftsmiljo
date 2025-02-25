@@ -3,26 +3,24 @@ name: Build terraform code
 
 # Controls when the workflow will run
 on:
-  push:
-    branches: [ "buildterraformwf" ]
-    paths: '**'
+  
 
 #  workflow_run:
 #    workflows: ["Build Docker"]
 #    types:
 #      - completed
 
-#  workflow_call:
-#    inputs:
-#      soNavn:
-#        description: 'Navn på studentoppgave'
-#        required: true
-#        type: string
+  workflow_call:
+    inputs:
+      soNavn:
+        description: 'Navn på studentoppgave'
+        required: true
+        type: string
     
-#      image:
-#        description: "Container image som skal deployes"
-#        required: true
-#        type: string
+  #    image:
+  #      description: "Container image som skal deployes"
+  #      required: true
+  #      type: string
 
 
   # Allows you to run this workflow manually from the Actions tab
@@ -53,7 +51,7 @@ jobs:
         id: appendContainer
         
         run: |
-          echo "//Container for ${{inputs.soNavn}}" >> ./terraform/deployments/main.tf
+          echo "//Container for ${{inputs.soNavn}}" >> ./terraform/infrastruktur/deployments/main.tf
           ./terraform/scripts/addModule.sh ${{inputs.soNavn}} >> ./terraform/infrastruktur/deployments
 
       - name: Append variabeldefenisjoner

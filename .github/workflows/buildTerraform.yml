@@ -3,7 +3,9 @@ name: Build terraform code
 
 # Controls when the workflow will run
 on:
-  
+  push:
+    branches: [ "main" ]
+    paths: '**'
 
   workflow_run:
     workflows: ["Build Docker"]

@@ -4,7 +4,7 @@ name: Build terraform code
 # Controls when the workflow will run
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "buildterraformwf" ]
     paths: '**'
 
 #  workflow_run:

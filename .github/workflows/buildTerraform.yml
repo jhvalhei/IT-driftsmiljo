@@ -52,12 +52,14 @@ jobs:
         
         run: |
           echo "//Container for ${{inputs.soNavn}}" >> ./terraform/infrastruktur/deployments/main.tf
+          sudo chmod 755 ./terraform/scripts/addModule.sh
           ./terraform/scripts/addModule.sh ${{inputs.soNavn}} >> ./terraform/infrastruktur/deployments/main.tf
 
       - name: Append variabeldefenisjoner
         id: appendVarDef
         run: |
           echo "//Variabler for ${{inputs.soNavn}}" >> ./terraform/variables.tf
+          sudo chmod 755 ./terraform/scripts/addVariables.sh
           ./terraform/scripts/addVariables.sh ${{inputs.soNavn}} >> ./terraform/variables
 
       - name: Append variabelverdier

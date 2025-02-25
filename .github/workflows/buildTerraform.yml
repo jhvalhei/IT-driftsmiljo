@@ -52,7 +52,7 @@ jobs:
         
         run: |
           echo "//Container for ${{inputs.soNavn}}" >> ./terraform/infrastruktur/deployments/main.tf
-          ./terraform/scripts/addModule.sh ${{inputs.soNavn}} >> ./terraform/infrastruktur/deployments
+          ./terraform/scripts/addModule.sh ${{inputs.soNavn}} >> ./terraform/infrastruktur/deployments/main.tf
 
       - name: Append variabeldefenisjoner
         id: appendVarDef

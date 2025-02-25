@@ -1,11 +1,26 @@
 name: Build terraform code
+# Bli calla av byggDocker
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  #push:
-  #  branches: [ "main" ]
-  #  paths: 'terraform/**'
+  
+
+  workflow_run:
+    workflows: ["Build Docker"]
+    types:
+      - completed
+
+  workflow_call:
+    inputs:
+      soNavn:
+        description: 'Navn på studentoppgave'
+        required: true
+        type: string
+    
+      image:
+        description: "Container image som skal deployes"
+        required: true
+        type: string
 
 
   # Allows you to run this workflow manually from the Actions tab
@@ -19,31 +34,44 @@ env:
   WORKING_DIR: ./
 
 jobs:
-  apply:
+  # Appender terraformkode for studentoppgave
+  getConfig:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
 
+      - name: Get config
+        id: config
+        run: |
+          config="./studentOppgaver/${{inputs.soNavn}}/config.txt"
 
+        # avvent mappestruktur i terraform
+      - name: Append container
+        id: appendContainer
+        
+        run: |
+          echo "//Container for ${{inputs.soNavn}}" >> ./terraform/deployments/main.tf
+          ./terraform/scripts/addModule.sh ${{inputs.soNavn}} >> ./terraform/infrastruktur/deployments
 
+      - name: Append variabeldefenisjoner
+        id: appendVarDef
+        run: |
+          echo "//Variabler for ${{inputs.soNavn}}" >> ./terraform/variables.tf
+          ./terraform/scripts/addVariables.sh ${{inputs.soNavn}} >> ./terraform/variables
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: "^1.3.7"
-          terraform_wrapper: false
-      
-      - name: Terraform init
-        id: init
-        run: terraform init
-        working-directory: ${{ env.WORKING_DIR }}
+      - name: Append variabelverdier
+        id: appendVarVal
+        run: |
+          echo "//Variabelverdier for ${{inputs.soNavn}}" >> ./terraform/terraform.tfvars
+          cat $config >> ./terraform/terraform.tfvars
+ #         cat ${{inputs.image}} >> ./terraform/terraform.tfvars
 
-      - name: Terraform plan
-        id: plan
-        run: terraform plan
-        working-directory: ${{ env.WORKING_DIR }}
-      
-      - name: Terraform apply prod
-        run: terraform apply -auto-approve
-        working-directory: ${{ env.WORKING_DIR }}
+      - name: Push commit
+        id: pushCommit
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "workflow la til ${{inputs.soNavn}}"
+          git push origin buildterraformwf

@@ -7,10 +7,10 @@ on:
     branches: [ "main" ]
     paths: '**'
 
-  workflow_run:
-    workflows: ["Build Docker"]
-    types:
-      - completed
+#  workflow_run:
+#    workflows: ["Build Docker"]
+#    types:
+#      - completed
 
   workflow_call:
     inputs:

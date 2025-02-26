@@ -7,4 +7,7 @@ variable "location" {
   type        = string
   description = "location of resource"
   default     = "westeurope"
+}variable "testEks-containerapp-name" {
+    type = string
+    Description = Name of container app  
 }

@@ -24,3 +24,8 @@ module "container_app" {
     source = "../modules/containers"
     containerapp-name = var.testEks-containerapp-name
     }
+//Container for testEks
+module "container_app" {
+    source = "../modules/containers"
+    containerapp-name = var.testEks-containerapp-name
+    }

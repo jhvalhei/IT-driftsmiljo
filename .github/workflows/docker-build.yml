@@ -1,4 +1,4 @@
-name: Build and Push Student Submission
+name: Docker build
 
 on:
   push:

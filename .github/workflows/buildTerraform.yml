@@ -1,6 +1,6 @@
 name: Build terraform code
 # Bli calla av byggDocker
-# test
+# test2
 
 # Controls when the workflow will run
 on:

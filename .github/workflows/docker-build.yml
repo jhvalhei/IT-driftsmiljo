@@ -18,36 +18,41 @@ jobs:
         id: commit_message
         run: echo "MESSAGE=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
 
-      # Step 3: Extract Folder Name from Commit Message
+      # Step 3: Extract Folder Name from Commit Message (Preserve Original Case)
       - name: Extract Folder Name
         id: extract_folder
         run: |
           if [[ "${{ env.MESSAGE }}" =~ ny\ studentoppgave\ ([a-zA-Z0-9_-]+) ]]; then
             FOLDER_NAME=${BASH_REMATCH[1]}
-            echo "STUDENT_FOLDER=$(echo $FOLDER_NAME | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-            echo "Processing folder: $(echo $FOLDER_NAME | tr '[:upper:]' '[:lower:]')"
+            echo "STUDENT_FOLDER=$FOLDER_NAME" >> $GITHUB_ENV
+            echo "Processing folder: $FOLDER_NAME"
           else
             echo "Commit message does not specify a student folder. Exiting."
             exit 1
           fi
 
-      # Step 4: Convert GitHub Organization/Username to Lowercase
+      # Step 4: Convert GitHub Repository Owner to Lowercase (For Docker Naming)
       - name: Convert Repo Owner to Lowercase
         run: echo "REPO_OWNER=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
-      # Step 5: Log in to GitHub Container Registry (GHCR)
+      # Step 5: Convert Folder Name to Lowercase ONLY for Docker Image Name
+      - name: Set Docker Image Name
+        run: |
+          echo "DOCKER_IMAGE_NAME=ghcr.io/${{ env.REPO_OWNER }}/$(echo ${{ env.STUDENT_FOLDER }} | tr '[:upper:]' '[:lower:]')-app:latest" >> $GITHUB_ENV
+          echo "Docker image name: ${{ env.DOCKER_IMAGE_NAME }}"
+
+      # Step 6: Log in to GitHub Container Registry (GHCR)
       - name: Docker Login to GHCR
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ env.REPO_OWNER }}" --password-stdin
 
-      # Step 6: Build and Push Docker Image
+      # Step 7: Build and Push Docker Image (Keep Folder Case, Lowercase Image Name)
       - name: Build and Push Docker Image
         run: |
-          SUBMISSION_DIR="studentOppgaver/${{ env.STUDENT_FOLDER }}"
-          IMAGE_NAME="ghcr.io/${{ env.REPO_OWNER }}/${{ env.STUDENT_FOLDER }}-app:latest"
+          SUBMISSION_DIR="studentOppgaver/${{ env.STUDENT_FOLDER }}"  # Preserve original case
+          
+          echo "Building Docker image: ${{ env.DOCKER_IMAGE_NAME }} from $SUBMISSION_DIR"
+          docker build -t "${{ env.DOCKER_IMAGE_NAME }}" "$SUBMISSION_DIR"
 
-          echo "Building Docker image: $IMAGE_NAME from $SUBMISSION_DIR"
-          docker build -t "$IMAGE_NAME" "$SUBMISSION_DIR"
-
-          echo "Pushing Docker image: $IMAGE_NAME"
-          docker push "$IMAGE_NAME"
+          echo "Pushing Docker image: ${{ env.DOCKER_IMAGE_NAME }}"
+          docker push "${{ env.DOCKER_IMAGE_NAME }}"

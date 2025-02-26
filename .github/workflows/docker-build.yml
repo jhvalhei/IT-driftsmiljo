@@ -53,3 +53,8 @@ jobs:
 
           echo "Pushing Docker image: ${{ env.DOCKER_IMAGE_NAME }}"
           docker push "${{ env.DOCKER_IMAGE_NAME }}"
+  
+      - name: startBuildTerraform
+        uses: Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo/.github/workflows/buildTerraform.yml@buildterraformwf
+        with:
+          soNavn: ${{env.STUDENT_FOLDER}}

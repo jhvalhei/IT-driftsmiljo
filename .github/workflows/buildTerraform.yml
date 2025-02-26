@@ -61,12 +61,12 @@ jobs:
         run: |
           echo "//Variabler for ${{inputs.soNavn}}" >> ./terraform/variables.tf
           sudo chmod 755 ./terraform/scripts/addVariables.sh
-          ./terraform/scripts/addVariables.sh ${{inputs.soNavn}} >> ./terraform/variables
+          ./terraform/scripts/addVariables.sh ${{inputs.soNavn}} >> ./terraform/infrastruktur/deployments/variables.tf
 
       - name: Append variabelverdier
         id: appendVarVal
         run: |
-          echo "//Variabelverdier for ${{inputs.soNavn}}" >> ./terraform/terraform.tfvars
+          echo "//Variabelverdier for ${{inputs.soNavn}}" >> ./terraform/infrastruktur/deployments/terraformProd.tfvars
           cat $config >> ./terraform/terraform.tfvars
  #         cat ${{inputs.image}} >> ./terraform/terraform.tfvars
 

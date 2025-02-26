@@ -1,5 +1,6 @@
 name: Build terraform code
 # Bli calla av byggDocker
+# test2
 
 # Controls when the workflow will run
 on:
@@ -52,21 +53,21 @@ jobs:
         
         run: |
           echo "//Container for ${{inputs.soNavn}}" >> ./terraform/infrastruktur/deployments/main.tf
-          sudo chmod 755 ./terraform/scripts/addModule.sh
-          ./terraform/scripts/addModule.sh ${{inputs.soNavn}} >> ./terraform/infrastruktur/deployments/main.tf
+          sudo chmod 755 ./terraform/scripts/addContainer.sh
+          ./terraform/scripts/addContainer.sh ${{inputs.soNavn}} >> ./terraform/infrastruktur/modules/containers/main.tf
 
       - name: Append variabeldefenisjoner
         id: appendVarDef
         run: |
-          echo "//Variabler for ${{inputs.soNavn}}" >> ./terraform/variables.tf
+          echo "//Variabler for ${{inputs.soNavn}}" >> ./terraform/infrastruktur/modules/variables.tf
           sudo chmod 755 ./terraform/scripts/addVariables.sh
-          ./terraform/scripts/addVariables.sh ${{inputs.soNavn}} >> ./terraform/variables
+          ./terraform/scripts/addVariables.sh ${{inputs.soNavn}} >> ./terraform/infrastruktur/modules/containers/variables.tf
 
       - name: Append variabelverdier
         id: appendVarVal
         run: |
-          echo "//Variabelverdier for ${{inputs.soNavn}}" >> ./terraform/terraform.tfvars
-          cat $config >> ./terraform/terraform.tfvars
+          echo "//Variabelverdier for ${{inputs.soNavn}}" >> ./terraform/infrastruktur/deployments/terraformProd.tfvars
+          cat $config >> ./terraform/infrastruktur/deployments/terraform.tfvars
  #         cat ${{inputs.image}} >> ./terraform/terraform.tfvars
 
       - name: Push commit

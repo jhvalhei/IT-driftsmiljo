@@ -1,0 +1,79 @@
+name: Build terraform code
+# Bli calla av byggDocker
+
+# Controls when the workflow will run
+on:
+  
+
+#  workflow_run:
+#    workflows: ["Build Docker"]
+#    types:
+#      - completed
+
+  workflow_call:
+    inputs:
+      soNavn:
+        description: 'Navn på studentoppgave'
+        required: true
+        type: string
+    
+  #    image:
+  #      description: "Container image som skal deployes"
+  #      required: true
+  #      type: string
+
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+  WORKING_DIR: ./
+
+jobs:
+  # Appender terraformkode for studentoppgave
+  buildTerraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+
+      - name: Get config
+        id: config
+        run: |
+          config="./studentOppgaver/${{inputs.soNavn}}/config.txt"
+
+        # avvent mappestruktur i terraform
+      - name: Append container
+        id: appendContainer
+        
+        run: |
+          echo "//Container for ${{inputs.soNavn}}" >> ./terraform/infrastruktur/deployments/main.tf
+          sudo chmod 755 ./terraform/scripts/addModule.sh
+          ./terraform/scripts/addModule.sh ${{inputs.soNavn}} >> ./terraform/infrastruktur/deployments/main.tf
+
+      - name: Append variabeldefenisjoner
+        id: appendVarDef
+        run: |
+          echo "//Variabler for ${{inputs.soNavn}}" >> ./terraform/variables.tf
+          sudo chmod 755 ./terraform/scripts/addVariables.sh
+          ./terraform/scripts/addVariables.sh ${{inputs.soNavn}} >> ./terraform/variables
+
+      - name: Append variabelverdier
+        id: appendVarVal
+        run: |
+          echo "//Variabelverdier for ${{inputs.soNavn}}" >> ./terraform/terraform.tfvars
+          cat $config >> ./terraform/terraform.tfvars
+ #         cat ${{inputs.image}} >> ./terraform/terraform.tfvars
+
+      - name: Push commit
+        id: pushCommit
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "workflow la til ${{inputs.soNavn}}"
+          git push origin buildterraformwf

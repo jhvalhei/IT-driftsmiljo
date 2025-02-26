@@ -8,6 +8,7 @@
     }))
     }
 
+
 # Module: containerapp
 
     variable "law_name" {
@@ -63,6 +64,7 @@
         type = string
         default = "0.5Gi"
     }
+
 
 # Module: database
 

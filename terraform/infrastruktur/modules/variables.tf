@@ -1,1 +1,0 @@
-//Variabler for testEks

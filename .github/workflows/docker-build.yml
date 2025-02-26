@@ -1,12 +1,51 @@
-name: Build Docker Image and Push to GHCR
+name: Build and Push New Student Submission
 
 on:
-    push:
-        branches:
-            - main
+  push:
+    paths:
+      - 'studentOppgaver/**'  # Trigger when any file/folder changes inside studentOppgaver/
 
 jobs:
-    push-to-ghcr:
-        runs-on: ubuntu-latest
-        steps:
-            
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout the repository (contains student submissions)
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      # Step 2: Detect New Submission Folder
+      - name: Detect New Submission Folder
+        id: find_new_submission
+        run: |
+          # Find newly added first-level directories under studentOppgaver/
+          NEW_FOLDER=$(git diff --dirstat=files,0 HEAD~1 -- studentOppgaver/ | awk '{print $2}' | cut -d '/' -f 2 | uniq)
+
+          # Exit if no new folder is found
+          if [ -z "$NEW_FOLDER" ]; then
+            echo "No new student submission detected. Exiting."
+            exit 1
+          fi
+
+          # Store the folder name in an environment variable for the next steps
+          echo "NEW_SUBMISSION_FOLDER=$NEW_FOLDER" >> $GITHUB_ENV
+          echo "Detected new submission folder: $NEW_FOLDER"
+
+      # Step 3: Log in to GitHub Container Registry (GHCR)
+      - name: Docker Login to GHCR
+        run: |
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ github.repository_owner }}" --password-stdin
+
+      # Step 4: Build and Push Docker Image
+      - name: Build and Push Docker Image
+        run: |
+          SUBMISSION_DIR="studentOppgaver/${{ env.NEW_SUBMISSION_FOLDER }}"
+          REPO_OWNER="${{ github.repository_owner }}"
+
+          # Define Docker image name based on the new submission folder
+          IMAGE_NAME="ghcr.io/${REPO_OWNER}/${{ env.NEW_SUBMISSION_FOLDER }}-app:latest"
+          
+          echo "Building Docker image: $IMAGE_NAME from $SUBMISSION_DIR"
+          docker build -t "$IMAGE_NAME" "$SUBMISSION_DIR"
+
+          echo "Pushing Docker image: $IMAGE_NAME"
+          docker push "$IMAGE_NAME"

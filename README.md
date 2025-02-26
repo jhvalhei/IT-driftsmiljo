@@ -1,6 +1,37 @@
-# Bachelor-IT-driftsmiljo
-## Intro
+# IT-driftsmiljø
+## Beskrivelse
 Repo for all koden som blir produsert under bacheloroppgaven vår
 
+
 ## Legge inn ny studentoppgave
-For å legge inn en ny studentoppgave i driftsmiljøet må man laste opp alle filene applikasjonen trenger uten noen .git filer i studentOppgaver mappen.
+### Steg 1: Laste ned og sjekke filer
+Last ned git repo eller finn mappen som har blitt levert av studentene. Sjekk at mappen har denne strukturen og inneholder en config.yml fil og en Dockerfile.
+```plaintext
+<studentoppgavenavn>/
+├── README.md      # Dokumentasjon og installasjonsinstrukser
+├── src/           # Kildekode
+├── testing/       # Tester
+├── database/      # Databasefiler
+├── dokumentasjon/ # Dokumentasjon (API, databasdesign, etc.)
+├── data/          # Datasettene brukt i oppgaven
+├── vedlegg/       # Eventuelle eksterne ressurser/dokumenter
+└── Dockerfile     # Fil for bygging av Docker-image
+```
+
+### Steg 2: Laste opp filer til github
+For å legge inn en ny studentoppgave i driftsmiljøet må man laste opp alle filene applikasjonen trenger uten noen .git filer i egen mappe med navn på oppgaven under [studentOppgaver](/studentOppgaver).
+<br> 
+Commit meldingen **MÅ** se slik ut:
+```bash
+ny studentoppgave <studentoppgavenavn>
+```
+Studentoppgavenavn må være skrevet helt likt som mappen som applikasjonen er i.
+
+Dette er for å starte den første workflowen Docker-build. 
+
+
+
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)

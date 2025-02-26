@@ -19,3 +19,8 @@ resource "azurerm_container_app_environment" "c_a_env" {
   log_analytics_workspace_id = azurerm_log_analytics_workspace.log_test.id
 }
 
+//Container for testEks
+module "container_app" {
+    source = "../modules/containers"
+    containerapp-name = var.testEks-containerapp-name
+    }

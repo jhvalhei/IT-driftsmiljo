@@ -11,4 +11,4 @@ if __name__ == "__main__":
 
 # test1 - fungerte ikke, må være liten bokstav
 # test2 - feil i navn på image
-# test3
+# test3 - feil i navn<s

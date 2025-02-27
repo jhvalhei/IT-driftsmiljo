@@ -11,17 +11,7 @@ on:
 #    types:
 #      - completed
 
-  workflow_call:
-    inputs:
-      soName:
-        description: 'Navn på studentoppgave'
-        required: true
-        type: string
-    
-      imageName:
-        description: "Container image som skal deployes"
-        required: true
-        type: string
+
 
 
   # Allows you to run this workflow manually from the Actions tab

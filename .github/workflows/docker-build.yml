@@ -56,9 +56,18 @@ jobs:
           echo "Pushing Docker image: ${{ env.DOCKER_IMAGE_NAME }}"
           docker push "${{ env.DOCKER_IMAGE_NAME }}"
 
-      - name: startWF
-        uses: ./.github/workflows/buildTerraform.yml
+      # Upload folder name and image name as artifacts
+      - name: Save variables
+        run: |
+          echo "STUDENT_FOLDER=${{env.STUDENT_FOLDER}}" > $GITHUB_ENV
+          echo "DOCKER_IMAGE_NAME=${{env.DOCKER_IMAGE_NAME}}" >> $GITHUB_ENV
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
         with:
-          soNavn: ${{env.STUDENT_FOLDER}}
-          imageName: ${{env.DOCKER_IMAGE_NAME}}
+          name: variableNames
+          path: variables.txt
+    
+  startWF:
+    uses: Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo/.github/workflows/buildTerraform.yml@databasewf
     

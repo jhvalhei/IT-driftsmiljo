@@ -15,6 +15,7 @@ Last ned git repo eller finn mappen som har blitt levert av studentene. Sjekk at
 ├── dokumentasjon/ # Dokumentasjon (API, databasdesign, etc.)
 ├── data/          # Datasettene brukt i oppgaven
 ├── vedlegg/       # Eventuelle eksterne ressurser/dokumenter
+├── config.yml     # 
 └── Dockerfile     # Fil for bygging av Docker-image
 ```
 

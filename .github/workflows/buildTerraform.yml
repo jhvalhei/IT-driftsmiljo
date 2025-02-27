@@ -13,15 +13,15 @@ on:
 
   workflow_call:
     inputs:
-      soNavn:
+      soName:
         description: 'Navn på studentoppgave'
         required: true
         type: string
     
-  #    image:
-  #      description: "Container image som skal deployes"
-  #      required: true
-  #      type: string
+      imageName:
+        description: "Container image som skal deployes"
+        required: true
+        type: string
 
 
   # Allows you to run this workflow manually from the Actions tab
@@ -42,33 +42,34 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.1.1
 
+
       - name: Get config
         id: config
         run: |
-          config="./studentOppgaver/${{inputs.soNavn}}/config.txt"
+          config="./studentOppgaver/${{inputs.soName}}/config.txt"
 
         # avvent mappestruktur i terraform
       - name: Append container
         id: appendContainer
         
         run: |
-          echo "//Container for ${{inputs.soNavn}}" >> ./terraform/infrastruktur/deployments/main.tf
+          echo "//Container for ${{inputs.soName}}" >> ./terraform/infrastruktur/deployments/main.tf
           sudo chmod 755 ./terraform/scripts/addContainer.sh
-          ./terraform/scripts/addContainer.sh ${{inputs.soNavn}} >> ./terraform/infrastruktur/modules/containers/main.tf
+          ./terraform/scripts/addContainer.sh ${{inputs.soName}} >> ./terraform/infrastruktur/modules/containers/main.tf
 
       - name: Append variabeldefenisjoner
         id: appendVarDef
         run: |
-          echo "//Variabler for ${{inputs.soNavn}}" >> ./terraform/infrastruktur/modules/variables.tf
+          echo "//Variabler for ${{inputs.soName}}" >> ./terraform/infrastruktur/modules/variables.tf
           sudo chmod 755 ./terraform/scripts/addVariables.sh
-          ./terraform/scripts/addVariables.sh ${{inputs.soNavn}} >> ./terraform/infrastruktur/modules/containers/variables.tf
+          ./terraform/scripts/addVariables.sh ${{inputs.soName}} >> ./terraform/infrastruktur/modules/containers/variables.tf
 
       - name: Append variabelverdier
         id: appendVarVal
         run: |
-          echo "//Variabelverdier for ${{inputs.soNavn}}" >> ./terraform/infrastruktur/deployments/terraformProd.tfvars
+          echo "//Variabelverdier for ${{inputs.soName}}" >> ./terraform/infrastruktur/deployments/terraformProd.tfvars
           cat $config >> ./terraform/infrastruktur/deployments/terraform.tfvars
- #         cat ${{inputs.image}} >> ./terraform/terraform.tfvars
+ #         cat ${{inputs.imageName}} >> ./terraform/terraform.tfvars
 
       - name: Push commit
         id: pushCommit

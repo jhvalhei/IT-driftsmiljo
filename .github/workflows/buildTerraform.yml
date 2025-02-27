@@ -50,6 +50,22 @@ jobs:
         id: config
         run: |
           config="./studentOppgaver/${{env.STUDENT_FOLDER}}/config.txt"
+        
+      - name: sjekk database
+        id: database
+        run: |
+          if [[ -e ./studentOppgaver/${{env.STUDENT_FOLDER}}/database ]]; then DATABASE=true >> $GITHUB_ENV; 
+          else DATABASE=false >> $GITHUB_ENV; fi
+
+
+      - name: Append database
+        id: appendDatabase
+        if: ${{env.DATABASE}} == true
+        run: |
+          echo "//Database for ${{env.STUDENT_FOLDER}}" >> ./terraform/infrastruktur/deployments/main.tf
+          sudo chmod 755 ./terraform/scripts/addDatabase.sh
+          ./terraform/scripts/addDatabase.sh ${{env.STUDENT_FOLDER}} >> ./terraform/infrastruktur/modules/database/main.tf
+
 
         # avvent mappestruktur i terraform
       - name: Append container

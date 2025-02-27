@@ -33,34 +33,42 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.1.1
 
+      - name: Hent variabler
+        uses: actions/download-artifact@v4
+        with:
+          name: variableNames
+
+      - shell: bash
+        run: source variables.sh
+
 
       - name: Get config
         id: config
         run: |
-          config="./studentOppgaver/${{inputs.soName}}/config.txt"
+          config="./studentOppgaver/${{env.STUDENT_FOLDER}}/config.txt"
 
         # avvent mappestruktur i terraform
       - name: Append container
         id: appendContainer
         
         run: |
-          echo "//Container for ${{inputs.soName}}" >> ./terraform/infrastruktur/deployments/main.tf
+          echo "//Container for ${{env.STUDENT_FOLDER}}" >> ./terraform/infrastruktur/deployments/main.tf
           sudo chmod 755 ./terraform/scripts/addContainer.sh
-          ./terraform/scripts/addContainer.sh ${{inputs.soName}} >> ./terraform/infrastruktur/modules/containers/main.tf
+          ./terraform/scripts/addContainer.sh ${{env.STUDENT_FOLDER}} >> ./terraform/infrastruktur/modules/containers/main.tf
 
       - name: Append variabeldefenisjoner
         id: appendVarDef
         run: |
-          echo "//Variabler for ${{inputs.soName}}" >> ./terraform/infrastruktur/modules/variables.tf
+          echo "//Variabler for ${{env.STUDENT_FOLDER}}" >> ./terraform/infrastruktur/modules/variables.tf
           sudo chmod 755 ./terraform/scripts/addVariables.sh
-          ./terraform/scripts/addVariables.sh ${{inputs.soName}} >> ./terraform/infrastruktur/modules/containers/variables.tf
+          ./terraform/scripts/addVariables.sh ${{env.STUDENT_FOLDER}} >> ./terraform/infrastruktur/modules/containers/variables.tf
 
       - name: Append variabelverdier
         id: appendVarVal
         run: |
-          echo "//Variabelverdier for ${{inputs.soName}}" >> ./terraform/infrastruktur/deployments/terraformProd.tfvars
+          echo "//Variabelverdier for ${{env.STUDENT_FOLDER}}" >> ./terraform/infrastruktur/deployments/terraformProd.tfvars
           cat $config >> ./terraform/infrastruktur/deployments/terraform.tfvars
- #         cat ${{inputs.imageName}} >> ./terraform/terraform.tfvars
+ #         cat ${{env.DOCKER_IMAGE_NAME}} >> ./terraform/terraform.tfvars
 
       - name: Push commit
         id: pushCommit
@@ -68,5 +76,5 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add .
-          git commit -m "workflow la til ${{inputs.soNavn}}"
+          git commit -m "workflow la til ${{env.STUDENT_FOLDER}}"
           git push origin buildterraformwf

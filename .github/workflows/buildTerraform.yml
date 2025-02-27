@@ -81,4 +81,4 @@ jobs:
           git config user.email github-actions@github.com
           git add .
           git commit -m "workflow la til ${{env.STUDENT_FOLDER}}"
-          git push origin buildterraformwf
+          git push origin databasewf

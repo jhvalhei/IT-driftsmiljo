@@ -57,7 +57,7 @@ jobs:
           docker push "${{ env.DOCKER_IMAGE_NAME }}"
 
       - name: startWF
-        uses: Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo/.github/workflows/buildTerraform.yml
+        uses: ./.github/workflows/buildTerraform
         with:
           soNavn: ${{env.STUDENT_FOLDER}}
           imageName: ${{env.DOCKER_IMAGE_NAME}}

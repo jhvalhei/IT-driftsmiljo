@@ -36,10 +36,14 @@ jobs:
       - name: Hent variabler
         uses: actions/download-artifact@v4
         with:
-          name: variableNames
+          name: variables
 
       - shell: bash
-        run: source variables.sh
+        run: |
+          FOLDER_NAME="$(cat studentFolderName)"
+          echo "STUDENT_FOLDER=$FOLDER_NAME" >> $GITHUB_ENV
+          IMAGE_NAME="$(cat imageName)"
+          echo "DOCKER_IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
 
 
       - name: Get config

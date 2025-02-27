@@ -59,7 +59,7 @@ jobs:
       # Upload folder name and image name as artifacts
       - name: Save variables
         run: |
-          echo "echo \"STUDENT_FOLDER=${{env.STUDENT_FOLDER}}\" > $GITHUB_ENV" > variables.sh
+          echo "echo \"STUDENT_FOLDER=${{env.STUDENT_FOLDER}}\" >> $GITHUB_ENV" > variables.sh
           echo "echo \"DOCKER_IMAGE_NAME=${{env.DOCKER_IMAGE_NAME}}\" >> $GITHUB_ENV" >> variables.sh
       
       - name: Upload artifacts

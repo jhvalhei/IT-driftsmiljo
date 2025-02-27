@@ -11,3 +11,7 @@ variable "location" {
     type = string
     Description = Name of container app  
 }
+variable "TestWebApp-containerapp-name" {
+    type = string
+    Description = Name of container app  
+}

@@ -29,6 +29,15 @@ jobs:
             echo "Commit message does not specify a student folder. Exiting."
             exit 1
           fi
+      
+      - name: Check Folder Existence
+        id: folder_existence
+        run: |
+          if [[ ! -e ./studentOppgaver/${{env.STUDENT_FOLDER}} ]]; then
+            echo "fant ikke \"${{env.STUDENT_FOLDER}}\"" 
+            exit 1
+          fi 
+    
 
       # Step 3: Convert GitHub Repository Owner to Lowercase (For Docker Naming)
       - name: Convert Repo Owner to Lowercase

@@ -28,7 +28,7 @@ module "deployments" {
   capp_name = var.capp_name
   capp_revmode = var.capp_revmode
   capp_image = var.capp_image
-  capp_cpu = var.capp_image
+  capp_cpu = var.capp_cpu
   capp_memory = var.capp_memory
 
   # To use in database

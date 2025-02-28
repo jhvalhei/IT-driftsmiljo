@@ -17,6 +17,7 @@ resource "azurerm_postgresql_server" "postgreserver" {
 }
 
 resource "azurerm_postgresql_database" "postdb" {
+
   for_each = var.postdb
 
   name                = each.value.name
@@ -24,7 +25,7 @@ resource "azurerm_postgresql_database" "postdb" {
   server_name         = var.postgreserver_name
   charset             = each.value.charset
   collation           = each.value.collation
-
+  
   # prevent the possibility of accidental data loss
   lifecycle {
     prevent_destroy = false

@@ -67,7 +67,7 @@ variable "postgreserver_admin_password" {
 variable "postgreserver_version" {
     description = "Version number of the postgresql server"
     type = string
-    default = "9.5"
+    default = "14"
 }
 
 variable "postgreserver_ssl" {

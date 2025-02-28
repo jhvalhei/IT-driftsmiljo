@@ -25,6 +25,6 @@ resource "azurerm_postgresql_database" "postdb" {
 
   # prevent the possibility of accidental data loss
   lifecycle {
-    prevent_destroy = var.postdb_prevent_destroy
+    prevent_destroy = true
   }
 }

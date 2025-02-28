@@ -1,17 +1,65 @@
-variable "containerapp-name" {
+variable "rg_name" {
+    description = "Name of the resource group"
     type = string
-    description = "name of container app"
+    default = "rgname001"
 }
 
-variable "location" {
-  type        = string
-  description = "location of resource"
-  default     = "westeurope"
-}variable "testEks-containerapp-name" {
+variable "rg_location" {
+    description = "Location of the resource group"
     type = string
-    Description = Name of container app  
+    default = "westeurope"
 }
-variable "TestWebApp-containerapp-name" {
+
+variable "law_name" {
+    description = "Name of the log analytics workspace"
     type = string
-    Description = Name of container app  
+    default = "acc001"
+}
+
+variable "law_sku" {
+    description = "Unique identifier for log analytics workspace"
+    type = string
+    default = "PerGB2018"
+}
+
+variable "law_retention" {
+    description = "Renention of data for logs analytics workspace"
+    type = number
+    default = 30
+}
+
+variable "cae_name" {
+    description = "Name of the container app enviorment"
+    type = string
+    default = "CA-Enviornment001"
+}
+
+variable "capp_name" {
+    description = "Name of the container app"
+    type = string
+    default = "c-app001"
+}
+
+variable "capp_revmode" {
+    description = "Revision mode for the container app"
+    type = string
+    default = "Single"
+}
+
+variable "capp_image" {
+    description = "Referance to the contariner image"
+    type = string
+    default = ""
+}
+
+variable "capp_cpu" {
+    description = "The amount of vCPU to allocate to the container"
+    type = number
+    default = 0.25
+}
+
+variable "capp_memory" {
+    description = "The amount of memory to allocate to the container"
+    type = string
+    default = "0.5Gi"
 }

@@ -1,7 +1,7 @@
 resource "azurerm_postgresql_server" "postgreserver" {
   name                = var.postgreserver_name
-  location            = var.rg_location
-  resource_group_name = var.rg_name
+  location            = var.rg_location_static
+  resource_group_name = var.rg_name_static
 
   sku_name = var.postgreserver_skuname
 
@@ -17,14 +17,17 @@ resource "azurerm_postgresql_server" "postgreserver" {
 }
 
 resource "azurerm_postgresql_database" "postdb" {
-  name                = var.postdb_name
-  resource_group_name = var.rg_name
-  server_name         = azurerm_postgresql_server.postgreserver.name
-  charset             = var.postdb_charset
-  collation           = var.postdb_collation
 
+  for_each = var.postdb
+
+  name                = each.value.name
+  resource_group_name = var.rg_name_dynamic
+  server_name         = var.postgreserver_name
+  charset             = each.value.charset
+  collation           = each.value.collation
+  
   # prevent the possibility of accidental data loss
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }

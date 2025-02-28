@@ -1,11 +1,17 @@
-variable "rg_name" {
+variable "rg_name_dynamic" {
     description = "Name of the resource group"
     type = string
     default = "rgname001"
 }
 
-variable "rg_location" {
-    description = "Location of the resource group"
+variable "rg_name_static" {
+    description = "Static name for resourcegroup used for shared resources"
+    type = string
+    default = "rgname001"
+}
+
+variable "rg_location_static" {
+    description = "Static location for resourcegroup used for shared resources"
     type = string
     default = "westeurope"
 }
@@ -34,6 +40,27 @@ variable "cae_name" {
     default = "CA-Enviornment001"
 }
 
+variable "container" {
+        description = "A map of variables for container"
+        type = map(object({
+            name = string
+            revmode = string
+            image = string
+            cpu = number
+            memory = string
+        }))
+        default = {
+          "dfcontainer" = {
+            name = "dfcc-app"
+            revmode = "Single"
+            image = "ghcr.io/bachelorgruppe117-ntnu-gjovik/testwebapp-app:latest"
+            cpu = 0.25
+            memory = "0.5Gi"
+          }
+        }
+    }
+
+/**
 variable "capp_name" {
     description = "Name of the container app"
     type = string
@@ -63,3 +90,4 @@ variable "capp_memory" {
     type = string
     default = "0.5Gi"
 }
+**/

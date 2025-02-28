@@ -38,7 +38,7 @@
     variable "capp_name" {
         description = "Name of the container app"
         type = string
-        default = "C-App001"
+        default = "c-app001"
     }
 
     variable "capp_revmode" {

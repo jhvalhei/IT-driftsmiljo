@@ -14,14 +14,14 @@ resource "azurerm_container_app_environment" "cae" {
 }
 
 resource "azurerm_container_app" "capp" {
-  name                         = var.capp_name
+  name                         = lower(var.capp_name)
   container_app_environment_id = azurerm_container_app_environment.cae.id
   resource_group_name          = var.rg_name
   revision_mode                = var.capp_revmode
 
   template {
     container {
-      name   = var.capp_name
+      name   = lower(var.capp_name)
       image  = var.capp_image
       cpu    = var.capp_cpu
       memory = var.capp_memory

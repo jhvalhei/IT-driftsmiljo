@@ -1,11 +1,29 @@
 # resource group
 
-    variable "resource_groups" {
-    description = "A map of resource groups names"
-    type        = map(object({
-        name     = string
-        location = string
-    }))
+    variable "rg_dynamic" {
+        description = "A map of resource groups variables"
+        type        = map(object({
+            name     = string
+            location = string
+        }))
+        default = {
+          "dfrg" = {
+            name = "dfrg"
+            location = "westeurpoe"
+          }
+        }
+    }
+
+    variable "rg_name_static" {
+        description = "Static name for resourcegroup used for shared resources"
+        type = string
+        default = "rgname001"
+    }
+
+    variable "rg_location_static" {
+        description = "Static location for resourcegroup used for shared resources"
+        type = string
+        default = "westeurope"
     }
 
 
@@ -35,6 +53,26 @@
         default = "CA-Enviornment001"
     }
 
+    variable "container" {
+        description = "A map of variables for container"
+        type = map(object({
+            name = string
+            revmode = string
+            image = string
+            cpu = number
+            memory = string
+        }))
+        default = {
+          "dfcontainer" = {
+            name = "dfmc-app"
+            revmode = "Single"
+            image = "ghcr.io/bachelorgruppe117-ntnu-gjovik/testwebapp-app:latest"
+            cpu = 0.25
+            memory = "0.5Gi"
+          }
+        }
+    }
+    /**
     variable "capp_name" {
         description = "Name of the container app"
         type = string
@@ -64,7 +102,7 @@
         type = string
         default = "0.5Gi"
     }
-
+    **/
 
 # Module: database
 
@@ -128,6 +166,24 @@
         default = true
     }
 
+    variable "postdb" {
+        description = "Variables for a postgresql database"
+        type = map(object({
+          name = string
+          charset = string
+          collation = string
+          prevent_destroy = bool
+        }))
+        default = {
+          "dfpostdb" = {
+            name = "dfmpostdb"
+            charset = "UTF8"
+            collation = "English_United States.1252"
+            prevent_destroy = false
+          }
+        }
+    }
+    /**
     variable "postdb_name" {
         description = "Name of the postgresql database"
         type = string
@@ -149,5 +205,6 @@
     variable "postdb_prevent_destroy" {
         description = "Enable prevent destroy for the postgresql database"
         type = bool
-        default = true
+        default = false
     }
+    **/

@@ -3,21 +3,21 @@ name: Docker build
 on:
   push:
     paths:
-      - 'studentOppgaver/**'  # Runs only when something changes inside studentOppgaver/
+      - 'studentOppgaver/**'  # Only runs when it detects new changes in the folder studentOppgaver/
   
   workflow_dispatch:
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    # Runs only if commit contains "ny studentoppgave"
+    # Commit message needs to contain "ny studentoppgave" to continue workflow
     if: contains(github.event.head_commit.message, 'ny studentoppgave') 
     steps:
       # Step 1: Checkout the repository
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      # Step 2: Extract Folder Name from Commit Message (Preserve Original Case)
+      # Step 2: Gets the foldername from the commit message
       - name: Extract Folder Name
         id: extract_folder
         run: |
@@ -43,18 +43,18 @@ jobs:
       - name: Convert Repo Owner to Lowercase
         run: echo "REPO_OWNER=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
-      # Step 4: Convert Folder Name to Lowercase ONLY for Docker Image Name
+      # Step 4: Convert folder name to lowercase for Docker image
       - name: Set Docker Image Name
         run: |
           echo "DOCKER_IMAGE_NAME=ghcr.io/${{ env.REPO_OWNER }}/$(echo ${{ env.STUDENT_FOLDER }} | tr '[:upper:]' '[:lower:]')-app:latest" >> $GITHUB_ENV
           echo "Docker image name: ${{ env.DOCKER_IMAGE_NAME }}"
 
-      # Step 5: Log in to GitHub Container Registry (GHCR)
+      # Step 5: Logs in to GitHub Container Registry (GHCR)
       - name: Docker Login to GHCR
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ env.REPO_OWNER }}" --password-stdin
 
-      # Step 6: Build and Push Docker Image (Keep Folder Case, Lowercase Image Name)
+      # Step 6: Build and push Docker image to GHCR
       - name: Build and Push Docker Image
         run: |
           SUBMISSION_DIR="studentOppgaver/${{ env.STUDENT_FOLDER }}"  # Preserve original case

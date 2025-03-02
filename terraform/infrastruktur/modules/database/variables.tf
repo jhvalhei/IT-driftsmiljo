@@ -1,11 +1,17 @@
-variable "rg_name" {
+variable "rg_name_dynamic" {
     description = "Name of the resource group"
     type = string
     default = "rgname001"
 }
 
-variable "rg_location" {
-    description = "Location of the resource group"
+variable "rg_name_static" {
+    description = "Static name for resourcegroup used for shared resources"
+    type = string
+    default = "rgname001"
+}
+
+variable "rg_location_static" {
+    description = "Static location for resourcegroup used for shared resources"
     type = string
     default = "westeurope"
 }
@@ -61,7 +67,7 @@ variable "postgreserver_admin_password" {
 variable "postgreserver_version" {
     description = "Version number of the postgresql server"
     type = string
-    default = "9.5"
+    default = "14"
 }
 
 variable "postgreserver_ssl" {
@@ -70,6 +76,24 @@ variable "postgreserver_ssl" {
     default = true
 }
 
+variable "postdb" {
+    description = "Variables for a postgresql database"
+    type = map(object({
+        name = string
+        charset = string
+        collation = string
+        prevent_destroy = bool
+    }))
+    default = {
+        "dfpostdb" = {
+        name = "dfdapostdb"
+        charset = "UTF8"
+        collation = "English_United States.1252"
+        prevent_destroy = false
+        }
+    }
+}
+/**
 variable "postdb_name" {
     description = "Name of the postgresql database"
     type = string
@@ -93,4 +117,4 @@ variable "postdb_prevent_destroy" {
     type = bool
     default = true
 }
-
+**/

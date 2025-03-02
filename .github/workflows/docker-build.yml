@@ -30,16 +30,17 @@ jobs:
             exit 1
           fi
       
+      # Step 2,5: Checks if folder actually exists
       - name: Check Folder Existence
         id: folder_existence
         run: |
           if [[ ! -e ./studentOppgaver/${{env.STUDENT_FOLDER}} ]]; then
-            echo "fant ikke \"${{env.STUDENT_FOLDER}}\"" 
+            echo "Fant ikke \"${{env.STUDENT_FOLDER}}\"" 
             exit 1
           fi 
     
 
-      # Step 3: Convert GitHub Repository Owner to Lowercase (For Docker Naming)
+      # Step 3: Convert gitHub repository owner to Lowercase (Docker image requires lowercase name)
       - name: Convert Repo Owner to Lowercase
         run: echo "REPO_OWNER=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 

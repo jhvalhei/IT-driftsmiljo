@@ -44,12 +44,21 @@ jobs:
           echo "STUDENT_FOLDER=$FOLDER_NAME" >> $GITHUB_ENV
           IMAGE_NAME="$(cat imageName.txt)"
           echo "DOCKER_IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
+          echo ${{env.STUDENT_FOLDER}} >> ./terraform/oppgaver.txt
 
 
       - name: Get config
         id: config
         run: |
           config="./studentOppgaver/${{env.STUDENT_FOLDER}}/config.txt"
+
+
+      # Upload image name as secret
+      - uses: gliech/create-github-secret-action@v1
+        with:
+          name: ${{env.STUDENT_FOLDER}}-IMAGE
+          value: ${{env.DOCKER_IMAGE_NAME}}
+          pa_token: ${{ secrets.PA_TOKEN }}
         
       - name: sjekk database
         id: database
@@ -57,38 +66,40 @@ jobs:
           if [[ -e ./studentOppgaver/${{env.STUDENT_FOLDER}}/database ]]; then DATABASE=true >> $GITHUB_ENV; 
           else DATABASE=false >> $GITHUB_ENV; fi
 
-
+      # Add database
       - name: Append database
         id: appendDatabase
         if: ${{env.DATABASE}} == true
         run: |
-          echo "//Database for ${{env.STUDENT_FOLDER}}" >> ./terraform/infrastruktur/deployments/main.tf
-          sudo chmod 755 ./terraform/scripts/addDatabase.sh
-          ./terraform/scripts/addDatabase.sh ${{env.STUDENT_FOLDER}} >> ./terraform/infrastruktur/modules/database/main.tf
+          echo "postdb = {"
+          for line in ${cat /terraform/oppgaver.txt}; do
+          echo "$line = {name = $line}" >> ./terraform/infrastruktur/terraform.tfvars
+          done
+          echo "}"
 
 
-        # avvent mappestruktur i terraform
-      - name: Append container
-        id: appendContainer
+    
+      # Add resource group
+      - name: Append variables for resource group
+        id: appendRGVariables
+        run: |
+          echo "rg_dynamic = {"
+          for line in $(cat /terraform/oppgaver.txt); do
+          echo "$line = {name = $line location="westeurope"}" >> ./terraform/infrastruktur/terraform.tfvars
+          done
+          echo "}"
         
+      # Add container
+      - name: Append variables for container
+        id: appendContainerVariables
         run: |
-          echo "//Container for ${{env.STUDENT_FOLDER}}" >> ./terraform/infrastruktur/deployments/main.tf
-          sudo chmod 755 ./terraform/scripts/addContainer.sh
-          ./terraform/scripts/addContainer.sh ${{env.STUDENT_FOLDER}} >> ./terraform/infrastruktur/modules/containers/main.tf
-
-      - name: Append variabeldefenisjoner
-        id: appendVarDef
-        run: |
-          echo "//Variabler for ${{env.STUDENT_FOLDER}}" >> ./terraform/infrastruktur/modules/variables.tf
-          sudo chmod 755 ./terraform/scripts/addVariables.sh
-          ./terraform/scripts/addVariables.sh ${{env.STUDENT_FOLDER}} >> ./terraform/infrastruktur/modules/containers/variables.tf
-
-      - name: Append variabelverdier
-        id: appendVarVal
-        run: |
-          echo "//Variabelverdier for ${{env.STUDENT_FOLDER}}" >> ./terraform/infrastruktur/deployments/terraformProd.tfvars
-          cat $config >> ./terraform/infrastruktur/deployments/terraform.tfvars
- #         cat ${{env.DOCKER_IMAGE_NAME}} >> ./terraform/terraform.tfvars
+          echo "container = {"
+          for line in $(cat /terraform/oppgaver.txt); do
+          secretName="${line}-IMAGE"
+          echo "$line = {name = $line image=${{secrets.secretName}}}" >> ./terraform/infrastruktur/terraform.tfvars
+          done
+          echo "}"
+     
 
       - name: Push commit
         id: pushCommit

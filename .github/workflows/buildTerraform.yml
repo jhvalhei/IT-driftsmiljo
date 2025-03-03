@@ -54,14 +54,16 @@ jobs:
           config="./studentOppgaver/${{env.STUDENT_FOLDER}}/config.txt"
 
 
-      # Upload image name as secret
-      - uses: gliech/create-github-secret-action@v1
+     
+
+      - uses: hmanzur/actions-set-secret@v2.0.0
         with:
-          location: Bachelorgruppe117-NTNU-Gjovik
           name: ${{env.STUDENT_FOLDER}}-IMAGE
           value: ${{ env.DOCKER_IMAGE_NAME }}
-          org_visibility: all
-          pa_token: ${{ secrets.PAT_TOKEN }}
+          repository: Bachelorgruppe117-NTNU-Gjovik
+          token: ${{ secrets.PA_TOKEN }}
+          org: true
+          visibility: 'all'
         
       - name: sjekk database
         id: database

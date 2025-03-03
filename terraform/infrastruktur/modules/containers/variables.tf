@@ -48,6 +48,7 @@ variable "container" {
             image = string
             cpu = number
             memory = string
+            rg = string
         }))
         default = {
           "dfcontainer" = {
@@ -56,6 +57,7 @@ variable "container" {
             image = "ghcr.io/bachelorgruppe117-ntnu-gjovik/testwebapp-app:latest"
             cpu = 0.25
             memory = "0.5Gi"
+            rg = "rgstatic001"
           }
         }
     }

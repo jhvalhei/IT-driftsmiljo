@@ -17,10 +17,11 @@ resource "azurerm_postgresql_server" "postgreserver" {
 }
 
 resource "azurerm_postgresql_database" "postdb" {
+  depends_on = [ azurerm_postgresql_server.postgreserver ]
   for_each = var.postdb
 
-  name                = each.value.name
-  resource_group_name = var.rg_name_dynamic
+  name                = "${each.value.name}-${each.value.rg}-${each.key}"
+  resource_group_name = var.rg_name_static
   server_name         = var.postgreserver_name
   charset             = each.value.charset
   collation           = each.value.collation

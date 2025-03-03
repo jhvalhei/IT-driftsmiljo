@@ -23,6 +23,7 @@ env:
   ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+  PA_TOKEN: ${{ secrets.PA_TOKEN}}
   WORKING_DIR: ./
 
 jobs:
@@ -58,7 +59,7 @@ jobs:
         with:
           name: ${{env.STUDENT_FOLDER}}-IMAGE
           value: ${{env.DOCKER_IMAGE_NAME}}
-          pa_token: ${{ secrets.PA_TOKEN }}
+          pa_token: ${{ env.PA_TOKEN }}
         
       - name: sjekk database
         id: database

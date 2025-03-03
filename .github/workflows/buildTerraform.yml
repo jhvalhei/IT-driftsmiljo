@@ -59,7 +59,7 @@ jobs:
         with:
           name: ${{env.STUDENT_FOLDER}}-IMAGE
           value: ${{env.DOCKER_IMAGE_NAME}}
-          pa_token: ${{ env.PA_TOKEN }}
+          pa_token: ${{ secrets.PA_TOKEN }}
         
       - name: sjekk database
         id: database

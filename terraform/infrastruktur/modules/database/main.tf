@@ -20,12 +20,12 @@ resource "azurerm_postgresql_database" "postdb" {
   depends_on = [ azurerm_postgresql_server.postgreserver ]
   for_each = var.postdb
 
-  name                = "${each.value.name}-${each.value.rg}-${each.key}"
+  name                = "${each.value.name}-${var.rg_name_static}-${each.key}"
   resource_group_name = var.rg_name_static
   server_name         = var.postgreserver_name
   charset             = each.value.charset
   collation           = each.value.collation
-
+  
   # prevent the possibility of accidental data loss
   lifecycle {
     prevent_destroy = false

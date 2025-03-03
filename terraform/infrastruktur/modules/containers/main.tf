@@ -7,18 +7,28 @@ resource "azurerm_log_analytics_workspace" "law" {
 }
 
 resource "azurerm_container_app_environment" "cae" {
+  depends_on = [ azurerm_log_analytics_workspace.law ]
+
   name                       = var.cae_name
   location                   = var.rg_location_static
   resource_group_name        = var.rg_name_static
   log_analytics_workspace_id = azurerm_log_analytics_workspace.law.id
 }
 
+data "azurerm_container_app_environment" "containerappenvdata" {
+  depends_on = [ azurerm_container_app_environment.cae ]
+  name                = azurerm_container_app_environment.cae.name
+  resource_group_name = azurerm_container_app_environment.cae.resource_group_name
+  #id = azurerm_container_app_environment.cae.id
+}
+
 resource "azurerm_container_app" "capp" {
+  depends_on = [ data.azurerm_container_app_environment.containerappenvdata ]
   for_each = var.container
 
-  name                         = lower(each.value.name)
-  container_app_environment_id = azurerm_container_app_environment.cae.id
-  resource_group_name          = var.rg_name_dynamic
+  name                         = lower("${each.value.name}-${each.value.rg}-${each.key}")
+  container_app_environment_id = data.azurerm_container_app_environment.containerappenvdata.id
+  resource_group_name          = each.value.rg
   revision_mode                = each.value.revmode
 
   template {

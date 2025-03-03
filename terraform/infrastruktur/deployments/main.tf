@@ -11,6 +11,7 @@ resource "azurerm_resource_group" "rg_static" {
 }
 
 module "containers" {
+  depends_on = [ azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_static ]
   source = "../modules/containers"
   rg_name_static = var.rg_name_static
   rg_location_static = var.rg_location_static
@@ -19,8 +20,6 @@ module "containers" {
   law_retention = var.law_retention
   cae_name = var.cae_name
 
-  for_each = azurerm_resource_group.rg_dynamic
-  rg_name_dynamic = each.value.name
   container = var.container
   /**
   capp_name = var.capp_name
@@ -32,6 +31,7 @@ module "containers" {
 }
 
 module "database" {
+  depends_on = [ azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_static ]
   source = "../modules/database"
   rg_name_static = var.rg_name_static
   rg_location_static = var.rg_location_static
@@ -46,8 +46,6 @@ module "database" {
   postgreserver_version = var.postgreserver_version
   postgreserver_ssl = var.postgreserver_ssl
 
-  for_each = azurerm_resource_group.rg_dynamic
-  rg_name_dynamic = each.value.name
   postdb = var.postdb
   /**
   postdb_name = var.postdb_name

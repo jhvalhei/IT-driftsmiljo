@@ -17,7 +17,7 @@
     variable "rg_name_static" {
         description = "Static name for resourcegroup used for shared resources"
         type = string
-        default = "rgname001"
+        default = "rgstatic001"
     }
 
     variable "rg_location_static" {
@@ -61,6 +61,7 @@
             image = string
             cpu = number
             memory = string
+            rg = string
         }))
         default = {
           "dfcontainer" = {
@@ -69,6 +70,7 @@
             image = "ghcr.io/bachelorgruppe117-ntnu-gjovik/testwebapp-app:latest"
             cpu = 0.25
             memory = "0.5Gi"
+            rg = "rgstatic001"
           }
         }
     }

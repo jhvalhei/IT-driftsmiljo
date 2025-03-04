@@ -66,7 +66,7 @@ jobs:
         if: ${{env.DATABASE}} == true
         run: |
           echo "postdb = {" >> ./terraform/infrastruktur/terraform.tfvars
-          for line in ${awk '{print $1}' ./terraform/oppgaver.txt}; do
+          for line in $(awk '{print $1}' ./terraform/oppgaver.txt); do
           echo "$line = {name = $line}" >> ./terraform/infrastruktur/terraform.tfvars
           done
           echo "}" >> ./terraform/infrastruktur/terraform.tfvars

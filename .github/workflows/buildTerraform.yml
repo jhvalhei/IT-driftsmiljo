@@ -45,7 +45,8 @@ jobs:
           echo "STUDENT_FOLDER=$FOLDER_NAME" >> $GITHUB_ENV
           IMAGE_NAME="$(cat imageName.txt)"
           echo "DOCKER_IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
-          echo ${{env.STUDENT_FOLDER}} >> ./terraform/oppgaver.txt
+          echo -n ${{env.STUDENT_FOLDER}} >> ./terraform/oppgaver.txt
+          echo -e "\t${{env.DOCKER_IMAGE_NAME}}" >> ./terraform/oppgaver.txt
 
 
       - name: Get config
@@ -53,18 +54,6 @@ jobs:
         run: |
           config="./studentOppgaver/${{env.STUDENT_FOLDER}}/config.txt"
 
-
-     
-
-      - uses: hmanzur/actions-set-secret@v2.0.0
-        with:
-          name: ${{env.STUDENT_FOLDER}}-IMAGE
-          value: ${{ env.DOCKER_IMAGE_NAME }}
-          repository: Bachelorgruppe117-NTNU-Gjovik
-          token: ${{ secrets.PA_TOKEN }}
-          org: true
-          visibility: 'all'
-        
       - name: sjekk database
         id: database
         run: |
@@ -76,11 +65,11 @@ jobs:
         id: appendDatabase
         if: ${{env.DATABASE}} == true
         run: |
-          echo "postdb = {"
-          for line in ${cat /terraform/oppgaver.txt}; do
+          echo "postdb = {" >> ./terraform/infrastruktur/terraform.tfvars
+          for line in ${awk '{print $1}' ./terraform/oppgaver.txt}; do
           echo "$line = {name = $line}" >> ./terraform/infrastruktur/terraform.tfvars
           done
-          echo "}"
+          echo "}" >> ./terraform/infrastruktur/terraform.tfvars
 
 
     
@@ -88,22 +77,24 @@ jobs:
       - name: Append variables for resource group
         id: appendRGVariables
         run: |
-          echo "rg_dynamic = {"
+          echo "rg_dynamic = {" >> ./terraform/infrastruktur/terraform.tfvars
           for line in $(cat /terraform/oppgaver.txt); do
-          echo "$line = {name = $line location="westeurope"}" >> ./terraform/infrastruktur/terraform.tfvars
+            name=$(echo $line | awk '{print $1}')
+            echo "$name = {name = rg-$name location="westeurope"}" >> ./terraform/infrastruktur/terraform.tfvars
           done
-          echo "}"
+          echo "}" >> ./terraform/infrastruktur/terraform.tfvars
         
       # Add container
       - name: Append variables for container
         id: appendContainerVariables
         run: |
-          echo "container = {"
+          echo "container = {" >> ./terraform/infrastruktur/terraform.tfvars
           for line in $(cat /terraform/oppgaver.txt); do
-          secretName="${line}-IMAGE"
-          echo "$line = {name = $line image=${{secrets.secretName}}}" >> ./terraform/infrastruktur/terraform.tfvars
+            name=$(echo $line | awk '{print $1}')
+            image=$(echo $line | awk '{print $2}')
+            echo "$name = {name = $name image=$image" >> ./terraform/infrastruktur/terraform.tfvars
           done
-          echo "}"
+          echo "}" >> ./terraform/infrastruktur/terraform.tfvars
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

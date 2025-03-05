@@ -88,7 +88,7 @@ jobs:
             echo "$line"
             name=$(echo $line | awk '{print $1}')
             image=$(echo $line | awk '{print $2}')
-            echo "$name = {name = $name image=$image" >> ./terraform/infrastruktur/terraform.tfvars
+            echo "$name = {name = $name image=$image"} >> ./terraform/infrastruktur/terraform.tfvars
           done < oppgaver.txt
           echo "}" >> ./terraform/infrastruktur/terraform.tfvars
 

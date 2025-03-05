@@ -77,7 +77,7 @@ jobs:
         with:
           name: variables
           path: |
-            oppgaver.txt
+            ./terraform/oppgaver.txt
     
   startWF:
     needs: build-and-push

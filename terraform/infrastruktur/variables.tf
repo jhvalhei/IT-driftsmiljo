@@ -88,37 +88,6 @@
           }
         }
     }
-    /**
-    variable "capp_name" {
-        description = "Name of the container app"
-        type = string
-        default = "c-app001"
-    }
-
-    variable "capp_revmode" {
-        description = "Revision mode for the container app"
-        type = string
-        default = "Single"
-    }
-
-    variable "capp_image" {
-        description = "Referance to the contariner image"
-        type = string
-        default = ""
-    }
-
-    variable "capp_cpu" {
-        description = "The amount of vCPU to allocate to the container"
-        type = number
-        default = 0.25
-    }
-
-    variable "capp_memory" {
-        description = "The amount of memory to allocate to the container"
-        type = string
-        default = "0.5Gi"
-    }
-    **/
 
 # Module: database
 
@@ -199,28 +168,3 @@
           }
         }
     }
-    /**
-    variable "postdb_name" {
-        description = "Name of the postgresql database"
-        type = string
-        default = "postgresqldb001"
-    }
-
-    variable "postdb_charset" {
-        description = "Charset for the postgresql database"
-        type = string
-        default = "UTF8"
-    }
-
-    variable "postdb_collation" {
-        description = "Set collation for the postgresql database"
-        type = string
-        default = "English_United States.1252"
-    }
-
-    variable "postdb_prevent_destroy" {
-        description = "Enable prevent destroy for the postgresql database"
-        type = bool
-        default = false
-    }
-    **/

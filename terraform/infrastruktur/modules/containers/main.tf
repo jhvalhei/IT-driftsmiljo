@@ -19,7 +19,6 @@ data "azurerm_container_app_environment" "containerappenvdata" {
   depends_on = [ azurerm_container_app_environment.cae ]
   name                = azurerm_container_app_environment.cae.name
   resource_group_name = azurerm_container_app_environment.cae.resource_group_name
-  #id = azurerm_container_app_environment.cae.id
 }
 
 resource "azurerm_container_app" "capp" {
@@ -49,9 +48,6 @@ resource "azurerm_container_app" "capp" {
     }
     target_port = each.value.targetport
     external_enabled = each.value.external
-    #transport = "tcp"
-    #exposed_port = 5000
-
   }
 
   template {

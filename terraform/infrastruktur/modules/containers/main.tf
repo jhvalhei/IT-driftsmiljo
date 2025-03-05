@@ -22,6 +22,15 @@ data "azurerm_container_app_environment" "containerappenvdata" {
   #id = azurerm_container_app_environment.cae.id
 }
 
+resource "azurerm_container_app_secret" "ghcr" {
+  for_each = var.container
+  name                         = "ghcr_token"
+  container_app_environment_id = data.azurerm_container_app_environment.cae.id
+  resource_group_name          = azurerm_resource_group.rg.name
+  secret_name                  = "ghcr-token"
+  value                        = each.value.regtoken  # Your GitHub PAT
+}
+
 resource "azurerm_container_app" "capp" {
   depends_on = [ data.azurerm_container_app_environment.containerappenvdata ]
   for_each = var.container
@@ -30,6 +39,12 @@ resource "azurerm_container_app" "capp" {
   container_app_environment_id = data.azurerm_container_app_environment.containerappenvdata.id
   resource_group_name          = each.value.rg
   revision_mode                = each.value.revmode
+
+  registry {
+    server   = each.value.regserver
+    username = each.value.reguname
+    password_secret_name = each.value.regtoken
+  }
 
   template {
     container {

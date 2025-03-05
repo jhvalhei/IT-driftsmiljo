@@ -39,14 +39,8 @@ jobs:
         with:
           name: variables
 
-      - shell: bash
-        run: |
-          FOLDER_NAME="$(cat studentFolderName.txt)"
-          echo "STUDENT_FOLDER=$FOLDER_NAME" >> $GITHUB_ENV
-          IMAGE_NAME="$(cat imageName.txt)"
-          echo "DOCKER_IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
-          echo -n ${{env.STUDENT_FOLDER}} >> ./terraform/oppgaver.txt
-          echo -e "\t${{env.DOCKER_IMAGE_NAME}}" >> ./terraform/oppgaver.txt
+   
+        
 
 
       - name: Get config
@@ -78,7 +72,7 @@ jobs:
         id: appendRGVariables
         run: |
           echo "rg_dynamic = {" >> ./terraform/infrastruktur/terraform.tfvars
-          for line in $(cat /terraform/oppgaver.txt); do
+          for line in $(cat oppgaver.txt); do
             name=$(echo $line | awk '{print $1}')
             echo "$name = {name = rg-$name location="westeurope"}" >> ./terraform/infrastruktur/terraform.tfvars
           done
@@ -89,7 +83,7 @@ jobs:
         id: appendContainerVariables
         run: |
           echo "container = {" >> ./terraform/infrastruktur/terraform.tfvars
-          for line in $(cat /terraform/oppgaver.txt); do
+          for line in $(cat oppgaver.txt); do
             name=$(echo $line | awk '{print $1}')
             image=$(echo $line | awk '{print $2}')
             echo "$name = {name = $name image=$image" >> ./terraform/infrastruktur/terraform.tfvars

@@ -69,16 +69,15 @@ jobs:
       # Upload folder name and image name as artifacts
       - name: Save variables
         run: |
-          echo ${{env.STUDENT_FOLDER}} >> studentFolderName.txt
-          echo ${{env.DOCKER_IMAGE_NAME}} >> imageName.txt
+           echo -n ${{env.STUDENT_FOLDER}} >> ./terraform/oppgaver.txt
+           echo -e "\t${{env.DOCKER_IMAGE_NAME}}" >> ./terraform/oppgaver.txt
       
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: variables
           path: |
-            studentFolderName.txt
-            imageName.txt
+            oppgaver.txt
     
   startWF:
     needs: build-and-push

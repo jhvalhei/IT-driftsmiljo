@@ -46,3 +46,32 @@ jobs:
       - name: Terraform apply prod
         run: terraform apply -auto-approve
         working-directory: ${{ env.WORKING_DIR }}
+
+      - name: Login to Azure
+        run: |
+        az login --service-principal -u ${{ secrets.ARM_CLIENT_ID }} -p ${{ secrets.ARM_CLIENT_SECRET }} --tenant ${{ secrets.ARM_TENANT_ID }}
+
+      - name: Find and Update All Student Containers
+        run: |
+        # Find all student containers
+        CONTAINERS=$(az containerapp list --query "[].{name:name, resourceGroup:resourceGroup}" --output tsv)
+
+        if [ -z "$CONTAINERS" ]; then
+        echo "Ingen student container apps funnet!"
+        exit 1
+        fi
+
+        while read -r APP_NAME RESOURCE_GROUP; do
+        echo "Sjekker container: $APP_NAME in resource group: $RESOURCE_GROUP"
+
+        # Updating student containers
+        if [[ "$APP_NAME" == *"-"* ]]; then
+        echo "Oppdaterer container: $APP_NAME"
+        az containerapp update \
+        --name $APP_NAME \
+        --resource-group $RESOURCE_GROUP \
+        --image ghcr.io/bachelorgruppe117-ntnu-gjovik/$APP_NAME:latest
+        fi
+        done <<< "$CONTAINERS"
+
+

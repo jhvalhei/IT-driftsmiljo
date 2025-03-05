@@ -45,6 +45,13 @@ variable "container" {
         type = map(object({
             name = string
             revmode = string
+            regserver = string
+            reguname = string
+            regtoken = string
+            trafficweight = number
+            latestrevision = bool
+            targetport = number
+            external = bool
             image = string
             cpu = number
             memory = string
@@ -54,6 +61,13 @@ variable "container" {
           "dfcontainer" = {
             name = "dfcc-app"
             revmode = "Single"
+            regserver = "ghcr.io"
+            reguname = "test"
+            regtoken = "test"
+            trafficweight = 100
+            latestrevision = true
+            targetport = 5000
+            external = true
             image = "ghcr.io/bachelorgruppe117-ntnu-gjovik/testwebapp-app:latest"
             cpu = 0.25
             memory = "0.5Gi"

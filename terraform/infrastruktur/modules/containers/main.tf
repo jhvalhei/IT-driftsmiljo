@@ -31,6 +31,29 @@ resource "azurerm_container_app" "capp" {
   resource_group_name          = each.value.rg
   revision_mode                = each.value.revmode
 
+  secret {
+    name  = each.key
+    value = each.value.regtoken
+  }
+
+  registry {
+    server   = each.value.regserver
+    username = each.value.reguname
+    password_secret_name = each.key
+  }
+
+  ingress {
+    traffic_weight {
+      percentage = each.value.trafficweight
+      latest_revision = each.value.latestrevision
+    }
+    target_port = each.value.targetport
+    external_enabled = each.value.external
+    #transport = "tcp"
+    #exposed_port = 5000
+
+  }
+
   template {
     container {
       name   = lower(each.value.name)

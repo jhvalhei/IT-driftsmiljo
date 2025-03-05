@@ -75,7 +75,7 @@ jobs:
           while IFS= read -r line; do
             echo "$line"
             name=$(echo "$line" | awk '{print $1}')
-            echo "$name = {name = $name location = /"westeurope/"}" >> ./terraform/infrastruktur/terraform.tfvars
+            echo "$name = {name = $name location = "westeurope"}" >> ./terraform/infrastruktur/terraform.tfvars
           done < oppgaver.txt
           echo "}" >> ./terraform/infrastruktur/terraform.tfvars
         

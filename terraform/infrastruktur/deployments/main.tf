@@ -19,15 +19,7 @@ module "containers" {
   law_sku = var.law_sku
   law_retention = var.law_retention
   cae_name = var.cae_name
-
   container = var.container
-  /**
-  capp_name = var.capp_name
-  capp_revmode = var.capp_revmode
-  capp_image = var.capp_image
-  capp_cpu = var.capp_cpu
-  capp_memory = var.capp_memory
-  **/
 }
 
 module "database" {
@@ -45,12 +37,5 @@ module "database" {
   postgreserver_admin_password = var.postgreserver_admin_password
   postgreserver_version = var.postgreserver_version
   postgreserver_ssl = var.postgreserver_ssl
-
   postdb = var.postdb
-  /**
-  postdb_name = var.postdb_name
-  postdb_charset = var.postdb_charset
-  postdb_collation = var.postdb_collation
-  postdb_prevent_destroy = var.postdb_prevent_destroy
-  **/
 }

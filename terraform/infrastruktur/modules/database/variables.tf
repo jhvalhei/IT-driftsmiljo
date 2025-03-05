@@ -93,28 +93,3 @@ variable "postdb" {
         }
     }
 }
-/**
-variable "postdb_name" {
-    description = "Name of the postgresql database"
-    type = string
-    default = "postgresqldb001"
-}
-
-variable "postdb_charset" {
-    description = "Charset for the postgresql database"
-    type = string
-    default = "UTF8"
-}
-
-variable "postdb_collation" {
-    description = "Set collation for the postgresql database"
-    type = string
-    default = "English_United States.1252"
-}
-
-variable "postdb_prevent_destroy" {
-    description = "Enable prevent destroy for the postgresql database"
-    type = bool
-    default = true
-}
-**/

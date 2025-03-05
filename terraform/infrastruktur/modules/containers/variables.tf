@@ -41,69 +41,37 @@ variable "cae_name" {
 }
 
 variable "container" {
-        description = "A map of variables for container"
-        type = map(object({
-            name = string
-            revmode = string
-            regserver = string
-            reguname = string
-            regtoken = string
-            trafficweight = number
-            latestrevision = bool
-            targetport = number
-            external = bool
-            image = string
-            cpu = number
-            memory = string
-            rg = string
-        }))
-        default = {
-          "dfcontainer" = {
-            name = "dfcc-app"
-            revmode = "Single"
-            regserver = "ghcr.io"
-            reguname = "test"
-            regtoken = "test"
-            trafficweight = 100
-            latestrevision = true
-            targetport = 5000
-            external = true
-            image = "ghcr.io/bachelorgruppe117-ntnu-gjovik/testwebapp-app:latest"
-            cpu = 0.25
-            memory = "0.5Gi"
-            rg = "rgstatic001"
-          }
+    description = "A map of variables for container"
+    type = map(object({
+        name = string
+        revmode = string
+        regserver = string
+        reguname = string
+        regtoken = string
+        trafficweight = number
+        latestrevision = bool
+        targetport = number
+        external = bool
+        image = string
+        cpu = number
+        memory = string
+        rg = string
+    }))
+    default = {
+        "dfcontainer" = {
+        name = "dfcc-app"
+        revmode = "Single"
+        regserver = "ghcr.io"
+        reguname = "test"
+        regtoken = "test"
+        trafficweight = 100
+        latestrevision = true
+        targetport = 5000
+        external = true
+        image = "ghcr.io/bachelorgruppe117-ntnu-gjovik/testwebapp-app:latest"
+        cpu = 0.25
+        memory = "0.5Gi"
+        rg = "rgstatic001"
         }
     }
-
-/**
-variable "capp_name" {
-    description = "Name of the container app"
-    type = string
-    default = "c-app001"
 }
-
-variable "capp_revmode" {
-    description = "Revision mode for the container app"
-    type = string
-    default = "Single"
-}
-
-variable "capp_image" {
-    description = "Referance to the contariner image"
-    type = string
-    default = ""
-}
-
-variable "capp_cpu" {
-    description = "The amount of vCPU to allocate to the container"
-    type = number
-    default = 0.25
-}
-
-variable "capp_memory" {
-    description = "The amount of memory to allocate to the container"
-    type = string
-    default = "0.5Gi"
-}
-**/

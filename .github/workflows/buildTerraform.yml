@@ -90,7 +90,7 @@ jobs:
       - name: Save oppgaver.txt
         id: saveOppgaver
         run: |
-          cat oppgaver.txt >> .terraform/oppgaver.txt
+          cat oppgaver.txt >> ./terraform/oppgaver.txt
 
       # Upload .tfvars file as artifact
       - name: Upload artifacts

@@ -59,7 +59,7 @@ jobs:
       # Add database
       - name: Append database
         id: appendDatabase
-        if: ${{env.DATABASE}} == true
+        if: ${{env.DATABASE == 'true'}}
         run: |
           echo "postdb = {" >> ./terraform/infrastruktur/terraform.tfvars
           for line in $(awk '{print $1}' ./terraform/oppgaver.txt); do

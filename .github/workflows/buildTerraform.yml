@@ -27,27 +27,20 @@ env:
   WORKING_DIR: ./
 
 jobs:
-  # Appender terraformkode for studentoppgave
+  # Append terraform code for student program
   buildTerraform:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
 
+      
       - name: Hent variabler
         uses: actions/download-artifact@v4
         with:
           name: variables
 
-   
-        
-
-
-      - name: Get config
-        id: config
-        run: |
-          config="./studentOppgaver/${{env.STUDENT_FOLDER}}/config.txt"
-
+    # Check if student program has a database
       - name: sjekk database
         id: database
         run: |
@@ -69,7 +62,7 @@ jobs:
 
 
     
-      # Add resource group
+      # Add resource group to .tfvars file
       - name: Append variables for resource group
         id: appendRGVariables
         run: |
@@ -81,7 +74,7 @@ jobs:
           done < oppgaver.txt
           echo "}" >> ./terraform/infrastruktur/terraform.tfvars
         
-      # Add container
+      # Add container to .tfvars file
       - name: Append variables for container
         id: appendContainerVariables
         run: |
@@ -94,6 +87,12 @@ jobs:
           done < oppgaver.txt
           echo "}" >> ./terraform/infrastruktur/terraform.tfvars
 
+      - name: Save oppgaver.txt
+        id: saveOppgaver
+        run: |
+          cat oppgaver.txt >> .terraform/oppgaver.txt
+
+      # Upload .tfvars file as artifact
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:

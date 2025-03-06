@@ -52,9 +52,9 @@ jobs:
         id: database
         run: |
           if [[ -e ./studentOppgaver/${{env.STUDENT_FOLDER}}/database ]]; then 
-            DATABASE=true >> $GITHUB_ENV; 
+            echo "DATABASE=true" >> $GITHUB_ENV; 
           else 
-            DATABASE=false >> $GITHUB_ENV; fi
+            echo "DATABASE=false" >> $GITHUB_ENV; fi
 
       # Add database
       - name: Append database
@@ -77,7 +77,7 @@ jobs:
           while IFS= read -r line; do
             echo "$line"
             name=$(echo "$line" | awk '{print $1}')
-            echo -e "\t$name = {name = \"$name\"\nlocation = \"westeurope\"}" >> ./terraform/infrastruktur/terraform.tfvars
+            echo -e "\t$name = {name = \"$name\"\n\tlocation = \"westeurope\"}" >> ./terraform/infrastruktur/terraform.tfvars
           done < oppgaver.txt
           echo "}" >> ./terraform/infrastruktur/terraform.tfvars
         
@@ -90,7 +90,7 @@ jobs:
             echo "$line"
             name=$(echo $line | awk '{print $1}')
             image=$(echo $line | awk '{print $2}')
-            echo -e "\t$name = {name = \"$name\"\nimage=\"$image\"}" >> ./terraform/infrastruktur/terraform.tfvars
+            echo -e "\t$name = {name = \"$name\"\n\timage=\"$image\"}" >> ./terraform/infrastruktur/terraform.tfvars
           done < oppgaver.txt
           echo "}" >> ./terraform/infrastruktur/terraform.tfvars
 

@@ -9,6 +9,8 @@ on:
     workflows: ["Build terraform code"]
     types:
       - completed
+    branches:
+      - "testPipeline"
 
 
   # Allows you to run this workflow manually from the Actions tab

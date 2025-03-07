@@ -68,7 +68,7 @@ jobs:
           while IFS= read -r line; do
             echo "$line"
             name=$(echo "$line" | awk '{print $1}')
-            echo -e "\t\t$name = {name = \"$name\"\n\tlocation = \"westeurope\"}" >> ./terraform/infrastruktur/terraform.tfvars
+            echo -e "\t$name = {\n\t\tname = \"$name\"\n\t\tlocation = \"westeurope\"\n\t}" >> ./terraform/infrastruktur/terraform.tfvars
           done < ./terraform/oppgaver.txt
           echo "}" >> ./terraform/infrastruktur/terraform.tfvars
         
@@ -81,7 +81,7 @@ jobs:
             echo "$line"
             name=$(echo $line | awk '{print $1}')
             image=$(echo $line | awk '{print $2}')
-            echo -e "\t\t$name = {name = \"$name\"\n\timage=\"$image\"}" >> ./terraform/infrastruktur/terraform.tfvars
+            echo -e "\t$name = {\n\t\tname = \"$name\"\n\t\timage=\"$image\"\n\t}" >> ./terraform/infrastruktur/terraform.tfvars
           done < ./terraform/oppgaver.txt
           echo "}" >> ./terraform/infrastruktur/terraform.tfvars
 

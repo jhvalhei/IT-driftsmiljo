@@ -35,7 +35,7 @@ jobs:
 
       - name: Pull
         run: |
-          git pull origin databasewf
+          git pull origin main
 
       
     # Check if student program has a database

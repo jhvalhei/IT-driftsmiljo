@@ -79,7 +79,7 @@ jobs:
           git config user.email github-actions@github.com
           git add .
           git commit -m "workflow la til ${{env.STUDENT_FOLDER}}"
-          git push origin databasewf
+          git push origin main
     
   startWF:
     needs: build-and-push

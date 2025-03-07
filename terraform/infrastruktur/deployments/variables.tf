@@ -1,101 +1,89 @@
 # resource group
 
-variable "rg_dynamic" {
-    description = "A map of resource groups names"
-    type        = map(object({
-        name     = string
-        location = string
-    }))
-}
+    variable "rg_dynamic" {
+        description = "A map of resource groups names"
+        type        = map(object({
+            name     = string
+            location = string
+        }))
+    }
 
-variable "rg_name_static" {
-    description = "Static name for resourcegroup used for shared resources"
-    type = string
-    default = "rgname001"
-}
+    variable "rg_name_static" {
+        description = "Static name for resourcegroup used for shared resources"
+        type = string
+        default = "rgstatic001"
+    }
 
-variable "rg_location_static" {
-    description = "Static location for resourcegroup used for shared resources"
-    type = string
-    default = "westeurope"
-}
+    variable "rg_location_static" {
+        description = "Static location for resourcegroup used for shared resources"
+        type = string
+        default = "westeurope"
+    }
 
-# Module: containerapp
 
-variable "law_name" {
-    description = "Name of the log analytics workspace"
-    type = string
-    default = "acc001"
-}
+# Module: containers
 
-variable "law_sku" {
-    description = "Unique identifier for log analytics workspace"
-    type = string
-    default = "PerGB2018"
-}
 
-variable "law_retention" {
-    description = "Renention of data for logs analytics workspace"
-    type = number
-    default = 30
-}
+    variable "law_name" {
+        description = "Name of the log analytics workspace"
+        type = string
+        default = "acc001"
+    }
 
-variable "cae_name" {
-    description = "Name of the container app enviorment"
-    type = string
-    default = "CA-Enviornment001"
-}
+    variable "law_sku" {
+        description = "Unique identifier for log analytics workspace"
+        type = string
+        default = "PerGB2018"
+    }
 
-variable "container" {
-    description = "A map of variables for container"
-    type = map(object({
-        name = string
-        revmode = string
-        image = string
-        cpu = number
-        memory = string
-    }))
-    default = {
-        "dfcontainer" = {
-        name = "dfdc-app"
-        revmode = "Single"
-        image = "ghcr.io/bachelorgruppe117-ntnu-gjovik/testwebapp-app:latest"
-        cpu = 0.25
-        memory = "0.5Gi"
+    variable "law_retention" {
+        description = "Renention of data for logs analytics workspace"
+        type = number
+        default = 30
+    }
+
+    variable "cae_name" {
+        description = "Name of the container app enviorment"
+        type = string
+        default = "CA-Enviornment001"
+    }
+
+    variable "container" {
+        description = "A map of variables for container"
+        type = map(object({
+            name = string
+            revmode = string
+            regserver = string
+            reguname = string
+            regtoken = string
+            trafficweight = number
+            latestrevision = bool
+            targetport = number
+            external = bool
+            image = string
+            cpu = number
+            memory = string
+            rg = string
+        }))
+        default = {
+          "dfcontainer" = {
+            name = "dfmc-app"
+            revmode = "Single"
+            regserver = "ghcr.io"
+            reguname = "test"
+            regtoken = "test"
+            trafficweight = 100
+            latestrevision = true
+            targetport = 5000
+            external = true
+            image = "ghcr.io/bachelorgruppe117-ntnu-gjovik/testwebapp-app:latest"
+            cpu = 0.25
+            memory = "0.5Gi"
+            rg = "rgstatic001"
+          }
         }
     }
-}
-/**
-variable "capp_name" {
-    description = "Name of the container app"
-    type = string
-    default = "c-app001"
-}
 
-variable "capp_revmode" {
-    description = "Revision mode for the container app"
-    type = string
-    default = "Single"
-}
-
-variable "capp_image" {
-    description = "Referance to the contariner image"
-    type = string
-    default = ""
-}
-
-variable "capp_cpu" {
-    description = "The amount of vCPU to allocate to the container"
-    type = number
-    default = 0.25
-}
-
-variable "capp_memory" {
-    description = "The amount of memory to allocate to the container"
-    type = string
-    default = "0.5Gi"
-}
-**/
 
 # Module: database
 
@@ -174,30 +162,6 @@ variable "postdb" {
         collation = "English_United States.1252"
         prevent_destroy = false
         }
+
     }
-}
-/**
-variable "postdb_name" {
-    description = "Name of the postgresql database"
-    type = string
-    default = "postgresqldb001"
-}
 
-variable "postdb_charset" {
-    description = "Charset for the postgresql database"
-    type = string
-    default = "UTF8"
-}
-
-variable "postdb_collation" {
-    description = "Set collation for the postgresql database"
-    type = string
-    default = "English_United States.1252"
-}
-
-variable "postdb_prevent_destroy" {
-    description = "Enable prevent destroy for the postgresql database"
-    type = bool
-    default = true
-}
-**/

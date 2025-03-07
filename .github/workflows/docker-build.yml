@@ -2,6 +2,7 @@ name: Docker build
 
 on:
   push:
+    branches: ["testPipeline"]
     paths:
       - 'studentOppgaver/**'  # Only runs when it detects new changes in the folder studentOppgaver/
   

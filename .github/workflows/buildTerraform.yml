@@ -6,10 +6,7 @@ name: Build terraform code
 on:
   
 
-#  workflow_run:
-#    workflows: ["Build Docker"]
-#    types:
-#      - completed
+
 
   workflow_call:
 
@@ -35,7 +32,7 @@ jobs:
 
       - name: Pull
         run: |
-          git pull origin main
+          git pull origin testPipeline
 
       
     # Check if student program has a database

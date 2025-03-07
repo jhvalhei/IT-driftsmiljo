@@ -2,6 +2,7 @@ name: Docker build
 
 on:
   push:
+    branches: ["testPipeline"]
     paths:
       - 'studentOppgaver/**'  # Only runs when it detects new changes in the folder studentOppgaver/
   
@@ -79,9 +80,9 @@ jobs:
           git config user.email github-actions@github.com
           git add .
           git commit -m "workflow la til ${{env.STUDENT_FOLDER}}"
-          git push origin main
+          git push origin testPipeline
     
   startWF:
     needs: build-and-push
-    uses: Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo/.github/workflows/buildTerraform.yml@databasewf
+    uses: Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo/.github/workflows/buildTerraform.yml@testPipeline
     

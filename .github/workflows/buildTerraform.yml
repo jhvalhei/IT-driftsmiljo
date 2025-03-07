@@ -23,7 +23,6 @@ env:
   ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-  PA_TOKEN: ${{ secrets.PA_TOKEN}}
   WORKING_DIR: ./
 
 jobs:
@@ -35,11 +34,6 @@ jobs:
         uses: actions/checkout@v4.1.1
 
       
-      - name: Hent variabler
-        uses: actions/download-artifact@v4
-        with:
-          name: variables
-
     # Check if student program has a database
       - name: sjekk database
         id: database
@@ -71,7 +65,7 @@ jobs:
             echo "$line"
             name=$(echo "$line" | awk '{print $1}')
             echo -e "\t$name = {name = \"$name\"\n\tlocation = \"westeurope\"}" >> ./terraform/infrastruktur/terraform.tfvars
-          done < oppgaver.txt
+          done < ./terraform/oppgaver.txt
           echo "}" >> ./terraform/infrastruktur/terraform.tfvars
         
       # Add container to .tfvars file
@@ -84,7 +78,7 @@ jobs:
             name=$(echo $line | awk '{print $1}')
             image=$(echo $line | awk '{print $2}')
             echo -e "\t$name = {name = \"$name\"\n\timage=\"$image\"}" >> ./terraform/infrastruktur/terraform.tfvars
-          done < oppgaver.txt
+          done < ./terraform/oppgaver.txt
           echo "}" >> ./terraform/infrastruktur/terraform.tfvars
 
 

@@ -1,3 +1,4 @@
 TestWebApp	ghcr.io/bachelorgruppe117-ntnu-gjovik/testwebapp-app:latest
 TestWebApp	ghcr.io/bachelorgruppe117-ntnu-gjovik/testwebapp-app:latest
 TestWebApp	ghcr.io/bachelorgruppe117-ntnu-gjovik/testwebapp-app:latest
+TestWebApp	ghcr.io/bachelorgruppe117-ntnu-gjovik/testwebapp-app:latest

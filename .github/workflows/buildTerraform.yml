@@ -90,8 +90,4 @@ jobs:
           name: terraformVars
           path: |
             ./terraform/infrastruktur/terraform.tfvars
-         
-  startWF:
-      needs: buildTerraform
-      uses: Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo/.github/workflows/buildTerraform.yml@testPipeline
      

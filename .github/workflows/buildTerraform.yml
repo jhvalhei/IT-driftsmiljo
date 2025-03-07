@@ -64,11 +64,11 @@ jobs:
       - name: Append variables for resource group
         id: appendRGVariables
         run: |
-          echo "rg_dynamic = {" >> ./terraform/infrastruktur/terraform.tfvars
+          echo -e "rg_dynamic = {\n" >> ./terraform/infrastruktur/terraform.tfvars
           while IFS= read -r line; do
             echo "$line"
             name=$(echo "$line" | awk '{print $1}')
-            echo -e "\t$name = {name = \"$name\"\n\tlocation = \"westeurope\"}" >> ./terraform/infrastruktur/terraform.tfvars
+            echo -e "\t\t$name = {name = \"$name\"\n\tlocation = \"westeurope\"}" >> ./terraform/infrastruktur/terraform.tfvars
           done < ./terraform/oppgaver.txt
           echo "}" >> ./terraform/infrastruktur/terraform.tfvars
         
@@ -76,12 +76,12 @@ jobs:
       - name: Append variables for container
         id: appendContainerVariables
         run: |
-          echo "container = {" >> ./terraform/infrastruktur/terraform.tfvars
+          echo -e "container = {\n" >> ./terraform/infrastruktur/terraform.tfvars
           while IFS= read -r line; do
             echo "$line"
             name=$(echo $line | awk '{print $1}')
             image=$(echo $line | awk '{print $2}')
-            echo -e "\t$name = {name = \"$name\"\n\timage=\"$image\"}" >> ./terraform/infrastruktur/terraform.tfvars
+            echo -e "\t\t$name = {name = \"$name\"\n\timage=\"$image\"}" >> ./terraform/infrastruktur/terraform.tfvars
           done < ./terraform/oppgaver.txt
           echo "}" >> ./terraform/infrastruktur/terraform.tfvars
 

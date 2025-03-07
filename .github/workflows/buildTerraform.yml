@@ -12,16 +12,7 @@ on:
 #      - completed
 
   workflow_call:
-    inputs:
-      soNavn:
-        description: 'Navn på studentoppgave'
-        required: true
-        type: string
-    
-  #    image:
-  #      description: "Container image som skal deployes"
-  #      required: true
-  #      type: string
+
 
 
   # Allows you to run this workflow manually from the Actions tab
@@ -35,46 +26,72 @@ env:
   WORKING_DIR: ./
 
 jobs:
-  # Appender terraformkode for studentoppgave
+  # Append terraform code for student program
   buildTerraform:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
 
-      - name: Get config
-        id: config
+      - name: Pull
         run: |
-          config="./studentOppgaver/${{inputs.soNavn}}/config.txt"
+          git pull origin main
 
-        # avvent mappestruktur i terraform
-      - name: Append container
-        id: appendContainer
+      
+    # Check if student program has a database
+      - name: sjekk database
+        id: database
+        run: |
+          if [[ -e ./studentOppgaver/${{env.STUDENT_FOLDER}}/database ]]; then 
+            echo "DATABASE=true" >> $GITHUB_ENV; 
+          else 
+            echo "DATABASE=false" >> $GITHUB_ENV; fi
+
+      # Add database
+      - name: Append database
+        id: appendDatabase
+        if: ${{env.DATABASE == 'true'}}
+        run: |
+          echo "postdb = {" >> ./terraform/infrastruktur/terraform.tfvars
+          for line in $(awk '{print $1}' ./terraform/oppgaver.txt); do
+          echo -e "\t$line = {name = $line}" >> ./terraform/infrastruktur/terraform.tfvars
+          done
+          echo "}" >> ./terraform/infrastruktur/terraform.tfvars
+
+
+    
+      # Add resource group to .tfvars file
+      - name: Append variables for resource group
+        id: appendRGVariables
+        run: |
+          echo -e "rg_dynamic = {\n" >> ./terraform/infrastruktur/terraform.tfvars
+          while IFS= read -r line; do
+            echo "$line"
+            name=$(echo "$line" | awk '{print $1}')
+            echo -e "\t$name = {\n\t\tname = \"$name\"\n\t\tlocation = \"westeurope\"\n\t}" >> ./terraform/infrastruktur/terraform.tfvars
+          done < ./terraform/oppgaver.txt
+          echo "}" >> ./terraform/infrastruktur/terraform.tfvars
         
+      # Add container to .tfvars file
+      - name: Append variables for container
+        id: appendContainerVariables
         run: |
-          echo "//Container for ${{inputs.soNavn}}" >> ./terraform/infrastruktur/deployments/main.tf
-          sudo chmod 755 ./terraform/scripts/addContainer.sh
-          ./terraform/scripts/addContainer.sh ${{inputs.soNavn}} >> ./terraform/infrastruktur/modules/containers/main.tf
+          echo -e "container = {\n" >> ./terraform/infrastruktur/terraform.tfvars
+          while IFS= read -r line; do
+            echo "$line"
+            name=$(echo $line | awk '{print $1}')
+            image=$(echo $line | awk '{print $2}')
+            echo -e "\t$name = {\n\t\tname = \"$name\"\n\t\timage=\"$image\"\n\t}" >> ./terraform/infrastruktur/terraform.tfvars
+          done < ./terraform/oppgaver.txt
+          echo "}" >> ./terraform/infrastruktur/terraform.tfvars
 
-      - name: Append variabeldefenisjoner
-        id: appendVarDef
-        run: |
-          echo "//Variabler for ${{inputs.soNavn}}" >> ./terraform/infrastruktur/modules/variables.tf
-          sudo chmod 755 ./terraform/scripts/addVariables.sh
-          ./terraform/scripts/addVariables.sh ${{inputs.soNavn}} >> ./terraform/infrastruktur/modules/containers/variables.tf
 
-      - name: Append variabelverdier
-        id: appendVarVal
-        run: |
-          echo "//Variabelverdier for ${{inputs.soNavn}}" >> ./terraform/infrastruktur/deployments/terraformProd.tfvars
-          cat $config >> ./terraform/infrastruktur/deployments/terraform.tfvars
- #         cat ${{inputs.image}} >> ./terraform/terraform.tfvars
-
-      - name: Push commit
-        id: pushCommit
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add .
-          git commit -m "workflow la til ${{inputs.soNavn}}"
-          git push origin buildterraformwf
+      # Upload .tfvars file as artifact
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraformVars
+          path: |
+            ./terraform/infrastruktur/terraform.tfvars
+         
+     

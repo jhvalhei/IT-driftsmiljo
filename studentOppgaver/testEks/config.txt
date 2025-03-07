@@ -1,1 +1,1 @@
-jensTest-containerapp-name=jensTest
+name=jensTest

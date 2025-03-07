@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - 'studentOppgaver/**'  # Only runs when it detects new changes in the folder studentOppgaver/
+  
+  workflow_dispatch:
 
 jobs:
   build-and-push:
@@ -27,6 +29,16 @@ jobs:
             echo "Commit message does not specify a student folder. Exiting."
             exit 1
           fi
+      
+      # Step 2,5: Checks if folder actually exists
+      - name: Check Folder Existence
+        id: folder_existence
+        run: |
+          if [[ ! -e ./studentOppgaver/${{env.STUDENT_FOLDER}} ]]; then
+            echo "Fant ikke \"${{env.STUDENT_FOLDER}}\"" 
+            exit 1
+          fi 
+    
 
       # Step 3: Convert gitHub repository owner to Lowercase (Docker image requires lowercase name)
       - name: Convert Repo Owner to Lowercase
@@ -53,3 +65,23 @@ jobs:
 
           echo "Pushing Docker image: ${{ env.DOCKER_IMAGE_NAME }}"
           docker push "${{ env.DOCKER_IMAGE_NAME }}"
+
+      # Upload folder name and image name as artifacts
+      - name: Save variables
+        run: |
+           echo -n ${{env.STUDENT_FOLDER}} >> ./terraform/oppgaver.txt
+           echo -e "\t${{env.DOCKER_IMAGE_NAME}}" >> ./terraform/oppgaver.txt
+      
+      - name: Push commit
+        id: pushCommit
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "workflow la til ${{env.STUDENT_FOLDER}}"
+          git push origin main
+    
+  startWF:
+    needs: build-and-push
+    uses: Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo/.github/workflows/buildTerraform.yml@databasewf
+    

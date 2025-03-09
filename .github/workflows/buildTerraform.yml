@@ -115,8 +115,9 @@ jobs:
       
       - name: Terraform init
         id: init
-        run: terraform init
-        working-directory: $WORKING_DIR
+        run: |
+          cd terraform/infrastruktur
+          terraform init
 
       - name: Terraform plan
         id: plan

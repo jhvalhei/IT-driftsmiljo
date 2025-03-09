@@ -72,7 +72,7 @@ jobs:
         run: |
            echo -n ${{env.STUDENT_FOLDER}} >> ./terraform/oppgaver.txt
            echo -e "\t${{env.DOCKER_IMAGE_NAME}}" >> ./terraform/oppgaver.txt
-      
+       
       - name: Push commit
         id: pushCommit
         run: |

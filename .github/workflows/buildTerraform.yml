@@ -92,6 +92,9 @@ jobs:
             ./terraform/infrastruktur/terraform.tfvars
      
   apply:
+    env:
+      WORKING_DIR: ./terraform/infrastruktur
+
     needs: buildTerraform
     runs-on: ubuntu-latest
     steps:
@@ -102,6 +105,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: terraformVars
+          path: ./terraform/infrastruktur
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -111,8 +115,9 @@ jobs:
       
       - name: Terraform init
         id: init
-        run: terraform init
-        working-directory: ${{ env.WORKING_DIR }}
+        run: |
+          terraform init
+          working-directory: ${{ env.WORKING_DIR }}
 
       - name: Terraform plan
         id: plan

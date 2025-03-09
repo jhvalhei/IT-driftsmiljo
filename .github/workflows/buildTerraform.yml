@@ -64,7 +64,7 @@ jobs:
           while IFS= read -r line; do
             echo "$line"
             name=$(echo "$line" | awk '{print $1}')
-            echo -e "\t$name = {\n\t\tname = \"$name\"\n\t\tlocation = \"westeurope\"\n\t}" >> ./terraform/infrastruktur/terraform.tfvars
+            echo -e "\t$name = {\n\t\tname = \"rg-$name\"\n\t\tlocation = \"westeurope\"\n\t}" >> ./terraform/infrastruktur/terraform.tfvars
           done < ./terraform/oppgaver.txt
           echo "}" >> ./terraform/infrastruktur/terraform.tfvars
         
@@ -78,9 +78,10 @@ jobs:
             name=$(echo $line | awk '{print $1}')
             image=$(echo $line | awk '{print $2}')
             echo -e "\t$name = {\n\t\tname = \"$name\"\n\t\timage= \"$image\"\n
-                                \t\treguname = \"${{secrets.REG_UNAME}}\"\n
-                                \t\tregtoken = \"${{secrets.REG_TOKEN}}\"\n
-                    \t}" >> ./terraform/infrastruktur/terraform.tfvars
+            \t\treguname = \"${{secrets.REG_UNAME}}\"\n
+            \t\tregtoken = \"${{secrets.REG_TOKEN}}\"\n
+            \t\trg = \"rg-$name\"\n
+            \t}" >> ./terraform/infrastruktur/terraform.tfvars
           done < ./terraform/oppgaver.txt
           echo "}" >> ./terraform/infrastruktur/terraform.tfvars
 

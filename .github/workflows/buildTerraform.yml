@@ -122,8 +122,8 @@ jobs:
       - name: Terraform plan
         id: plan
         run: |
-          terraform plan -var-file=terraform.tfvars
           pwd
+          terraform plan -var-file=terraform.tfvars
  
       
       - name: Terraform apply prod

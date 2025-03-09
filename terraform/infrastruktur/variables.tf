@@ -60,27 +60,28 @@ variable "rg_location_static" {
         description = "A map of variables for container"
         type = map(object({
             name = string
-            revmode = string
-            regserver = string
+            revmode = optional(string,"Single")
+            regserver = optional(string,"ghcr.io")
             reguname = string
             regtoken = string
-            trafficweight = number
-            latestrevision = bool
-            targetport = number
-            external = bool
+            trafficweight = optional(number,100)
+            latestrevision = optional(bool,true)
+            targetport = optional(number,5000)
+            external = optional(bool,true)
             image = string
-            cpu = number
-            memory = string
+            cpu = optional(number,0.25)
+            memory = optional(string,"0.5Gi")
             rg = string
         }))
+        /*
         default = {
           "dfcontainer" = {
             name = "dfmc-app"
-            revmode = "Single"
-            regserver = "ghcr.io"
+            revmode = optional(string,"Single")
+            regserver = optional(string,"ghcr.io")
             reguname = "test"
             regtoken = "test"
-            trafficweight = 100
+            trafficweight = optional(number,100)
             latestrevision = true
             targetport = 5000
             external = true
@@ -90,6 +91,7 @@ variable "rg_location_static" {
             rg = "rgstatic001"
           }
         }
+        */
     }
 
 # Module: database

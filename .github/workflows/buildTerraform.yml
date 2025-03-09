@@ -92,6 +92,7 @@ jobs:
             ./terraform/infrastruktur/terraform.tfvars
      
   apply:
+    needs: buildTerraform
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

@@ -116,14 +116,14 @@ jobs:
       - name: Terraform init
         id: init
         run: |
-          cd terraform/infrastruktur
+          cd $WORKING_DIR
           terraform init
 
       - name: Terraform plan
         id: plan
         run: terraform plan -var-file=terraform.tfvars
-        working-directory: $WORKING_DIR
+ 
       
       - name: Terraform apply prod
         run: terraform apply -auto-approve
-        working-directory: $WORKING_DIR
+   

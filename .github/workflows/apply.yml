@@ -31,7 +31,7 @@ jobs:
       - name: Hent variabler
         uses: actions/download-artifact@v4
         with:
-          name: variables
+          name: terraformVars
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3

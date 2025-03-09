@@ -122,10 +122,13 @@ jobs:
       - name: Terraform plan
         id: plan
         run: |
+          cd $WORKING_DIR
           pwd
           terraform plan -var-file=terraform.tfvars
  
       
       - name: Terraform apply prod
-        run: terraform apply -auto-approve
+        run: |
+          cd $WORKING_DIR
+          terraform apply -auto-approve
    

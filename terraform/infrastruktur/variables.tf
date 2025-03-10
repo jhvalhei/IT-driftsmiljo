@@ -56,6 +56,8 @@ variable "rg_location_static" {
         default = "CA-Enviornment001"
     }
 
+   
+
     variable "container" {
         description = "A map of variables for container"
         type = map(object({

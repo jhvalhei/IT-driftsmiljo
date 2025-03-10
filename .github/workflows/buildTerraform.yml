@@ -69,6 +69,10 @@ jobs:
             echo -e "\t$name = {\n\t\tname = \"rg-$name\"\n\t\tlocation = \"westeurope\"\n\t}" >> ./terraform/infrastruktur/terraform.tfvars
           done < ./terraform/oppgaver.txt
           echo "}" >> ./terraform/infrastruktur/terraform.tfvars
+
+      - name: Set Terraform Secret
+        run: echo "TF_VAR_regtoken=$REG_TOKEN" >> $GITHUB_ENV
+        
         
       # Add container to .tfvars file
       - name: Append variables for container
@@ -81,7 +85,6 @@ jobs:
             image=$(echo $line | awk '{print $2}')
             echo -e "\t$name = {\n\t\tname = \"$name\"\n\t\timage= \"$image\"\n
             \t\treguname = \"$REG_UNAME\"\n
-            \t\tregtoken = \"$REG_TOKEN\"\n
             \t\trg = \"rg-$name\"\n
             \t}" >> ./terraform/infrastruktur/terraform.tfvars
           done < ./terraform/oppgaver.txt

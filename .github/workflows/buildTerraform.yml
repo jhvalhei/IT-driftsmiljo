@@ -113,8 +113,7 @@ jobs:
           name: terraformVars
           path: ${{env.WORKING_DIR}}
 
-      - name: Set Terraform Secret
-        run: export TF_VAR_regtoken=$REG_TOKEN
+
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -131,6 +130,7 @@ jobs:
       - name: Terraform plan
         id: plan
         run: |
+          export TF_VAR_regtoken=$REG_TOKEN
           cd $WORKING_DIR
           pwd
           terraform plan -var-file=terraform.tfvars

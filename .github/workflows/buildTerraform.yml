@@ -20,6 +20,8 @@ env:
   ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+  REG_UNAME: ${{ secrets.REG_UNAME }}
+  REG_TOKEN: ${{ secrets.REG_TOKEN }}
 
 jobs:
   # Append terraform code for student program
@@ -78,8 +80,8 @@ jobs:
             name=$(echo $line | awk '{print $1}')
             image=$(echo $line | awk '{print $2}')
             echo -e "\t$name = {\n\t\tname = \"$name\"\n\t\timage= \"$image\"\n
-            \t\treguname = \"${{secrets.REG_UNAME}}\"\n
-            \t\tregtoken = \"${{secrets.REG_TOKEN}}\"\n
+            \t\treguname = \"$REG_UNAME\"\n
+            \t\tregtoken = \"$REG_TOKEN\"\n
             \t\trg = \"rg-$name\"\n
             \t}" >> ./terraform/infrastruktur/terraform.tfvars
           done < ./terraform/oppgaver.txt

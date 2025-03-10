@@ -20,6 +20,7 @@ module "containers" {
   law_retention = var.law_retention
   cae_name = var.cae_name
   container = var.container
+  regtoken = var.regtoken
 }
 
 module "database" {

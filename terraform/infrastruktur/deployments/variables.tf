@@ -48,6 +48,10 @@
         default = "CA-Enviornment001"
     }
 
+    variable "regtoken" {
+        type = string
+    }
+
     variable "container" {
         description = "A map of variables for container"
         type = map(object({

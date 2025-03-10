@@ -43,4 +43,5 @@ module "deployments" {
   postgreserver_version = var.postgreserver_version
   postgreserver_ssl = var.postgreserver_ssl
   postdb = var.postdb
+  regtoken = var.regtoken
 }

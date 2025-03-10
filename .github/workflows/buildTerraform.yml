@@ -71,7 +71,7 @@ jobs:
           echo "}" >> ./terraform/infrastruktur/terraform.tfvars
 
       - name: Set Terraform Secret
-        run: echo "TF_VAR_regtoken=$REG_TOKEN" >> $GITHUB_ENV
+        run: export TF_VAR_regtoken=$REG_TOKEN
         
         
       # Add container to .tfvars file
@@ -89,7 +89,6 @@ jobs:
             \t}" >> ./terraform/infrastruktur/terraform.tfvars
           done < ./terraform/oppgaver.txt
           echo "}" >> ./terraform/infrastruktur/terraform.tfvars
-          echo $REG_UNAME
 
 
       # Upload .tfvars file as artifact

@@ -86,6 +86,7 @@ jobs:
             \t}" >> ./terraform/infrastruktur/terraform.tfvars
           done < ./terraform/oppgaver.txt
           echo "}" >> ./terraform/infrastruktur/terraform.tfvars
+          echo $REG_UNAME
 
 
       # Upload .tfvars file as artifact

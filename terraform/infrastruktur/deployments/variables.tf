@@ -59,7 +59,6 @@
             revmode = optional(string,"Single")
             regserver = optional(string,"ghcr.io")
             reguname = string
-            regtoken = string
             trafficweight = optional(number,100)
             latestrevision = optional(bool,true)
             targetport = optional(number,5000)

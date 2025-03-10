@@ -130,7 +130,7 @@ jobs:
       - name: Terraform plan
         id: plan
         run: |
-          export TF_VAR_regtoken=$REG_TOKEN
+          export TF_VAR_regtoken=${{secrets.REG_TOKEN}}
           cd $WORKING_DIR
           pwd
           terraform plan -var-file=terraform.tfvars

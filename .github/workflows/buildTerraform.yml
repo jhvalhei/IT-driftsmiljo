@@ -100,7 +100,6 @@ jobs:
   apply:
     env:
       WORKING_DIR: terraform/infrastruktur
-      TF_VAR_regtoken: ${{ secrets.REG_TOKEN }}
 
     needs: buildTerraform
     runs-on: ubuntu-latest

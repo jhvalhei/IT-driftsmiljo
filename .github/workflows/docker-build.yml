@@ -1,3 +1,4 @@
+# Creates a Docker image and pushes it to Github Container Reigistry
 name: Docker build
 
 on:

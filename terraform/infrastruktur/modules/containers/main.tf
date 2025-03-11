@@ -32,7 +32,7 @@ resource "azurerm_container_app" "capp" {
 
   secret {
     name  = lower(each.key)
-    value = each.key
+    value = each.value.regtoken
   }
 
   registry {

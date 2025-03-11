@@ -31,7 +31,7 @@ resource "azurerm_container_app" "capp" {
   revision_mode                = each.value.revmode
 
   secret {
-    name  = each.key
+    name  = lower(each.key)
     value = each.key
   }
 

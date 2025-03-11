@@ -40,9 +40,7 @@ variable "cae_name" {
     default = "CA-Enviornment001"
 }
 
-variable "regtoken" {
-  type = string
-}
+
 
     variable "container" {
         description = "A map of variables for container"
@@ -50,7 +48,8 @@ variable "regtoken" {
             name = string
             revmode = optional(string,"Single")
             regserver = optional(string,"ghcr.io")
-            reguname = optional(string,"danielthorland"),
+            reguname = string,
+            regtoken = string
             trafficweight = optional(number,100)
             latestrevision = optional(bool,true)
             targetport = optional(number,5000)

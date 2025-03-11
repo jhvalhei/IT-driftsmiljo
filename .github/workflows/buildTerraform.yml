@@ -82,6 +82,7 @@ jobs:
             image=$(echo $line | awk '{print $2}')
             echo -e "\t$name = {\n\t\tname = \"$name\"\n\t\timage= \"$image\"\n
             \t\treguname = \"$REG_UNAME\"\n
+            \t\tregtoken = \"$REG_TOKEN\"\n
             \t\trg = \"rg-$name\"\n
             \t}" >> ./terraform/infrastruktur/terraform.tfvars
           done < ./terraform/oppgaver.txt

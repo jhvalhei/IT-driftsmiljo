@@ -26,6 +26,11 @@ jobs:
   # Append terraform code for student program
   buildTerraform:
     runs-on: ubuntu-latest
+    env:
+      REG_UNAME: ${{ secrets.REG_UNAME }}
+      REG_TOKEN: ${{ secrets.REG_TOKEN }}
+      TF_VAR_postgreserver_admin_uname: ${{ secrets.DB_SERVER_UNAME }}
+      TF_VAR_postgreserver_admin_password: ${{ secrets.DB_SERVER_SECRET }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
@@ -97,15 +102,13 @@ jobs:
             ./terraform/infrastruktur/terraform.tfvars
      
   apply:
-    env:
-      WORKING_DIR: terraform/infrastruktur
-      REG_UNAME: ${{ secrets.REG_UNAME }}
-      REG_TOKEN: ${{ secrets.REG_TOKEN }}
-      TF_VAR_postgreserver_admin_uname: ${{ secrets.DB_SERVER_UNAME }}
-      TF_VAR_postgreserver_admin_password: ${{ secrets.DB_SERVER_SECRET }}
+  
+      
 
     needs: buildTerraform
     runs-on: ubuntu-latest
+    env:
+      WORKING_DIR: terraform/infrastruktur
     steps:
 
       - name: Checkout

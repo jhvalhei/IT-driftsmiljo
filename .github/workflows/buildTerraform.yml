@@ -20,8 +20,7 @@ env:
   ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-  REG_UNAME: ${{ secrets.REG_UNAME }}
-  REG_TOKEN: ${{ secrets.REG_TOKEN }}
+ 
 
 jobs:
   # Append terraform code for student program
@@ -100,6 +99,10 @@ jobs:
   apply:
     env:
       WORKING_DIR: terraform/infrastruktur
+      REG_UNAME: ${{ secrets.REG_UNAME }}
+      REG_TOKEN: ${{ secrets.REG_TOKEN }}
+      TF_VAR_postgreserver_admin_uname: ${{ secrets.DB_SERVER_UNAME }}
+      TF_VAR_postgreserver_admin_password: ${{ secrets.DB_SERVER_SECRET }}
 
     needs: buildTerraform
     runs-on: ubuntu-latest

@@ -25,7 +25,7 @@ resource "azurerm_container_app" "capp" {
   depends_on = [ data.azurerm_container_app_environment.containerappenvdata ]
   for_each = var.container
 
-  name                         = lower("${each.value.name}-${each.value.rg}-${each.key}")
+  name                         = lower("${each.value.name}")
   container_app_environment_id = data.azurerm_container_app_environment.containerappenvdata.id
   resource_group_name          = each.value.rg
   revision_mode                = each.value.revmode

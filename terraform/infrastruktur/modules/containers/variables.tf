@@ -50,7 +50,7 @@ variable "regtoken" {
             name = string
             revmode = optional(string,"Single")
             regserver = optional(string,"ghcr.io")
-            reguname = optional(string,"danielthorland"
+            reguname = optional(string,"danielthorland"),
             trafficweight = optional(number,100)
             latestrevision = optional(bool,true)
             targetport = optional(number,5000)

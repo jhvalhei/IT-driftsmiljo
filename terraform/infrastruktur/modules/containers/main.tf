@@ -38,7 +38,7 @@ resource "azurerm_container_app" "capp" {
   registry {
     server   = each.value.regserver
     username = each.value.reguname
-    password_secret_name = each.key
+    password_secret_name = lower(each.key)
   }
 
   ingress {

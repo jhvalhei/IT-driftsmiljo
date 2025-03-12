@@ -175,7 +175,7 @@
             "dfpostdb" = {
             name = "dfdapostdb"
             charset = "UTF8"
-            collation = "en_US.itf8"
+            collation = "en_US.utf8"
             prevent_destroy = false
             }
         }

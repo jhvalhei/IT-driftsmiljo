@@ -68,7 +68,7 @@ jobs:
           echo "Pushing Docker image: ${{ env.DOCKER_IMAGE_NAME }}"
           docker push "${{ env.DOCKER_IMAGE_NAME }}"
 
-      # Check if student program has a database
+      # Step 6.5: Check if student program has a database
       - name: sjekk database
         id: database
         run: |
@@ -82,7 +82,7 @@ jobs:
         run: |
            echo -n ${{env.STUDENT_FOLDER}} >> ./terraform/oppgaver.txt
            echo -e "\t${{env.DOCKER_IMAGE_NAME}}" >> ./terraform/oppgaver.txt
-           if [[ $DATABASE==true ]]; then echo "db" >> ./terraform/oppgaver
+           if [[ $DATABASE==true ]]; then echo -e "\tdb" >> ./terraform/oppgaver
        
       - name: Push commit
         id: pushCommit

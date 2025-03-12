@@ -7,7 +7,7 @@ variable "rg_name_dynamic" {
 variable "rg_name_static" {
     description = "Static name for resourcegroup used for shared resources"
     type = string
-    default = "rgname001"
+    default = "rgstatic001"
 }
 
 variable "rg_location_static" {
@@ -19,19 +19,25 @@ variable "rg_location_static" {
 variable "postgreserver_name" {
     description = "The name of the postgresql server"
     type = string
-    default = "postgresql-server-001"
+    default = "postgresql-flexible-server"
 }
 
 variable "postgreserver_skuname" {
     description = "Name of the sku for the postgresql server"
     type = string
-    default = "B_Gen5_2"
+    default = "B_Standard_B1ms"
 }
 
 variable "postgreserver_storage_mb" {
     description = "Maximum storage capacity for the postgresql server"
     type = number
     default = 5120
+}
+
+variable "postgreserver_storage_tier" {
+    description = "Storage toer for the postgresql flexible server"
+    type = string
+    default = "P4"
 }
 
 variable "postgreserver_backup_retention" {
@@ -70,10 +76,26 @@ variable "postgreserver_version" {
     default = "14"
 }
 
-variable "postgreserver_ssl" {
-    description = "Enable SSL enforcement for the postgrespl server"
+variable "postgreserver_public_network_access" {
+    description = "Enable public network access"
     type = bool
-    default = true
+    default = false
+}
+
+variable "postgreserver_zone" {
+    description = "The zone for the postgresql flexible server"
+    type = string
+    default = "1"
+}
+
+variable "subnet_id" {
+    description = "The id of the subnet"
+    type = string
+}
+
+variable "privdnszone_id" {
+    description = "The id of the private dns zone"
+    type = string
 }
 
 variable "postdb" {

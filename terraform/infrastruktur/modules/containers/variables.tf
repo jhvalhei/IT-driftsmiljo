@@ -7,7 +7,7 @@ variable "rg_name_dynamic" {
 variable "rg_name_static" {
     description = "Static name for resourcegroup used for shared resources"
     type = string
-    default = "rgname001"
+    default = "rgstatic001"
 }
 
 variable "rg_location_static" {

@@ -173,10 +173,10 @@ variable "rg_location_static" {
         description = "Variables for a postgresql database"
         type = map(object({
             name = string
-            charset = string
-            collation = string
-            prevent_destroy = bool
-        }))
+            charset = optional(string,"UTF8")
+            collation = optional(string,"en_US.utf8")
+            prevent_destroy = optional(bool,false)
+        }))/*
         default = {
             "dfpostdb" = {
             name = "dfdapostdb"
@@ -184,7 +184,7 @@ variable "rg_location_static" {
             collation = "en_US.utf8"
             prevent_destroy = false
             }
-        }
+        }*/
     }
 
 # Module: network

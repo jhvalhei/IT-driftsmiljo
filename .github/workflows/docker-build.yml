@@ -68,11 +68,21 @@ jobs:
           echo "Pushing Docker image: ${{ env.DOCKER_IMAGE_NAME }}"
           docker push "${{ env.DOCKER_IMAGE_NAME }}"
 
+      # Check if student program has a database
+      - name: sjekk database
+        id: database
+        run: |
+          if [[ -e ./studentOppgaver/${{env.STUDENT_FOLDER}}/database ]]; then 
+            echo "DATABASE=true" >> $GITHUB_ENV; 
+          else 
+            echo "DATABASE=false" >> $GITHUB_ENV; fi
+
       # Upload folder name and image name as artifacts
       - name: Save variables
         run: |
            echo -n ${{env.STUDENT_FOLDER}} >> ./terraform/oppgaver.txt
            echo -e "\t${{env.DOCKER_IMAGE_NAME}}" >> ./terraform/oppgaver.txt
+           if [[ $DATABASE==true ]]; then echo "db" >> ./terraform/oppgaver
        
       - name: Push commit
         id: pushCommit

@@ -30,25 +30,9 @@ jobs:
         run: |
           git pull origin testDeploy
       
-    # Check if student program has a database
-      - name: sjekk database
-        id: database
-        run: |
-          if [[ -e ./studentOppgaver/${{env.STUDENT_FOLDER}}/database ]]; then 
-            echo "DATABASE=true" >> $GITHUB_ENV; 
-          else 
-            echo "DATABASE=false" >> $GITHUB_ENV; fi
+    
 
-      # Add database
-      - name: Append database
-        id: appendDatabase
-        if: ${{env.DATABASE == 'true'}}
-        run: |
-          echo "postdb = {" >> ./terraform/infrastruktur/terraform.tfvars
-          for line in $(awk '{print $1}' ./terraform/oppgaver.txt); do
-          echo -e "\t$line = {name = $line}" >> ./terraform/infrastruktur/terraform.tfvars
-          done
-          echo "}" >> ./terraform/infrastruktur/terraform.tfvars
+    
     
       # Add resource group variables to .tfvars file
       - name: Append variables for resource group
@@ -78,6 +62,19 @@ jobs:
             \t}" >> ./terraform/infrastruktur/terraform.tfvars
           done < ./terraform/oppgaver.txt
           echo "}" >> ./terraform/infrastruktur/terraform.tfvars
+
+        # Add database
+      - name: Append database
+        id: appendDatabase
+        run: |
+           echo -e "container = {\n" >> ./terraform/infrastruktur/terraform.tfvars
+           while IFS= read -r line; do
+              if [[ $(echo $line | awk '{print $3}'=="true" ]]; then
+                name=$(echo $line | awk '{print $1}')
+                \t}" >> ./terraform/infrastruktur/terraform.tfvars
+              fi
+           done < ./terraform/oppgaver.txt
+           echo "}" >> ./terraform/infrastruktur/terraform.tfvars
 
       # Upload .tfvars file as artifact
       - name: Upload artifacts

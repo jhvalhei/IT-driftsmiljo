@@ -101,7 +101,7 @@ variable "privdnszone_id" {
 variable "postdb" {
     description = "Variables for a postgresql database"
     type = map(object({
-        name = optional
+        name = string
         charset = string
         collation = string
         prevent_destroy = bool

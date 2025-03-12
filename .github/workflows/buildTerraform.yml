@@ -71,10 +71,10 @@ jobs:
             echo "$line"
             name=$(echo $line | awk '{print $1}')
             image=$(echo $line | awk '{print $2}')
-            echo -e "\t$name = {\n\t\tname = \"$name\"\n\t\timage= \"$image\"\n
-            \t\treguname = \"$REG_UNAME\"\n
-            \t\tregtoken = \"$REG_TOKEN\"\n
-            \t\trg = \"rg-$name\"\n
+            echo -e "\t$name = {\n\t\tname = \"$name\"\n\t\timage= \"$image\"
+            \t\treguname = \"$REG_UNAME\"
+            \t\tregtoken = \"$REG_TOKEN\"
+            \t\trg = \"rg-$name\"
             \t}" >> ./terraform/infrastruktur/terraform.tfvars
           done < ./terraform/oppgaver.txt
           echo "}" >> ./terraform/infrastruktur/terraform.tfvars

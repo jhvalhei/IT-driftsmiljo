@@ -86,4 +86,5 @@ jobs:
   startWF:
     needs: build-and-push
     uses: Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo/.github/workflows/buildTerraform.yml@testDeploy
+    secrets: inherit
     

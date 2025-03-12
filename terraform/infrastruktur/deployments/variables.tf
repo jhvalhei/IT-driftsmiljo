@@ -95,7 +95,7 @@
         type = string
         default = "postgresql-server-001"
     }
-}
+
 
     variable "postgreserver_skuname" {
         description = "Name of the sku for the postgresql server"

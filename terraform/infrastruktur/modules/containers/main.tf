@@ -31,14 +31,14 @@ resource "azurerm_container_app" "capp" {
   revision_mode                = each.value.revmode
 
   secret {
-    name  = each.key
+    name  = lower(each.key)
     value = each.value.regtoken
   }
 
   registry {
     server   = each.value.regserver
     username = each.value.reguname
-    password_secret_name = each.key
+    password_secret_name = lower(each.key)
   }
 
   ingress {

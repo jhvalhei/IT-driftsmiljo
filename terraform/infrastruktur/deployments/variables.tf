@@ -99,14 +99,14 @@
 
     variable "postgreserver_skuname" {
         description = "Name of the sku for the postgresql server"
-        type = string
+        type = string 
         default = "B_Standard_B1ms"
     }
 
     variable "postgreserver_storage_mb" {
         description = "Maximum storage capacity for the postgresql server"
         type = number
-        default = 5120
+        default = 32768
     }
 
     variable "postgreserver_storage_tier" {

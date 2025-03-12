@@ -112,7 +112,7 @@ variable "rg_location_static" {
     variable "postgreserver_storage_mb" {
         description = "Maximum storage capacity for the postgresql server"
         type = number
-        default = 5120
+        default = 32768
     }
 
     variable "postgreserver_storage_tier" {

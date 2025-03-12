@@ -1,3 +1,4 @@
+# Creates a Docker image and pushes it to Github Container Reigistry
 name: Docker build
 
 on:
@@ -72,7 +73,7 @@ jobs:
         run: |
            echo -n ${{env.STUDENT_FOLDER}} >> ./terraform/oppgaver.txt
            echo -e "\t${{env.DOCKER_IMAGE_NAME}}" >> ./terraform/oppgaver.txt
-      
+       
       - name: Push commit
         id: pushCommit
         run: |

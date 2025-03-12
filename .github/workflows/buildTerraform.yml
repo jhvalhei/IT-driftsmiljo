@@ -1,16 +1,9 @@
-name: Build terraform code
-# Bli calla av byggDocker
-# test2
+# Creates a terraform variables file and builds the infrastructure in Azure.
+name: Build and apply
 
 # Controls when the workflow will run
 on:
-  
-
-
-
   workflow_call:
-
-
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -20,12 +13,15 @@ env:
   ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-  WORKING_DIR: ./
-
+ 
 jobs:
-  # Append terraform code for student program
+  # Append variables to .tfvars file
   buildTerraform:
     runs-on: ubuntu-latest
+    env:
+      REG_UNAME: ${{ secrets.REG_UNAME }}
+      REG_TOKEN: ${{ secrets.REG_TOKEN }}
+      
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
@@ -33,7 +29,6 @@ jobs:
       - name: Pull
         run: |
           git pull origin testPipeline
-
       
     # Check if student program has a database
       - name: sjekk database
@@ -54,10 +49,8 @@ jobs:
           echo -e "\t$line = {name = $line}" >> ./terraform/infrastruktur/terraform.tfvars
           done
           echo "}" >> ./terraform/infrastruktur/terraform.tfvars
-
-
     
-      # Add resource group to .tfvars file
+      # Add resource group variables to .tfvars file
       - name: Append variables for resource group
         id: appendRGVariables
         run: |
@@ -65,11 +58,11 @@ jobs:
           while IFS= read -r line; do
             echo "$line"
             name=$(echo "$line" | awk '{print $1}')
-            echo -e "\t$name = {\n\t\tname = \"$name\"\n\t\tlocation = \"westeurope\"\n\t}" >> ./terraform/infrastruktur/terraform.tfvars
+            echo -e "\t$name = {\n\t\tname = \"rg-$name\"\n\t\tlocation = \"westeurope\"\n\t}" >> ./terraform/infrastruktur/terraform.tfvars
           done < ./terraform/oppgaver.txt
           echo "}" >> ./terraform/infrastruktur/terraform.tfvars
         
-      # Add container to .tfvars file
+      # Add container variables to .tfvars file
       - name: Append variables for container
         id: appendContainerVariables
         run: |
@@ -78,10 +71,13 @@ jobs:
             echo "$line"
             name=$(echo $line | awk '{print $1}')
             image=$(echo $line | awk '{print $2}')
-            echo -e "\t$name = {\n\t\tname = \"$name\"\n\t\timage=\"$image\"\n\t}" >> ./terraform/infrastruktur/terraform.tfvars
+            echo -e "\t$name = {\n\t\tname = \"$name\"\n\t\timage= \"$image\"
+            \t\treguname = \"$REG_UNAME\"
+            \t\tregtoken = \"$REG_TOKEN\"
+            \t\trg = \"rg-$name\"
+            \t}" >> ./terraform/infrastruktur/terraform.tfvars
           done < ./terraform/oppgaver.txt
           echo "}" >> ./terraform/infrastruktur/terraform.tfvars
-
 
       # Upload .tfvars file as artifact
       - name: Upload artifacts
@@ -91,8 +87,15 @@ jobs:
           path: |
             ./terraform/infrastruktur/terraform.tfvars
      
+  # Runs the terraform code and builds the infrastructure in Azure
   apply:
+    needs: buildTerraform
     runs-on: ubuntu-latest
+    env:
+      WORKING_DIR: terraform/infrastruktur
+      TF_VAR_postgreserver_admin_uname: ${{ secrets.DB_SERVER_UNAME }}
+      TF_VAR_postgreserver_admin_password: ${{ secrets.DB_SERVER_SECRET }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
@@ -101,6 +104,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: terraformVars
+          path: ${{env.WORKING_DIR}}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -110,14 +114,18 @@ jobs:
       
       - name: Terraform init
         id: init
-        run: terraform init
-        working-directory: ${{ env.WORKING_DIR }}
+        run: |
+          cd $WORKING_DIR
+          terraform init
 
       - name: Terraform plan
         id: plan
-        run: terraform plan -var-file=terraform.tfvars
-        working-directory: ${{ env.WORKING_DIR }}
+        run: |
+          cd $WORKING_DIR
+          pwd
+          terraform plan -var-file=terraform.tfvars
       
-      - name: Terraform apply prod
-        run: terraform apply -auto-approve
-        working-directory: ${{ env.WORKING_DIR }}
+      - name: Terraform apply
+        run: |
+          cd $WORKING_DIR
+          terraform apply -auto-approve

@@ -1,18 +1,19 @@
 # resource group
 
-    variable "rg_dynamic" {
-        description = "A map of resource groups variables"
-        type        = map(object({
-            name     = string
-            location = string
-        }))
-        default = {
-          "dfrg" = {
-            name = "dfrg"
-            location = "westeurpoe"
-          }
+variable "rg_dynamic" {
+    description = "A map of resource groups variables"
+    type        = map(object({
+        name     = string
+        location = string
+    }))
+    default = {
+        "dfrg" = {
+        name = "dfrg"
+        location = "westeurpoe"
         }
     }
+}
+
 
     variable "rg_name_static" {
         description = "Static name for resourcegroup used for shared resources"
@@ -20,14 +21,16 @@
         default = "rgstatic001"
     }
 
-    variable "rg_location_static" {
-        description = "Static location for resourcegroup used for shared resources"
-        type = string
-        default = "westeurope"
-    }
+
+variable "rg_location_static" {
+    description = "Static location for resourcegroup used for shared resources"
+    type = string
+    default = "westeurope"
+}
 
 
 # Module: containerapp
+
 
     variable "law_name" {
         description = "Name of the log analytics workspace"
@@ -136,13 +139,13 @@
     variable "postgreserver_admin_uname" {
         description = "Username for the administrator user"
         type = string
-        default = "ntnuadmin"
+        default = ""
     }
 
     variable "postgreserver_admin_password" {
         description = "Password for the administrator user"
         type = string
-        default = "hvordanskaljegloggemeginnpådennebrukeren"
+        default = ""
     }
 
     variable "postgreserver_version" {

@@ -1,13 +1,14 @@
-
-
 name: Deploy to Azure
 
 # Controls when the workflow will run
-on:
+#on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
-    paths: 'terraform/**'
+  workflow_run:
+    workflows: ["Docker build"]
+    types:
+      - completed
+    branches:
+      - "testPipeline"
 
 
   # Allows you to run this workflow manually from the Actions tab
@@ -18,7 +19,7 @@ env:
   ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-  WORKING_DIR: ./terraform/FirstDeploy
+  WORKING_DIR: ./terraform/infrastruktur
 
 jobs:
   apply:
@@ -26,6 +27,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
+
+      - name: Hent variabler
+        uses: actions/download-artifact@v4
+        with:
+          name: terraformVars
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -40,9 +46,15 @@ jobs:
 
       - name: Terraform plan
         id: plan
-        run: terraform plan
+        run: terraform plan -var-file=terraform.tfvars
         working-directory: ${{ env.WORKING_DIR }}
       
       - name: Terraform apply prod
         run: terraform apply -auto-approve
         working-directory: ${{ env.WORKING_DIR }}
+
+     
+
+  
+
+

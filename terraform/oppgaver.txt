@@ -1,0 +1,2 @@
+svartelistede-arterPsql	ghcr.io/bachelorgruppe117-ntnu-gjovik/svartelistede-arterpsql-app:latest
+	db

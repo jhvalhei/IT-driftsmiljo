@@ -77,12 +77,7 @@ jobs:
           else 
             echo "DATABASE=false" >> $GITHUB_ENV; fi
 
-      # Upload folder name and image name as artifacts
-      - name: Save variables
-        run: |
-           echo -n ${{env.STUDENT_FOLDER}} >> ./terraform/oppgaver.txt
-           echo -e "\t${{env.DOCKER_IMAGE_NAME}}" >> ./terraform/oppgaver.txt
-           if [[ $DATABASE==true ]]; then echo -e "\tdb" >> ./terraform/oppgaver.txt; fi
+      
        
       - name: Push commit
         id: pushCommit

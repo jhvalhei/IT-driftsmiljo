@@ -1,9 +1,9 @@
 output "subnet_id" {
   description = "The id of the subnet"
-  value = azurerm_subnet.subnet.id
+  value       = azurerm_subnet.subnet.id
 }
 
 output "privdnszone_id" {
   description = "The id of the provate dns zone"
-  value = azurerm_private_dns_zone.privdnszone.id
+  value       = azurerm_private_dns_zone.privdnszone.id
 }

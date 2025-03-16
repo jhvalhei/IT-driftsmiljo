@@ -52,7 +52,7 @@ jobs:
         with:
           name: terraformVars
           path: |
-            ./terraform/infrastruktur/terraform.tfvars.jaon
+            ./terraform/infrastruktur/terraform.tfvars.json
      
   # Runs the terraform code and builds the infrastructure in Azure
   apply:

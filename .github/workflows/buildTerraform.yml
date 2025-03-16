@@ -9,10 +9,10 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-  AZURE_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-  AZURE_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-  AZURE_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+  ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
  
 jobs:
   # Append variables to .tfvars file
@@ -35,7 +35,10 @@ jobs:
         uses: azure/cli@v2
         with:
           azcliversion: latest
-          inlineScript: az storage blob download-batch --account-name envstoragegjovik246 --source variables --destination .
+          inlineScript: |
+            az login --service-principal --username ${{env.ARM_CLIENT_ID}} --password ${{env.ARM_CLIENT_SECRET}} 
+            --tenant ${{env.ARM_TENANT_ID}}
+            az storage blob download-batch --account-name envstoragegjovik246 --source variables --destination .
 
       
       # Set up python and run script for adding new values to variable file

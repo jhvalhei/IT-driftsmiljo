@@ -13,6 +13,7 @@ env:
   ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+  ACCOUNT_KEY: ${{ secrets.ACCOUNT_KEY }}
  
 jobs:
   # Append variables to .tfvars file
@@ -29,19 +30,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.1.1
 
-      - name: Azure Login action
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.ARM_CLIENT_ID }}
-          tenant-id: ${{ secrets.ARM_TENANT_ID }}
-          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       # Download variable files from Azure storage blob
       - name: Azure CLI script
         uses: azure/cli@v2
         with:
           azcliversion: latest
-          inlineScript: az storage blob download-batch --account-name envstoragegjovik246 --source variables --destination .
+          inlineScript: |
+            az storage blob download-batch 
+            --account-name envstoragegjovik246 --source variables --destination . --account-key $ACCOUNT-KEY
 
       
       # Set up python and run script for adding new values to variable file

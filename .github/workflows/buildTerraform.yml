@@ -45,13 +45,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.1.1
 
+      - name: Get variables
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+          az storage blob download-batch --account-name envstoragegjovik246 --source variables --destination ./terraform/infrastruktur --account-key ${{env.ACCOUNT_KEY}}
       
-      # Download variable files from Azure storage blob
-      - name: Azure CLI script
-        uses: azure/cli@v2
-        with:
-          azcliversion: latest
-          inlineScript: az storage blob download-batch --account-name envstoragegjovik246 --source variables --destination ./terraform/infrastruktur --account-key ${{env.ACCOUNT_KEY}}
+     
 
       - name: Check download
         run: ls -ltr ./terraform/infrastruktur

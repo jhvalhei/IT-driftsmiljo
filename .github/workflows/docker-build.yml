@@ -16,8 +16,8 @@ jobs:
     if: contains(github.event.head_commit.message, 'ny studentoppgave') 
     outputs:
       studentFolderName: ${{ steps.extract_folder.outputs.studentFolderName }}
-      imageName: ${{ steps.set-image.outputs.imageName}}
-      database: ${{ steps.database.outputs.database}}
+      imageName: ${{ steps.set-image.outputs.imageName }}
+      database: ${{ steps.database.outputs.database }}
     steps:
       # Step 1: Checkout the repository
       - name: Checkout Repository
@@ -83,7 +83,7 @@ jobs:
             echo "databasee=${{env.DATABASE }}" >> "$GITHUB_OUTPUT" 
           else 
             echo "DATABASE=false" >> $GITHUB_ENV; fi
-            echo "databasee=${{env.DATABASE }}" >> "$GITHUB_OUTPUT" 
+            echo "database=${{env.DATABASE }}" >> "$GITHUB_OUTPUT" 
 
     
   startWF:

@@ -91,7 +91,6 @@ jobs:
     uses: Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo/.github/workflows/buildTerraform.yml@testDeploy
     secrets: inherit
     with:
-      STUDENT_FOLDER: ${{ needs.build-and-push.outputs.studentFolderName }}
-      DOCKER_IMAGE_NAME: ${{ needs.build-and-push.outputs.imageName }}
-      DATABASE: ${{ needs.build-and-push.outputs.database }}
-    
+      STUDENT_FOLDER: ${{needs.build-and-push.outputs.studentFolderName}}
+      DOCKER_IMAGE_NAME: ${{needs.build-and-push.outputs.imageName}}
+      DATABASE: ${{needs.build-and-push.outputs.database}}

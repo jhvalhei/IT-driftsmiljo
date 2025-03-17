@@ -4,7 +4,7 @@ import os
 
 ## Appends new variables for resource group, container and database to .tfvars.json file
 def write_json(new_data, resource):
-    with open("./terraform.tfvars.json",'r+') as file:
+    with open("../terraform.tfvars.json",'r+') as file:
         # Load existing data into a dict.
         file_data = json.load(file)
         
@@ -36,7 +36,7 @@ newResourceGroup = {"rg-"+studentFolderName: {
 
 # Add new container to .tfvars.json
 # First create new container object
-with open("./containerObj.json",'r+') as file:
+with open("../containerObj.json",'r+') as file:
 
     # Load data from container template into a dict.
     containerObj = json.load(file)
@@ -58,7 +58,7 @@ write_json(newResourceGroup,"rg_dynamic")
 write_json(containerObj,"container")
 if (db == "true"):
 
-    with open("./databaseObj.json",'r+') as file:
+    with open("../databaseObj.json",'r+') as file:
 
         # Load data from database template into a dict.
         databaseObj = json.load(file)

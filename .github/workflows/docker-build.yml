@@ -31,7 +31,7 @@ jobs:
             FOLDER_NAME=${BASH_REMATCH[1]}
             echo "STUDENT_FOLDER=$FOLDER_NAME" >> $GITHUB_ENV
             echo "Processing folder: $FOLDER_NAME"
-            echo "studentFolderName=${{env.STUDENT_FOLDER }}" >> "$GITHUB_OUTPUT"
+            echo "studentFolderName=$FOLDER_NAME" >> "$GITHUB_OUTPUT"
           else
             echo "Commit message does not specify a student folder. Exiting."
             exit 1
@@ -56,7 +56,7 @@ jobs:
         id: set-image
         run: |
           echo "DOCKER_IMAGE_NAME=ghcr.io/${{ env.REPO_OWNER }}/$(echo ${{ env.STUDENT_FOLDER }} | tr '[:upper:]' '[:lower:]')-app:latest" >> $GITHUB_ENV
-          echo "imageName=${{env.DOCKER_IMAGE_NAME }}" >> "$GITHUB_OUTPUT"
+          echo "imageName=$DOCKER_IMAGE_NAME" >> "$GITHUB_OUTPUT"
 
       # Step 5: Logs in to GitHub Container Registry (GHCR)
       - name: Docker Login to GHCR
@@ -80,10 +80,10 @@ jobs:
         run: |
           if [[ -e ./studentOppgaver/${{env.STUDENT_FOLDER}}/database ]]; then 
             echo "DATABASE=true" >> $GITHUB_ENV;
-            echo "databasee=${{env.DATABASE }}" >> "$GITHUB_OUTPUT" 
+            echo "databasee=true" >> "$GITHUB_OUTPUT" 
           else 
             echo "DATABASE=false" >> $GITHUB_ENV; fi
-            echo "database=${{env.DATABASE }}" >> "$GITHUB_OUTPUT" 
+            echo "database=false" >> "$GITHUB_OUTPUT" 
 
     
   startWF:

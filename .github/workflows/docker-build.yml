@@ -55,6 +55,7 @@ jobs:
       - name: Set Docker Image Name
         id: set-image
         run: |
+          DOCKER_IMAGE_NAME="ghcr.io/${{ env.REPO_OWNER }}/$(echo ${{ env.STUDENT_FOLDER }} | tr '[:upper:]' '[:lower:]')-app:latest"
           echo "DOCKER_IMAGE_NAME=ghcr.io/${{ env.REPO_OWNER }}/$(echo ${{ env.STUDENT_FOLDER }} | tr '[:upper:]' '[:lower:]')-app:latest" >> $GITHUB_ENV
           echo "imageName=$DOCKER_IMAGE_NAME" >> "$GITHUB_OUTPUT"
 

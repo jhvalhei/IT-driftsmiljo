@@ -14,6 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     # Commit message needs to contain "ny studentoppgave" to continue workflow
     if: contains(github.event.head_commit.message, 'ny studentoppgave') 
+    outputs:
+      studentFolderName: ${{ steps.extract_folder.outputs.studentFolderName }}
+      imageName: ${{ steps.set-image.outputs.imageName}}
+      database: ${{ steps.database.outputs.database}}
     steps:
       # Step 1: Checkout the repository
       - name: Checkout Repository
@@ -27,6 +31,7 @@ jobs:
             FOLDER_NAME=${BASH_REMATCH[1]}
             echo "STUDENT_FOLDER=$FOLDER_NAME" >> $GITHUB_ENV
             echo "Processing folder: $FOLDER_NAME"
+            echo "studentFolderName=${{env.STUDENT_FOLDER }}" >> "$GITHUB_OUTPUT"
           else
             echo "Commit message does not specify a student folder. Exiting."
             exit 1
@@ -48,9 +53,10 @@ jobs:
 
       # Step 4: Convert folder name to lowercase for Docker image
       - name: Set Docker Image Name
+        id: set-image
         run: |
           echo "DOCKER_IMAGE_NAME=ghcr.io/${{ env.REPO_OWNER }}/$(echo ${{ env.STUDENT_FOLDER }} | tr '[:upper:]' '[:lower:]')-app:latest" >> $GITHUB_ENV
-          echo "Docker image name: ${{ env.DOCKER_IMAGE_NAME }}"
+          echo "imageName=${{env.DOCKER_IMAGE_NAME }}" >> "$GITHUB_OUTPUT"
 
       # Step 5: Logs in to GitHub Container Registry (GHCR)
       - name: Docker Login to GHCR
@@ -73,13 +79,19 @@ jobs:
         id: database
         run: |
           if [[ -e ./studentOppgaver/${{env.STUDENT_FOLDER}}/database ]]; then 
-            echo "DATABASE=true" >> $GITHUB_ENV; 
+            echo "DATABASE=true" >> $GITHUB_ENV;
+            echo "databasee=${{env.DATABASE }}" >> "$GITHUB_OUTPUT" 
           else 
             echo "DATABASE=false" >> $GITHUB_ENV; fi
+            echo "databasee=${{env.DATABASE }}" >> "$GITHUB_OUTPUT" 
 
     
   startWF:
     needs: build-and-push
     uses: Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo/.github/workflows/buildTerraform.yml@testDeploy
     secrets: inherit
+    with:
+      STUDENT_FOLDER: ${{ needs.build-and-push.outputs.studentFolderName }}
+      DOCKER_IMAGE_NAME: ${{ needs.build-and-push.outputs.imageName }}
+      DATABASE: ${{ needs.build-and-push.outputs.database }}
     

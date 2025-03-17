@@ -4,6 +4,16 @@ name: Build and apply
 # Controls when the workflow will run
 on:
   workflow_call:
+    inputs:
+      STUDENT_FOLDER:
+        required: true
+        type: string
+      DOCKER_IMAGE_NAME:
+        required: true
+        type: string
+      DATABASE:
+        required: true
+        type: boolean
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -14,6 +24,11 @@ env:
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
   ACCOUNT_KEY: ${{ secrets.ACCOUNT_KEY }}
+
+  STUDENT_FOLDER: ${{ inputs.STUDENT_FOLDER }}
+  DOCKER_IMAGE_NAME: ${{ inputs.DOCKER_IMAGE_NAME }}
+  DATABASE: ${{ inputs.DATABASE }}
+
  
 jobs:
   # Append variables to .tfvars file

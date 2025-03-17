@@ -53,12 +53,8 @@ jobs:
           azcliversion: latest
           inlineScript: az storage blob download-batch --account-name envstoragegjovik246 --source variables --destination ./terraform/infrastruktur --account-key ${{env.ACCOUNT_KEY}}
 
-      - name: Set permissions
-        id: permissions
-        run: |
-          chmod 644 ./terraform/infrastruktur/containerObj.json
-          chmod 644 ./terraform/infrastruktur/databaseObj.json
-          chmod 644 ./terraform/infrastruktur/terraform.tfvars.json
+      - name: Check download
+        run: ls -ltr ./terraform/infrastruktur
 
       
       # Set up python and run script for adding new values to variable file

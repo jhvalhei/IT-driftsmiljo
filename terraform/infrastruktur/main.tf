@@ -5,6 +5,12 @@ terraform {
       version = "4.3.0"
     }
   }
+  backend "azurerm" {
+    resource_group_name  = "rg-backend"
+    storage_account_name = "sabackendn7mpxmhc0r"
+    container_name       = "backend-container"
+    key                  = "infragjovik.terraform.tfstate"
+  }
 }
 
 provider "azurerm" {
@@ -20,58 +26,16 @@ provider "azurerm" {
   subscription_id = "b03b0d6e-32d0-4c8b-a3df-e5054df8ed86"
 }
 
-data "azurerm_client_config" "current" {}
+
 
 
 
 resource "azurerm_resource_group" "rgstorage" {
-  name     = "rg-variable-storage"
+  name     = "rg-variablestorage"
   location = var.rg_location_static
 }
 
-resource "random_string" "randomname" {
-  length  = 10
-  special = false
-  upper   = false
-}
 
-# Key vault for storage of sensitive values.
-resource "azurerm_key_vault" "kv" {
-  name                       = "keyvault${random_string.randomname.result}"
-  location                   = azurerm_resource_group.rgstorage.location
-  resource_group_name        = azurerm_resource_group.rgstorage.name
-  tenant_id                  = data.azurerm_client_config.current.tenant_id
-  sku_name                   = "premium"
-  soft_delete_retention_days = 7
-
-  access_policy {
-    tenant_id = data.azurerm_client_config.current.tenant_id
-    object_id = data.azurerm_client_config.current.object_id
-
-    key_permissions = [
-      "Create",
-      "Get",
-      "Delete",
-      "Purge"
-    ]
-
-    secret_permissions = [
-      "Set",
-      "Get",
-      "Delete",
-      "Purge",
-      "Recover"
-    ]
-  }
-}
-resource "random_string" "randomsdbsecret" {
-  length = 20
-}
-resource "azurerm_key_vault_secret" "dbserversecret" {
-  name         = "db-server-admin-secret"
-  value        = random_string.randomsdbsecret.result
-  key_vault_id = azurerm_key_vault.kv.id
-}
 
 
 # Storage of terraform variables
@@ -112,6 +76,24 @@ resource "azurerm_storage_blob" "tfvariables" {
   storage_container_name = azurerm_storage_container.sc.name
   type                   = "Block"
   source                 = var.tfvarsPath
+}
+
+resource "random_string" "randomsdbsecret" {
+  length = 20
+}
+
+# References key vault declared in the backend config
+data "azurerm_key_vault" "kv" {
+  name                = "keyvaultn7mpxmhc0r"
+  resource_group_name = "rg-backend"
+}
+
+
+# Database admin password
+resource "azurerm_key_vault_secret" "dbserversecret" {
+  name         = "db-server-admin-secret"
+  value        = random_string.randomsdbsecret.result
+  key_vault_id = data.azurerm_key_vault.kv.id
 }
 
 

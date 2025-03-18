@@ -28,8 +28,8 @@ db = os.environ["DATABASE"]
 regUname = os.environ["REG_UNAME"]
 regToken = os.environ["REG_TOKEN"]
 
-newResourceGroup = {"rg-"+studentFolderName: {
-    "name": studentFolderName,
+newResourceGroup = {"rg_"+studentFolderName: {
+    "name": "rg-"+studentFolderName,
     "location": "westeurope"
     }
 }

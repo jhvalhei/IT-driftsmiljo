@@ -17,7 +17,7 @@ resource "azurerm_network_security_group" "nsg" {
 }
 
 resource "azurerm_subnet_network_security_group_association" "nsga" {
-  depends_on = [azurerm_subnet.subnet, azurerm_network_security_group.nsg]
+  depends_on                = [azurerm_subnet.subnet, azurerm_network_security_group.nsg]
   subnet_id                 = azurerm_subnet.subnet.id
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
@@ -30,7 +30,7 @@ resource "azurerm_virtual_network" "vnet" {
 }
 
 resource "azurerm_subnet" "subnet" {
-  depends_on = [azurerm_virtual_network.vnet]
+  depends_on           = [azurerm_virtual_network.vnet]
   name                 = "${var.subnet_name}-${var.rg_name_static}"
   resource_group_name  = var.rg_name_static
   virtual_network_name = "${var.vnet_name}-${var.rg_name_static}"
@@ -39,7 +39,7 @@ resource "azurerm_subnet" "subnet" {
   delegation {
     name = "${var.subnet_delegation_name}-${var.rg_name_static}"
     service_delegation {
-      name = var.subnet_service_delegation_name
+      name    = var.subnet_service_delegation_name
       actions = var.subnet_service_delegation_actions
     }
   }

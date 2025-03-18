@@ -7,7 +7,7 @@ resource "azurerm_log_analytics_workspace" "law" {
 }
 
 resource "azurerm_container_app_environment" "cae" {
-  depends_on = [ azurerm_log_analytics_workspace.law ]
+  depends_on = [azurerm_log_analytics_workspace.law]
 
   name                       = var.cae_name
   location                   = var.rg_location_static
@@ -16,14 +16,14 @@ resource "azurerm_container_app_environment" "cae" {
 }
 
 data "azurerm_container_app_environment" "containerappenvdata" {
-  depends_on = [ azurerm_container_app_environment.cae ]
+  depends_on          = [azurerm_container_app_environment.cae]
   name                = azurerm_container_app_environment.cae.name
   resource_group_name = azurerm_container_app_environment.cae.resource_group_name
 }
 
 resource "azurerm_container_app" "capp" {
-  depends_on = [ data.azurerm_container_app_environment.containerappenvdata ]
-  for_each = var.container
+  depends_on = [data.azurerm_container_app_environment.containerappenvdata]
+  for_each   = var.container
 
   name                         = lower("${each.value.name}")
   container_app_environment_id = data.azurerm_container_app_environment.containerappenvdata.id
@@ -36,17 +36,17 @@ resource "azurerm_container_app" "capp" {
   }
 
   registry {
-    server   = each.value.regserver
-    username = each.value.reguname
+    server               = each.value.regserver
+    username             = each.value.reguname
     password_secret_name = lower(each.key)
   }
 
   ingress {
     traffic_weight {
-      percentage = each.value.trafficweight
+      percentage      = each.value.trafficweight
       latest_revision = each.value.latestrevision
     }
-    target_port = each.value.targetport
+    target_port      = each.value.targetport
     external_enabled = each.value.external
   }
 

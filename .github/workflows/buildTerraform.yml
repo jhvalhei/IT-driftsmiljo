@@ -79,6 +79,7 @@ jobs:
     env:
       WORKING_DIR: terraform/infrastruktur
       TF_VAR_postgreserver_admin_uname: ${{ secrets.DB_SERVER_UNAME }}
+      TF_VAR_rootPath: ${{ github.workspace }}
 
     steps:
       - name: Checkout

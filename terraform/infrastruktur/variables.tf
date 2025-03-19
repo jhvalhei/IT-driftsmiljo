@@ -14,6 +14,11 @@ variable "rg_dynamic" {
   }
 }
 
+variable "rootPath" {
+  description = "Absolute path to infrastructure project"
+  type = string
+}
+
 variable "ctemplatePath" {
   description = "Path to container template file"
   type        = string

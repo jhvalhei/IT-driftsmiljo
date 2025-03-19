@@ -7,7 +7,7 @@ terraform {
   }
   backend "azurerm" {
     resource_group_name  = "rg-backend"
-    storage_account_name = "sabackendn7mpxmhc0r"
+    storage_account_name = "sabackenddhzgtec5tj"
     container_name       = "backend-container"
     key                  = "infragjovik.terraform.tfstate"
   }
@@ -60,7 +60,7 @@ resource "azurerm_storage_blob" "ctemplate" {
   storage_account_name   = azurerm_storage_account.sa.name
   storage_container_name = azurerm_storage_container.sc.name
   type                   = "Block"
-  source                 = var.ctemplatePath
+  source                 = "${var.rootPath}${var.ctemplatePath}"
 }
 
 resource "azurerm_storage_blob" "dbtemplate" {
@@ -68,14 +68,14 @@ resource "azurerm_storage_blob" "dbtemplate" {
   storage_account_name   = azurerm_storage_account.sa.name
   storage_container_name = azurerm_storage_container.sc.name
   type                   = "Block"
-  source                 = var.dbtemplatePath
+  source                 = "${var.rootPath}${var.dbtemplatePath}"
 }
 resource "azurerm_storage_blob" "tfvariables" {
   name                   = "terraform.tfvars.json"
   storage_account_name   = azurerm_storage_account.sa.name
   storage_container_name = azurerm_storage_container.sc.name
   type                   = "Block"
-  source                 = var.tfvarsPath
+  source                 = "${var.rootPath}${var.tfvarsPath}"
 }
 
 resource "random_string" "randomsdbsecret" {
@@ -84,7 +84,7 @@ resource "random_string" "randomsdbsecret" {
 
 # References key vault declared in the backend config
 data "azurerm_key_vault" "kv" {
-  name                = "keyvaultn7mpxmhc0r"
+  name                = "keyvaultdhzgtec5tj"
   resource_group_name = "rg-backend"
 }
 

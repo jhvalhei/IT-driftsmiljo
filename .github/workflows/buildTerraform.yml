@@ -1,16 +1,19 @@
-name: Build terraform code
-# Bli calla av byggDocker
-# test2
+# Creates a terraform variables file and builds the infrastructure in Azure.
+name: Build and apply
 
 # Controls when the workflow will run
 on:
-  
-
-
-
   workflow_call:
-
-
+    inputs:
+      STUDENT_FOLDER:
+        required: true
+        type: string
+      DOCKER_IMAGE_NAME:
+        required: true
+        type: string
+      DATABASE:
+        required: true
+        type: string
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -20,79 +23,63 @@ env:
   ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-  WORKING_DIR: ./
+  ACCOUNT_KEY: ${{ secrets.ACCOUNT_KEY }}
 
+  STUDENT_FOLDER: ${{ inputs.STUDENT_FOLDER }}
+  DOCKER_IMAGE_NAME: ${{ inputs.DOCKER_IMAGE_NAME }}
+  DATABASE: ${{ inputs.DATABASE }}
+
+ 
 jobs:
-  # Append terraform code for student program
+  # Append variables to .tfvars file
   buildTerraform:
+    permissions:
+      id-token: write # Require write permission to Fetch an OIDC token.
+      contents: read
     runs-on: ubuntu-latest
+    env:
+      REG_UNAME: ${{ secrets.REG_UNAME }}
+      REG_TOKEN: ${{ secrets.REG_TOKEN }}
+      
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
 
-      - name: Pull
+      - name: Get variables
         run: |
-          git pull origin testPipeline
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+          az storage blob download-batch --account-name envstoragegjovik246 --source variables --destination ./terraform/infrastruktur --account-key ${{env.ACCOUNT_KEY}}
+      
+     
+
+      - name: Check download
+        run: ls -ltr ./terraform/infrastruktur
 
       
-    # Check if student program has a database
-      - name: sjekk database
-        id: database
-        run: |
-          if [[ -e ./studentOppgaver/${{env.STUDENT_FOLDER}}/database ]]; then 
-            echo "DATABASE=true" >> $GITHUB_ENV; 
-          else 
-            echo "DATABASE=false" >> $GITHUB_ENV; fi
-
-      # Add database
-      - name: Append database
-        id: appendDatabase
-        if: ${{env.DATABASE == 'true'}}
-        run: |
-          echo "postdb = {" >> ./terraform/infrastruktur/terraform.tfvars
-          for line in $(awk '{print $1}' ./terraform/oppgaver.txt); do
-          echo -e "\t$line = {name = $line}" >> ./terraform/infrastruktur/terraform.tfvars
-          done
-          echo "}" >> ./terraform/infrastruktur/terraform.tfvars
+      # Set up python and run script for adding new values to variable file
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13' 
+      - run: python ./terraform/infrastruktur/scripts/add.py
 
 
-    
-      # Add resource group to .tfvars file
-      - name: Append variables for resource group
-        id: appendRGVariables
-        run: |
-          echo -e "rg_dynamic = {\n" >> ./terraform/infrastruktur/terraform.tfvars
-          while IFS= read -r line; do
-            echo "$line"
-            name=$(echo "$line" | awk '{print $1}')
-            echo -e "\t$name = {\n\t\tname = \"$name\"\n\t\tlocation = \"westeurope\"\n\t}" >> ./terraform/infrastruktur/terraform.tfvars
-          done < ./terraform/oppgaver.txt
-          echo "}" >> ./terraform/infrastruktur/terraform.tfvars
-        
-      # Add container to .tfvars file
-      - name: Append variables for container
-        id: appendContainerVariables
-        run: |
-          echo -e "container = {\n" >> ./terraform/infrastruktur/terraform.tfvars
-          while IFS= read -r line; do
-            echo "$line"
-            name=$(echo $line | awk '{print $1}')
-            image=$(echo $line | awk '{print $2}')
-            echo -e "\t$name = {\n\t\tname = \"$name\"\n\t\timage=\"$image\"\n\t}" >> ./terraform/infrastruktur/terraform.tfvars
-          done < ./terraform/oppgaver.txt
-          echo "}" >> ./terraform/infrastruktur/terraform.tfvars
-
-
-      # Upload .tfvars file as artifact
+      # Upload .tfvars file as artifact, will probably remove this
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: terraformVars
           path: |
-            ./terraform/infrastruktur/terraform.tfvars
+            ./terraform/infrastruktur/terraform.tfvars.json
      
+  # Runs the terraform code and builds the infrastructure in Azure
   apply:
+    needs: buildTerraform
     runs-on: ubuntu-latest
+    env:
+      WORKING_DIR: terraform/infrastruktur
+      TF_VAR_postgreserver_admin_uname: ${{ secrets.DB_SERVER_UNAME }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
@@ -101,6 +88,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: terraformVars
+          path: ${{env.WORKING_DIR}}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -110,14 +98,18 @@ jobs:
       
       - name: Terraform init
         id: init
-        run: terraform init
-        working-directory: ${{ env.WORKING_DIR }}
+        run: |
+          cd $WORKING_DIR
+          terraform init
 
       - name: Terraform plan
         id: plan
-        run: terraform plan -var-file=terraform.tfvars
-        working-directory: ${{ env.WORKING_DIR }}
+        run: |
+          cd $WORKING_DIR
+          pwd
+          terraform plan -var-file=terraform.tfvars.json
       
-      - name: Terraform apply prod
-        run: terraform apply -auto-approve
-        working-directory: ${{ env.WORKING_DIR }}
+      - name: Terraform apply
+        run: |
+          cd $WORKING_DIR
+          terraform apply -auto-approve

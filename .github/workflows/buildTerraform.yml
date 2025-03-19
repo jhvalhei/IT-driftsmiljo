@@ -40,6 +40,8 @@ jobs:
     env:
       REG_UNAME: ${{ secrets.REG_UNAME }}
       REG_TOKEN: ${{ secrets.REG_TOKEN }}
+      TF_VAR_postgreserver_admin_uname: ${{ secrets.DB_SERVER_UNAME }}
+      TF_VAR_rootPath: ${{ github.workspace }}
       
     steps:
       - name: Checkout
@@ -73,23 +75,14 @@ jobs:
             ./terraform/infrastruktur/terraform.tfvars.json
      
   # Runs the terraform code and builds the infrastructure in Azure
-  apply:
-    needs: buildTerraform
-    runs-on: ubuntu-latest
-    env:
-      WORKING_DIR: terraform/infrastruktur
-      TF_VAR_postgreserver_admin_uname: ${{ secrets.DB_SERVER_UNAME }}
-      TF_VAR_rootPath: ${{ github.workspace }}
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4.1.1
+
 
       - name: Hent variabler
         uses: actions/download-artifact@v4
         with:
           name: terraformVars
-          path: ${{env.WORKING_DIR}}
+          path: terraform/infrastruktur
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -100,17 +93,17 @@ jobs:
       - name: Terraform init
         id: init
         run: |
-          cd $WORKING_DIR
+          cd terraform/infrastruktur
           terraform init
 
       - name: Terraform plan
         id: plan
         run: |
-          cd $WORKING_DIR
+          cd terraform/infrastruktur
           pwd
           terraform plan -var-file=terraform.tfvars.json
       
       - name: Terraform apply
         run: |
-          cd $WORKING_DIR
+          cd terraform/infrastruktur
           terraform apply -auto-approve

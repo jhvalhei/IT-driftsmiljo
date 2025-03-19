@@ -14,7 +14,7 @@ Last ned git repo eller finn mappen som har blitt levert av studentene. Sjekk at
 ├── database/      # Databasefiler
 ├── dokumentasjon/ # Dokumentasjon (API, databasdesign, etc.)
 ├── vedlegg/       # Eventuelle eksterne ressurser/dokumenter
-├── config.yml     # 
+├── config.yml     # Konfigurasjons instillinger
 └── Dockerfile     # Fil for bygging av Docker-image
 ```
 

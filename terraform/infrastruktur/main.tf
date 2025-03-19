@@ -7,7 +7,7 @@ terraform {
   }
   backend "azurerm" {
     resource_group_name  = "rg-backend"
-    storage_account_name = "sabackendn7mpxmhc0r"
+    storage_account_name = "sabackenddhzgtec5tj"
     container_name       = "backend-container"
     key                  = "infragjovik.terraform.tfstate"
   }
@@ -84,7 +84,7 @@ resource "random_string" "randomsdbsecret" {
 
 # References key vault declared in the backend config
 data "azurerm_key_vault" "kv" {
-  name                = "keyvaultn7mpxmhc0r"
+  name                = "keyvaultdhzgtec5tj"
   resource_group_name = "rg-backend"
 }
 

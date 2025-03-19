@@ -37,10 +37,7 @@ jobs:
       id-token: write # Require write permission to Fetch an OIDC token.
       contents: read
     runs-on: ubuntu-latest
-    env:
-      REG_UNAME: ${{ secrets.REG_UNAME }}
-      REG_TOKEN: ${{ secrets.REG_TOKEN }}
-      
+   
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1

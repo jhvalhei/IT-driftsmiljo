@@ -57,12 +57,8 @@ jobs:
           az storage blob download --account-name envstoragegjovik246 --container-name variables --name databaseObj.json --file './terraform/infrastruktur/databaseObj.json' --auth-mode login
           az storage blob download --account-name envstoragegjovik246 --container-name variables --name terraform.tfvars.json --file './terraform/infrastruktur/terraform.tfvars.json' --auth-mode login
 
-      
-     
-
       - name: Check download
         run: ls -ltr ./terraform/infrastruktur
-
       
       # Set up python and run script for adding new values to variable file
       - name: Python
@@ -81,9 +77,6 @@ jobs:
             ./terraform/infrastruktur/terraform.tfvars.json
      
   # Runs the terraform code and builds the infrastructure in Azure
-
-
-
       - name: Hent variabler
         uses: actions/download-artifact@v4
         with:

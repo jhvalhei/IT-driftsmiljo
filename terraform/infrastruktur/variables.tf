@@ -162,7 +162,6 @@ variable "postgreserver_auto_grow" {
 variable "postgreserver_admin_uname" {
   description = "Username for the administrator user"
   type        = string
-  default     = ""
 }
 
 variable "postgreserver_admin_password" {

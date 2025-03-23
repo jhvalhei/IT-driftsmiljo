@@ -7,7 +7,7 @@ terraform {
   }
   backend "azurerm" {
     resource_group_name  = "rg-backend"
-    storage_account_name = "sabackenddhzgtec5tj"
+    storage_account_name = "sabackendhi30c0oerc"
     container_name       = "backend-container"
     key                  = "infragjovik.terraform.tfstate"
   }
@@ -23,6 +23,7 @@ provider "azurerm" {
       prevent_deletion_if_contains_resources = false
     }
   }
+  storage_use_azuread = true
   subscription_id = "b03b0d6e-32d0-4c8b-a3df-e5054df8ed86"
 }
 
@@ -47,6 +48,7 @@ resource "azurerm_storage_account" "sa" {
   location                 = azurerm_resource_group.rgstorage.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
+  shared_access_key_enabled = false
 }
 
 resource "azurerm_storage_container" "sc" {
@@ -84,7 +86,7 @@ resource "random_string" "randomsdbsecret" {
 
 # References key vault declared in the backend config
 data "azurerm_key_vault" "kv" {
-  name                = "keyvaultdhzgtec5tj"
+  name                = "keyvaulthi30c0oerc"
   resource_group_name = "rg-backend"
 }
 

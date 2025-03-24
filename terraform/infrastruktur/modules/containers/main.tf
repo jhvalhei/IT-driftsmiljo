@@ -19,6 +19,7 @@ data "azurerm_container_app_environment" "containerappenvdata" {
   depends_on          = [azurerm_container_app_environment.cae]
   name                = azurerm_container_app_environment.cae.name
   resource_group_name = azurerm_container_app_environment.cae.resource_group_name
+  infrastructure_subnet_id     = var.subnet_id
 }
 
 resource "azurerm_container_app" "capp" {

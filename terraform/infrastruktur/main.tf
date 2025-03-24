@@ -7,7 +7,7 @@ terraform {
   }
   backend "azurerm" {
     resource_group_name  = "rg-backend"
-    storage_account_name = "sabackendn7mpxmhc0r"
+    storage_account_name = "sabackendhi30c0oerc"
     container_name       = "backend-container"
     key                  = "infragjovik.terraform.tfstate"
   }
@@ -23,6 +23,7 @@ provider "azurerm" {
       prevent_deletion_if_contains_resources = false
     }
   }
+  storage_use_azuread = true
   subscription_id = "b03b0d6e-32d0-4c8b-a3df-e5054df8ed86"
 }
 
@@ -47,6 +48,7 @@ resource "azurerm_storage_account" "sa" {
   location                 = azurerm_resource_group.rgstorage.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
+  shared_access_key_enabled = false
 }
 
 resource "azurerm_storage_container" "sc" {
@@ -60,7 +62,7 @@ resource "azurerm_storage_blob" "ctemplate" {
   storage_account_name   = azurerm_storage_account.sa.name
   storage_container_name = azurerm_storage_container.sc.name
   type                   = "Block"
-  source                 = var.ctemplatePath
+  source                 = "${var.rootPath}${var.ctemplatePath}"
 }
 
 resource "azurerm_storage_blob" "dbtemplate" {
@@ -68,14 +70,14 @@ resource "azurerm_storage_blob" "dbtemplate" {
   storage_account_name   = azurerm_storage_account.sa.name
   storage_container_name = azurerm_storage_container.sc.name
   type                   = "Block"
-  source                 = var.dbtemplatePath
+  source                 = "${var.rootPath}${var.dbtemplatePath}"
 }
 resource "azurerm_storage_blob" "tfvariables" {
   name                   = "terraform.tfvars.json"
   storage_account_name   = azurerm_storage_account.sa.name
   storage_container_name = azurerm_storage_container.sc.name
   type                   = "Block"
-  source                 = var.tfvarsPath
+  source                 = "${var.rootPath}${var.tfvarsPath}"
 }
 
 resource "random_string" "randomsdbsecret" {
@@ -84,7 +86,7 @@ resource "random_string" "randomsdbsecret" {
 
 # References key vault declared in the backend config
 data "azurerm_key_vault" "kv" {
-  name                = "keyvaultn7mpxmhc0r"
+  name                = "keyvaulthi30c0oerc"
   resource_group_name = "rg-backend"
 }
 

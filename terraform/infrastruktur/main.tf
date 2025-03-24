@@ -80,18 +80,49 @@ resource "azurerm_storage_blob" "tfvariables" {
   source                 = "${var.rootPath}${var.tfvarsPath}"
 }
 
+resource "random_string" "randomkvname" {
+  length  = 10
+  special = false
+  upper   = false
+}
+
+data "azurerm_client_config" "current" {}
+
+# Key vault for storage of sensitive values.
+resource "azurerm_key_vault" "kv" {
+  name                       = "keyvault${random_string.randomkvname.result}"
+  location                   = azurerm_resource_group.rg_backend.location
+  resource_group_name        = azurerm_resource_group.rg_backend.name
+  tenant_id                  = data.azurerm_client_config.current.tenant_id
+  sku_name                   = "premium"
+  soft_delete_retention_days = 7
+
+  access_policy {
+    tenant_id = data.azurerm_client_config.current.tenant_id
+    object_id = data.azurerm_client_config.current.object_id
+
+    key_permissions = [
+      "Create",
+      "Get",
+      "Delete",
+      "Purge"
+    ]
+
+    secret_permissions = [
+      "Set",
+      "Get",
+      "Delete",
+      "Purge",
+      "Recover"
+    ]
+  }
+}
+
 resource "random_string" "randomsdbsecret" {
   length = 20
 }
 
-# References key vault declared in the backend config
-data "azurerm_key_vault" "kv" {
-  name                = "keyvaulthi30c0oerc"
-  resource_group_name = "rg-backend"
-}
-
-
-# Database admin password
+# Database admin password generated with random_string
 resource "azurerm_key_vault_secret" "dbserversecret" {
   name         = "db-server-admin-secret"
   value        = random_string.randomsdbsecret.result

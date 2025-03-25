@@ -14,6 +14,9 @@ on:
       DATABASE:
         required: true
         type: string
+      type:
+        required: true
+        type: string
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -59,9 +62,11 @@ jobs:
 
       - name: Check download
         run: ls -ltr ./terraform/infrastruktur
+
       
       # Set up python and run script for adding new values to variable file
-      - name: Python
+      - name: Python add
+        if: 
         uses: actions/setup-python@v5
         with:
           python-version: '3.13' 
@@ -77,6 +82,9 @@ jobs:
             ./terraform/infrastruktur/terraform.tfvars.json
      
   # Runs the terraform code and builds the infrastructure in Azure
+
+
+
       - name: Hent variabler
         uses: actions/download-artifact@v4
         with:

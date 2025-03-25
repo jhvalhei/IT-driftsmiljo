@@ -55,18 +55,25 @@ jobs:
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
           az storage blob download-batch --account-name envstoragegjovik246 --source variables --destination ./terraform/infrastruktur --account-key ${{env.ACCOUNT_KEY}}
       
-     
 
       - name: Check download
         run: ls -ltr ./terraform/infrastruktur
 
       
       # Set up python and run script for adding new values to variable file
-      - name: Python
+      - name: Python add
+        if: inputs.type == 'ny'
         uses: actions/setup-python@v5
         with:
           python-version: '3.13' 
       - run: python ./terraform/infrastruktur/scripts/add.py
+
+      - name: Python remove
+        if: inputs.type == 'fjern'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python ./terraform/infrastruktur/scripts/add.py 
 
 
       # Upload .tfvars file as artifact, will probably remove this

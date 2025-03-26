@@ -7,6 +7,20 @@ on:
   
   workflow_dispatch:
 
+env:
+  # Credentials for Azure service principle
+  ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+  STUDENT_FOLDER: ${{ inputs.STUDENT_FOLDER }}
+  DOCKER_IMAGE_NAME: ${{ inputs.DOCKER_IMAGE_NAME }}
+  DATABASE: ${{ inputs.DATABASE }}
+
+  TF_VAR_postgreserver_admin_uname: ${{ secrets.DB_SERVER_UNAME }}
+  TF_VAR_rootPath: ${{ github.workspace }}
+
 jobs:
   remove:
     runs-on: ubuntu-latest

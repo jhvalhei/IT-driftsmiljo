@@ -73,6 +73,7 @@ resource "azurerm_storage_blob" "dbtemplate" {
   type                   = "Block"
   source                 = "${var.rootPath}${var.dbtemplatePath}"
 }
+
 resource "azurerm_storage_blob" "tfvariables" {
   name                   = "terraform.tfvars.json"
   storage_account_name   = azurerm_storage_account.sa.name

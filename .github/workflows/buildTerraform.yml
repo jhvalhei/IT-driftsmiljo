@@ -87,7 +87,7 @@ jobs:
           path: |
             ./terraform/infrastruktur/terraform.tfvars.json
      
-  # Runs the terraform code and builds the infrastructure in Azure
+      # Runs the terraform code and builds the infrastructure in Azure
       - name: Hent variabler
         uses: actions/download-artifact@v4
         with:
@@ -116,4 +116,4 @@ jobs:
       - name: Terraform apply
         run: |
           cd terraform/infrastruktur
-          terraform apply -auto-approve
+          terraform apply "main.tfplan" -auto-approve

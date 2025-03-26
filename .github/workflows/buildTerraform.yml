@@ -66,14 +66,14 @@ jobs:
       
       # Set up python and run script for adding new values to variable file
       - name: Python add
-        if: inputs.type == 'ny'
+        if: ${{inputs.type == 'ny'}}
         uses: actions/setup-python@v5
         with:
           python-version: '3.13' 
       - run: python ./terraform/infrastruktur/scripts/add.py
 
       - name: Python remove
-        if: inputs.type == 'fjern'
+        if: ${{inputs.type == 'fjern'}}
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'

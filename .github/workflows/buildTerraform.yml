@@ -88,9 +88,6 @@ jobs:
             ./terraform/infrastruktur/terraform.tfvars.json
      
   # Runs the terraform code and builds the infrastructure in Azure
-
-
-
       - name: Hent variabler
         uses: actions/download-artifact@v4
         with:

@@ -75,6 +75,7 @@ resource "azurerm_storage_blob" "dbtemplate" {
 }
 
 resource "azurerm_storage_blob" "tfvariables" {
+   content_md5 = "${md5(file("${var.rootPath}${var.tfvarsPath}"))}"
   name                   = "terraform.tfvars.json"
   storage_account_name   = azurerm_storage_account.sa.name
   storage_container_name = azurerm_storage_container.sc.name

@@ -65,19 +65,18 @@ jobs:
 
       
       # Set up python and run script for adding new values to variable file
-      - name: Python add
-        if: ${{inputs.type == 'ny'}}
+      - name: Setup python
         uses: actions/setup-python@v5
         with:
           python-version: '3.13' 
-      - run: python ./terraform/infrastruktur/scripts/add.py
+
+      - name: Python add
+        if: ${{inputs.type == 'ny'}}
+        run: python ./terraform/infrastruktur/scripts/add.py
 
       - name: Python remove
         if: ${{inputs.type == 'fjern'}}
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
-      - run: python ./terraform/infrastruktur/scripts/remove.py 
+        run: python ./terraform/infrastruktur/scripts/remove.py 
 
 
       # Upload .tfvars file as artifact, will probably remove this

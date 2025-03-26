@@ -95,3 +95,4 @@ jobs:
       STUDENT_FOLDER: ${{needs.build-and-push.outputs.studentFolderName}}
       DOCKER_IMAGE_NAME: ${{needs.build-and-push.outputs.imageName}}
       DATABASE: ${{needs.build-and-push.outputs.database}}
+      type: ny

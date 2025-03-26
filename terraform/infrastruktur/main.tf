@@ -92,8 +92,8 @@ data "azurerm_client_config" "current" {}
 # Key vault for storage of sensitive values.
 resource "azurerm_key_vault" "kv" {
   name                       = "keyvault${random_string.randomkvname.result}"
-  location                   = azurerm_resource_group.rg_backend.location
-  resource_group_name        = azurerm_resource_group.rg_backend.name
+  location                   = azurerm_resource_group.rgstorage.location
+  resource_group_name        = azurerm_resource_group.rgstorage.name
   tenant_id                  = data.azurerm_client_config.current.tenant_id
   sku_name                   = "premium"
   soft_delete_retention_days = 7
@@ -127,7 +127,7 @@ resource "random_string" "randomsdbsecret" {
 resource "azurerm_key_vault_secret" "dbserversecret" {
   name         = "db-server-admin-secret"
   value        = random_string.randomsdbsecret.result
-  key_vault_id = data.azurerm_key_vault.kv.id
+  key_vault_id = azurerm_key_vault.kv.id
 }
 
 

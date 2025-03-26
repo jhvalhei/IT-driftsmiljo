@@ -1,0 +1,67 @@
+# Removes a given program from the environment
+name: Remove program
+
+on:
+  push:
+    branches: ["testDeploy"]
+  
+  workflow_dispatch:
+
+jobs:
+  remove:
+    runs-on: ubuntu-latest
+    # Commit message needs to contain "ny studentoppgave" to continue workflow
+    if: contains(github.event.head_commit.message, 'fjern studentoppgave')
+    outputs:
+      studentFolderName: ${{ steps.extract_folder.outputs.studentFolderName }}
+      #imageName: ${{ steps.set-image.outputs.imageName }}
+      database: ${{ steps.database.outputs.database }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Extract Folder Name
+        id: extract_folder
+        run: |
+          if [[ "${{ github.event.head_commit.message }}" =~ fjern\ studentoppgave\ ([a-zA-Z0-9_-]+) ]]; then
+            FOLDER_NAME=${BASH_REMATCH[1]}
+            echo "STUDENT_FOLDER=$FOLDER_NAME" >> $GITHUB_ENV
+            echo "Processing folder: $FOLDER_NAME"
+            echo "studentFolderName=$FOLDER_NAME" >> "$GITHUB_OUTPUT"
+          else
+            echo "Commit message does not specify a student folder. Exiting."
+            exit 1
+          fi
+
+      - name: Check Folder Existence
+        id: folder_existence
+        run: |
+          if [[ ! -e ./studentOppgaver/${{env.STUDENT_FOLDER}} ]]; then
+            echo "Fant ikke \"${{env.STUDENT_FOLDER}}\"" 
+            exit 1
+          fi
+
+          - name: sjekk database
+          id: database
+          run: |
+            if [[ -e ./studentOppgaver/${{env.STUDENT_FOLDER}}/database ]]; then 
+              echo "DATABASE=true" >> $GITHUB_ENV;
+              echo "databasee=true" >> "$GITHUB_OUTPUT" 
+            else 
+              echo "DATABASE=false" >> $GITHUB_ENV; fi
+              echo "database=false" >> "$GITHUB_OUTPUT" 
+
+  startWF:
+    needs: remove
+    uses: Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo/.github/workflows/buildTerraform.yml@testDeploy
+    secrets: inherit
+    with:
+        STUDENT_FOLDER: ${{needs.build-and-push.outputs.studentFolderName}}
+        #DOCKER_IMAGE_NAME: ${{needs.build-and-push.outputs.imageName}}
+        DATABASE: ${{needs.build-and-push.outputs.database}}
+        type: fjern
+
+
+      
+    

@@ -42,15 +42,15 @@ jobs:
             exit 1
           fi
 
-          - name: sjekk database
-          id: database
-          run: |
-            if [[ -e ./studentOppgaver/${{env.STUDENT_FOLDER}}/database ]]; then 
-              echo "DATABASE=true" >> $GITHUB_ENV;
-              echo "databasee=true" >> "$GITHUB_OUTPUT" 
-            else 
-              echo "DATABASE=false" >> $GITHUB_ENV; fi
-              echo "database=false" >> "$GITHUB_OUTPUT" 
+      - name: sjekk database
+        id: database
+        run: |
+          if [[ -e ./studentOppgaver/${{env.STUDENT_FOLDER}}/database ]]; then 
+            echo "DATABASE=true" >> $GITHUB_ENV;
+            echo "databasee=true" >> "$GITHUB_OUTPUT" 
+          else 
+            echo "DATABASE=false" >> $GITHUB_ENV; fi
+            echo "database=false" >> "$GITHUB_OUTPUT" 
 
   startWF:
     needs: remove

@@ -71,9 +71,29 @@ jobs:
     uses: Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo/.github/workflows/buildTerraform.yml@testDeploy
     secrets: inherit
     with:
-        STUDENT_FOLDER: ${{needs.remove.outputs.studentFolderName}}
-        DATABASE: ${{needs.remove.outputs.database}}
-        type: fjern
+      STUDENT_FOLDER: ${{needs.remove.outputs.studentFolderName}}
+      DATABASE: ${{needs.remove.outputs.database}}
+      type: fjern
+
+  removeContainer:
+    needs: startWF
+    runs-on: ubuntu-latest
+
+    steps:
+      
+      - id: string
+        uses: ASzc/change-string-case-action@v6
+        with:
+          string: ${{needs.remove.outputs.studentFolderName}}
+      - id: step2
+        run: echo ${{ steps.string.outputs.lowercase }}
+
+      - name: delete package
+        uses: actions/delete-package-versions@v5
+        with: 
+          package-name: ${{needs.removeContainer.outputs.lowercase}}
+          package-type: 'container'
+          min-versions-to-keep: 0
 
 
       

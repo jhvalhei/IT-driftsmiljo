@@ -7,9 +7,10 @@ terraform {
   }
   backend "azurerm" {
     resource_group_name  = "rg-backend"
-    storage_account_name = "sabackendhi30c0oerc"
+    storage_account_name = "sabackendsfbgel2py5"
     container_name       = "backend-container"
     key                  = "infragjovik.terraform.tfstate"
+    use_azuread_auth = true
   }
 }
 
@@ -24,7 +25,7 @@ provider "azurerm" {
     }
   }
   storage_use_azuread = true
-  subscription_id = "b03b0d6e-32d0-4c8b-a3df-e5054df8ed86"
+  subscription_id     = "b03b0d6e-32d0-4c8b-a3df-e5054df8ed86"
 }
 
 
@@ -43,11 +44,11 @@ resource "azurerm_resource_group" "rgstorage" {
 
 
 resource "azurerm_storage_account" "sa" {
-  name                     = "envstoragegjovik246"
-  resource_group_name      = azurerm_resource_group.rgstorage.name
-  location                 = azurerm_resource_group.rgstorage.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
+  name                      = "envstoragegjovik246"
+  resource_group_name       = azurerm_resource_group.rgstorage.name
+  location                  = azurerm_resource_group.rgstorage.location
+  account_tier              = "Standard"
+  account_replication_type  = "LRS"
   shared_access_key_enabled = false
 }
 
@@ -130,21 +131,21 @@ module "deployments" {
   postdb                              = var.postdb
 
   #To use in network
-  nsg_name_db = var.nsg_name_db
-  nsg_name_capp = var.nsg_name_capp
-  vnet_name                         = var.vnet_name
-  vnet_addresspace                  = var.vnet_addresspace
-  subnet_db_name                       = var.subnet_db_name
+  nsg_name_db                            = var.nsg_name_db
+  nsg_name_capp                          = var.nsg_name_capp
+  vnet_name                              = var.vnet_name
+  vnet_addresspace                       = var.vnet_addresspace
+  subnet_db_name                         = var.subnet_db_name
   subnet_capp_name                       = var.subnet_capp_name
-  subnet_db_address_prefixes           = var.subnet_db_address_prefixes
+  subnet_db_address_prefixes             = var.subnet_db_address_prefixes
   subnet_capp_address_prefixes           = var.subnet_capp_address_prefixes
-  subnet_service_endpoint           = var.subnet_service_endpoint
-  subnet_db_delegation_name            = var.subnet_db_delegation_name
+  subnet_service_endpoint                = var.subnet_service_endpoint
+  subnet_db_delegation_name              = var.subnet_db_delegation_name
   subnet_capp_delegation_name            = var.subnet_capp_delegation_name
-  subnet_db_service_delegation_name    = var.subnet_db_service_delegation_name
+  subnet_db_service_delegation_name      = var.subnet_db_service_delegation_name
   subnet_capp_service_delegation_name    = var.subnet_capp_service_delegation_name
-  subnet_db_service_delegation_actions = var.subnet_db_service_delegation_actions
+  subnet_db_service_delegation_actions   = var.subnet_db_service_delegation_actions
   subnet_capp_service_delegation_actions = var.subnet_capp_service_delegation_actions
-  privdnszone_name                  = var.privdnszone_name
-  privdnslink_name                  = var.privdnslink_name
+  privdnszone_name                       = var.privdnszone_name
+  privdnslink_name                       = var.privdnslink_name
 }

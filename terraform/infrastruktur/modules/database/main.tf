@@ -23,7 +23,7 @@ resource "azurerm_postgresql_flexible_server_database" "postdb" {
   depends_on = [azurerm_postgresql_flexible_server.postgreserver]
   for_each   = var.postdb
 
-  name      = "${each.value.name}-${var.rg_name_static}-${each.key}"
+  name      = lower(each.value.name)
   server_id = azurerm_postgresql_flexible_server.postgreserver.id
   collation = each.value.collation
   charset   = each.value.charset

@@ -123,14 +123,14 @@ resource "azurerm_key_vault" "kv" {
   }
 }
 
-resource "random_string" "randomsdbsecret" {
+resource "random_password" "randomsdbsecret" {
   length = 20
 }
 
 # Database admin password generated with random_string
 resource "azurerm_key_vault_secret" "dbserversecret" {
   name         = "db-server-admin-secret"
-  value        = random_string.randomsdbsecret.result
+  value        = random_password.randomsdbsecret.result
   key_vault_id = azurerm_key_vault.kv.id
 }
 

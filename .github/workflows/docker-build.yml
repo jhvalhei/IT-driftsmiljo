@@ -81,7 +81,7 @@ jobs:
         run: |
           if [[ -e ./studentOppgaver/${{env.STUDENT_FOLDER}}/database ]]; then 
             echo "DATABASE=true" >> $GITHUB_ENV;
-            echo "databasee=true" >> "$GITHUB_OUTPUT" 
+            echo "database=true" >> "$GITHUB_OUTPUT" 
           else 
             echo "DATABASE=false" >> $GITHUB_ENV; fi
             echo "database=false" >> "$GITHUB_OUTPUT" 

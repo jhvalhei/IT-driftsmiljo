@@ -83,8 +83,8 @@ jobs:
             echo "DATABASE=true" >> $GITHUB_ENV;
             echo "database=true" >> "$GITHUB_OUTPUT" 
           else 
-            echo "DATABASE=false" >> $GITHUB_ENV; fi
-            echo "database=false" >> "$GITHUB_OUTPUT" 
+            echo "DATABASE=false" >> $GITHUB_ENV
+            echo "database=false" >> "$GITHUB_OUTPUT"; fi
 
     
   startWF:

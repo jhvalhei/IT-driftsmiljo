@@ -12,7 +12,7 @@ with open("./terraform/infrastruktur/terraform.tfvars.json",'r+') as file:
     file_data = json.load(file)
 
     # Remove if exists
-    if "rg-"+studentFolderName in file_data["rg_dynamic"].keys():
+    if "rg_"+studentFolderName in file_data["rg_dynamic"].keys():
          # Remove resource group
         del file_data["rg_dynamic"]["rg_"+studentFolderName]
         # Remove container objecr
@@ -29,5 +29,5 @@ with open("./terraform/infrastruktur/terraform.tfvars.json",'r+') as file:
         file.truncate()
     else:
         print("Student folder '" + studentFolderName + "' is not present in configuration")
-    
+        exit(1)
 

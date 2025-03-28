@@ -66,6 +66,22 @@ jobs:
             echo "DATABASE=false" >> $GITHUB_ENV; fi
             echo "database=false" >> "$GITHUB_OUTPUT" 
 
+      - name: Lower name
+        id: lowerstring
+        uses: ASzc/change-string-case-action@v6
+        with:
+          string: ${{steps.extract_folder.outputs.studentFolderName}}
+
+      - name: echo string
+        run: echo ${{steps.lowerstring.outputs.lowercase}}
+
+      - name: Delete package via API
+        run: |
+          curl -X DELETE \
+            -H "Authorization: Bearer ${{ secrets.REG_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/orgs/Bachelorgruppe117-NTNU-Gjovik/packages/container/${{ steps.lowerstring.outputs.lowercase }}-app"
+
   startWF:
     needs: remove
     uses: Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo/.github/workflows/buildTerraform.yml@testDeploy
@@ -74,29 +90,6 @@ jobs:
       STUDENT_FOLDER: ${{needs.remove.outputs.studentFolderName}}
       DATABASE: ${{needs.remove.outputs.database}}
       type: fjern
-
-  removeContainer:
-    needs: startWF
-    runs-on: ubuntu-latest
-    outputs:
-      nameLower: ${{ steps.lowerstring.outputs.lowercase }}
-    steps:
-
-      - id: lowerstring
-        uses: ASzc/change-string-case-action@v6
-        with:
-          string: ${{needs.remove.outputs.studentFolderName}}
-
-      - name: echo string
-        run: echo ${{steps.lowerstring.outputs.lowercase}}
-
-
-      - name: Delete package via API
-        run: |
-          curl -X DELETE \
-            -H "Authorization: Bearer ${{ secrets.PA_TOKEN }}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/orgs/Bachelorgruppe117-NTNU-Gjovik/packages/container/testwebapp-app"
 
       
 

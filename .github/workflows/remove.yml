@@ -78,10 +78,11 @@ jobs:
   removeContainer:
     needs: startWF
     runs-on: ubuntu-latest
-
+    outputs:
+      nameLower: ${{ steps.lowerstring.outputs.lowercase }}
     steps:
-      
-      - id: string
+
+      - id: lowerstring
         uses: ASzc/change-string-case-action@v6
         with:
           string: ${{needs.remove.outputs.studentFolderName}}

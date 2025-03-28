@@ -9,7 +9,10 @@ Repo for all koden som blir produsert under bacheloroppgaven vår
 Klon repoet til din lokale maskin.
 
 ### Steg 2: Last ned Terraform
-Om du allerede har Terraform innstallert på maskinen, kan du hoppe over dette steget.
+Om du allerede har Terraform innstallert på maskinen, kan du hoppe over dette steget. Her er en full [guide](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) til å innstallere terraform.
+
+
+
 
 ## Legge inn ny studentoppgave
 ### Steg 1: Laste ned og sjekke filer

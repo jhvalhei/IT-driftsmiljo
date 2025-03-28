@@ -96,7 +96,7 @@ jobs:
           curl -X DELETE \
             -H "Authorization: Bearer ${{ secrets.PA_TOKEN }}" \
             -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/orgs/Bachelorgruppe117-NTNU-Gjovik/packages/container/testwebwapp-app"
+            "https://api.github.com/orgs/Bachelorgruppe117-NTNU-Gjovik/packages/container/testwebapp-app"
 
       
 

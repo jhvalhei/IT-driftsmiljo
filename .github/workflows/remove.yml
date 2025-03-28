@@ -91,12 +91,12 @@ jobs:
         run: echo ${{steps.lowerstring.outputs.lowercase}}
 
 
-      - name: delete package
-        uses: actions/delete-package-versions@v5
-        with: 
-          package-name: testwebapp-app
-          package-type: 'container'
-          min-versions-to-keep: 0
+      - name: Delete package via API
+        run: |
+          curl -X DELETE -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                -H "Accept: application/vnd.github+json" \
+                "https://api.github.com/orgs/YOUR_ORG/packages/container/testwebapp-app/versions/YOUR_VERSION"
+      
 
 
       

@@ -12,7 +12,7 @@ with open("./terraform/infrastruktur/terraform.tfvars.json",'r+') as file:
     file_data = json.load(file)
 
     # Remove if exists
-    if (["rg_dynamic"]["rg_"+studentFolderName] in file_data):
+    if "rg-"+studentFolderName in file_data["rg_dynamic"].keys():
          # Remove resource group
         del file_data["rg_dynamic"]["rg_"+studentFolderName]
         # Remove container objecr

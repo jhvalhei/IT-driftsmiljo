@@ -28,6 +28,6 @@ with open("./terraform/infrastruktur/terraform.tfvars.json",'r+') as file:
         # Remove leftover content
         file.truncate()
     else:
-        print("Student folder is not present in configuration")
+        print("Student folder '" + studentFolderName + "' is not present in configuration")
     
 

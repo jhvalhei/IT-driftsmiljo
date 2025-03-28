@@ -82,21 +82,21 @@ jobs:
       nameLower: ${{ steps.lowerstring.outputs.lowercase }}
     steps:
 
-      - id: lowerstring
+      - name: Lower name
+        id: lowerstring
         uses: ASzc/change-string-case-action@v6
         with:
-          string: ${{needs.remove.outputs.studentFolderName}}
+          string: ${{env.STUDENT_FOLDER}}
 
       - name: echo string
         run: echo ${{steps.lowerstring.outputs.lowercase}}
-
 
       - name: Delete package via API
         run: |
           curl -X DELETE \
             -H "Authorization: Bearer ${{ secrets.REG_TOKEN }}" \
             -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/orgs/Bachelorgruppe117-NTNU-Gjovik/packages/container/testwebapp-app"
+            "https://api.github.com/orgs/Bachelorgruppe117-NTNU-Gjovik/packages/container/${{ steps.lowerstring.outputs.lowercase }}-app"
 
       
 

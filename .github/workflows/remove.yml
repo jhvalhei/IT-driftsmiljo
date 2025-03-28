@@ -66,27 +66,11 @@ jobs:
             echo "DATABASE=false" >> $GITHUB_ENV; fi
             echo "database=false" >> "$GITHUB_OUTPUT" 
 
-  startWF:
-    needs: remove
-    uses: Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo/.github/workflows/buildTerraform.yml@testDeploy
-    secrets: inherit
-    with:
-      STUDENT_FOLDER: ${{needs.remove.outputs.studentFolderName}}
-      DATABASE: ${{needs.remove.outputs.database}}
-      type: fjern
-
-  removeContainer:
-    needs: startWF
-    runs-on: ubuntu-latest
-    outputs:
-      nameLower: ${{ steps.lowerstring.outputs.lowercase }}
-    steps:
-
       - name: Lower name
         id: lowerstring
         uses: ASzc/change-string-case-action@v6
         with:
-          string: ${{env.STUDENT_FOLDER}}
+          string: ${{steps.extract_folder.outputs.studentFolderName}}
 
       - name: echo string
         run: echo ${{steps.lowerstring.outputs.lowercase}}
@@ -97,6 +81,15 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.REG_TOKEN }}" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/orgs/Bachelorgruppe117-NTNU-Gjovik/packages/container/${{ steps.lowerstring.outputs.lowercase }}-app"
+
+  startWF:
+    needs: remove
+    uses: Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo/.github/workflows/buildTerraform.yml@testDeploy
+    secrets: inherit
+    with:
+      STUDENT_FOLDER: ${{needs.remove.outputs.studentFolderName}}
+      DATABASE: ${{needs.remove.outputs.database}}
+      type: fjern
 
       
 

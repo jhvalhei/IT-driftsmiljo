@@ -1,3 +1,26 @@
+variable "rootPath" {
+  description = "Absolute path to infrastructure project"
+  type = string
+}
+
+variable "ctemplatePath" {
+  description = "Path to container template file"
+  type        = string
+  default =  "/terraform/infrastruktur/containerObj.json"
+}
+
+variable "dbtemplatePath" {
+  description = "Path to database template file"
+  type        = string
+  default = "/terraform/infrastruktur/databaseObj.json"
+}
+
+variable "tfvarsPath" {
+  description = "Path to .tfvars.json file"
+  type        = string
+  default = "/terraform/infrastruktur/terraform.tfvars.json"
+}
+
 # resource group
 
 variable "rg_dynamic" {
@@ -14,25 +37,7 @@ variable "rg_dynamic" {
   }
 }
 
-variable "rootPath" {
-  description = "Absolute path to infrastructure project"
-  type = string
-}
 
-variable "ctemplatePath" {
-  description = "Path to container template file"
-  type        = string
-}
-
-variable "dbtemplatePath" {
-  description = "Path to database template file"
-  type        = string
-}
-
-variable "tfvarsPath" {
-  description = "Path to .tfvars.json file"
-  type        = string
-}
 
 
 variable "rg_name_static" {

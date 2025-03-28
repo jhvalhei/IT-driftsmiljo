@@ -1,0 +1,105 @@
+# Removes a given program from the environment
+name: Remove program
+
+on:
+  push:
+    branches: ["testDeploy"]
+  
+  workflow_dispatch:
+
+env:
+  # Credentials for Azure service principle
+  ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+  STUDENT_FOLDER: ${{ inputs.STUDENT_FOLDER }}
+  DOCKER_IMAGE_NAME: ${{ inputs.DOCKER_IMAGE_NAME }}
+  DATABASE: ${{ inputs.DATABASE }}
+
+  TF_VAR_postgreserver_admin_uname: ${{ secrets.DB_SERVER_UNAME }}
+  TF_VAR_rootPath: ${{ github.workspace }}
+
+jobs:
+  remove:
+    runs-on: ubuntu-latest
+    # Commit message needs to contain "ny studentoppgave" to continue workflow
+    if: contains(github.event.head_commit.message, 'fjern studentoppgave')
+    outputs:
+      studentFolderName: ${{ steps.extract_folder.outputs.studentFolderName }}
+      #imageName: ${{ steps.set-image.outputs.imageName }}
+      database: ${{ steps.database.outputs.database }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Extract Folder Name
+        id: extract_folder
+        run: |
+          if [[ "${{ github.event.head_commit.message }}" =~ fjern\ studentoppgave\ ([a-zA-Z0-9_-]+) ]]; then
+            FOLDER_NAME=${BASH_REMATCH[1]}
+            echo "STUDENT_FOLDER=$FOLDER_NAME" >> $GITHUB_ENV
+            echo "Processing folder: $FOLDER_NAME"
+            echo "studentFolderName=$FOLDER_NAME" >> "$GITHUB_OUTPUT"
+          else
+            echo "Commit message does not specify a student folder. Exiting."
+            exit 1
+          fi
+
+      - name: Check Folder Existence
+        id: folder_existence
+        run: |
+          if [[ ! -e ./studentOppgaver/${{env.STUDENT_FOLDER}} ]]; then
+            echo "Fant ikke \"${{env.STUDENT_FOLDER}}\"" 
+            exit 1
+          fi
+
+      - name: sjekk database
+        id: database
+        run: |
+          if [[ -e ./studentOppgaver/${{env.STUDENT_FOLDER}}/database ]]; then 
+            echo "DATABASE=true" >> $GITHUB_ENV;
+            echo "databasee=true" >> "$GITHUB_OUTPUT" 
+          else 
+            echo "DATABASE=false" >> $GITHUB_ENV; fi
+            echo "database=false" >> "$GITHUB_OUTPUT" 
+
+  startWF:
+    needs: remove
+    uses: Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo/.github/workflows/buildTerraform.yml@testDeploy
+    secrets: inherit
+    with:
+      STUDENT_FOLDER: ${{needs.remove.outputs.studentFolderName}}
+      DATABASE: ${{needs.remove.outputs.database}}
+      type: fjern
+
+  removeContainer:
+    needs: startWF
+    runs-on: ubuntu-latest
+    outputs:
+      nameLower: ${{ steps.lowerstring.outputs.lowercase }}
+    steps:
+
+      - id: lowerstring
+        uses: ASzc/change-string-case-action@v6
+        with:
+          string: ${{needs.remove.outputs.studentFolderName}}
+
+      - name: echo string
+        run: echo ${{steps.lowerstring.outputs.lowercase}}
+
+
+      - name: Delete package via API
+        run: |
+          curl -X DELETE \
+            -H "Authorization: Bearer ${{ secrets.PA_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/orgs/Bachelorgruppe117-NTNU-Gjovik/packages/container/testwebapp-app"
+
+      
+
+
+      
+    

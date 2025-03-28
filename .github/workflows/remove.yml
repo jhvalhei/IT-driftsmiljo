@@ -94,7 +94,7 @@ jobs:
       - name: delete package
         uses: actions/delete-package-versions@v5
         with: 
-          package-name: ${{needs.removeContainer.outputs.lowercase}}
+          package-name: testwebapp-app
           package-type: 'container'
           min-versions-to-keep: 0
 

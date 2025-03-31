@@ -4,7 +4,7 @@ LABEL maintainer="malenelu@stud.ntnu.no"
 
 WORKDIR /go/src/app
 ARG dbsecret
-ENV DBSECRET = $dbsecret
+ENV DBSECRET=$dbsecret
 
 EXPOSE 8080
 

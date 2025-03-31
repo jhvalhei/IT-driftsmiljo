@@ -2,7 +2,7 @@ package main
 
 import (
 	"database/sql"
-    "fmt"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -12,20 +12,22 @@ import (
 	"svarteliste/frontend"
 	"svarteliste/userform"
 
-//	_ "github.com/go-sql-driver/mysql"
-    _ "github.com/lib/pq"
+	//	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
 )
 const (
-  host     = "localhost"
+  host     = "postgresql-flexible-server-rgstatic001.postgres.database.azure.com"
   port     = 5432
-  user     = ""
-  password = ""
+  user     = "ntnuadmin"
+ // password = ""
   dbname   = "svartelistedb"
 )
 
 
 
 func main() {
+
+	password := os.Getenv("DBSECRET")
 	
     psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
     "password=%s dbname=%s sslmode=disable",

@@ -111,7 +111,7 @@ func main() {
 	// Start HTTP server
 	log.Println("Running on port", port)
 	//HTTP (used during testing)
-	err = http.ListenAndServe("localhost:"+port, nil)
+	err = http.ListenAndServe("0.0.0.0:"+port, nil)
 	//HTTPS (used for normal operation, it needs to be https to share location on server)
 	//err = http.ListenAndServeTLS(":"+port, "./cmd/localhost.crt", "./cmd/localhost.key", nil)
 	if err != nil {

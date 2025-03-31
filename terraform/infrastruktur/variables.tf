@@ -213,11 +213,18 @@ variable "postdb" {
 
 # Module: network
 
-variable "nsg_name" {
-  description = "Name of the network security group"
+variable "nsg_name_db" {
+  description = "Name of the network security group for databases"
   type        = string
-  default     = "nsg"
+  default     = "nsg-db"
 }
+
+variable "nsg_name_capp" {
+  description = "Name of the network security group for container apps"
+  type        = string
+  default     = "nsg-capp"
+}
+
 
 variable "vnet_name" {
   description = "Name of the virtual network"
@@ -232,16 +239,28 @@ variable "vnet_addresspace" {
   default     = ["10.0.0.0/16"]
 }
 
-variable "subnet_name" {
-  description = "Name of the subnet"
+variable "subnet_db_name" {
+  description = "Name of the subnet for the database"
   type        = string
-  default     = "subnet"
+  default     = "subnet_db"
 }
 
-variable "subnet_address_prefixes" {
-  description = "The address prefixes for the subnet"
+variable "subnet_capp_name" {
+  description = "Name of the subnet for the container apps"
+  type        = string
+  default     = "subnet_capp"
+}
+
+variable "subnet_db_address_prefixes" {
+  description = "The address prefixes for the database subnet"
   type        = set(string)
   default     = ["10.0.2.0/24"]
+}
+
+variable "subnet_capp_address_prefixes" {
+  description = "The address prefixes for the container apps subnet"
+  type        = set(string)
+  default     = ["10.0.3.0/24"]
 }
 
 variable "subnet_service_endpoint" {
@@ -250,19 +269,37 @@ variable "subnet_service_endpoint" {
   default     = ["Microsoft.Storage"]
 }
 
-variable "subnet_delegation_name" {
-  description = "Name of the delegation for the subnet"
+variable "subnet_db_delegation_name" {
+  description = "Name of the delegation for the database subnet"
   type        = string
-  default     = "fs"
+  default     = "db-delegation"
 }
 
-variable "subnet_service_delegation_name" {
-  description = "Name of the delegation service for the subnet"
+variable "subnet_capp_delegation_name" {
+  description = "Name of the delegation for the container apps subnet"
+  type        = string
+  default     = "capp-delegation"
+}
+
+variable "subnet_db_service_delegation_name" {
+  description = "Name of the delegation service for the database subnet"
   type        = string
   default     = "Microsoft.DBforPostgreSQL/flexibleServers"
 }
 
-variable "subnet_service_delegation_actions" {
+variable "subnet_capp_service_delegation_name" {
+  description = "Name of the delegation service for the container apps subnet"
+  type        = string
+  default     = "Microsoft.App/environments"
+}
+
+variable "subnet_db_service_delegation_actions" {
+  description = "Sets of actions for the service delegation for the subnet"
+  type        = set(string)
+  default     = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+}
+
+variable "subnet_capp_service_delegation_actions" {
   description = "Sets of actions for the service delegation for the subnet"
   type        = set(string)
   default     = ["Microsoft.Network/virtualNetworks/subnets/join/action"]

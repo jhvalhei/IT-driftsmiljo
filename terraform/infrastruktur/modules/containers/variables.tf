@@ -16,6 +16,11 @@ variable "rg_location_static" {
   default     = "westeurope"
 }
 
+variable "subnet_id" {
+  description = "The id of the subnet"
+  type        = string
+}
+
 variable "law_name" {
   description = "Name of the log analytics workspace"
   type        = string

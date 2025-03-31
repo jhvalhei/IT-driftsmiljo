@@ -20,6 +20,7 @@ module "containers" {
   law_retention      = var.law_retention
   cae_name           = var.cae_name
   container          = var.container
+  subnet_id = module.network.subnet_capp_id
 }
 
 module "database" {
@@ -40,7 +41,7 @@ module "database" {
   postgreserver_public_network_access = var.postgreserver_public_network_access
   postgreserver_zone                  = var.postgreserver_zone
   postdb                              = var.postdb
-  subnet_id                           = module.network.subnet_id
+  subnet_id                           = module.network.subnet_db_id
   privdnszone_id                      = module.network.privdnszone_id
 }
 
@@ -49,15 +50,21 @@ module "network" {
   source                            = "../modules/network"
   rg_name_static                    = var.rg_name_static
   rg_location_static                = var.rg_location_static
-  nsg_name                          = var.nsg_name
+  nsg_name_db = var.nsg_name_db
+  nsg_name_capp = var.nsg_name_capp
   vnet_name                         = var.vnet_name
   vnet_addresspace                  = var.vnet_addresspace
-  subnet_name                       = var.subnet_name
-  subnet_address_prefixes           = var.subnet_address_prefixes
+  subnet_db_name                       = var.subnet_db_name
+  subnet_capp_name                       = var.subnet_capp_name
+  subnet_db_address_prefixes           = var.subnet_db_address_prefixes
+  subnet_capp_address_prefixes           = var.subnet_capp_address_prefixes
   subnet_service_endpoint           = var.subnet_service_endpoint
-  subnet_delegation_name            = var.subnet_delegation_name
-  subnet_service_delegation_name    = var.subnet_service_delegation_name
-  subnet_service_delegation_actions = var.subnet_service_delegation_actions
+  subnet_db_delegation_name            = var.subnet_db_delegation_name
+  subnet_capp_delegation_name            = var.subnet_capp_delegation_name
+  subnet_db_service_delegation_name    = var.subnet_db_service_delegation_name
+  subnet_capp_service_delegation_name    = var.subnet_capp_service_delegation_name
+  subnet_db_service_delegation_actions = var.subnet_db_service_delegation_actions
+  subnet_capp_service_delegation_actions = var.subnet_capp_service_delegation_actions
   privdnszone_name                  = var.privdnszone_name
   privdnslink_name                  = var.privdnslink_name
 }

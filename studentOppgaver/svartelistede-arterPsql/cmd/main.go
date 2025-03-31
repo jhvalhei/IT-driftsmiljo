@@ -29,7 +29,7 @@ func main() {
 
 
     psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-    "password=%s dbname=%s sslmode=disable",
+    "password=%s dbname=%s sslmode=require",
     host, port, user, os.Getenv("DBSECRET"), dbname)
 
     var err error

@@ -19,7 +19,7 @@ const (
   host     = "postgresql-flexible-server-rgstatic001.postgres.database.azure.com"
   port     = 5432
   user     = "ntnuadmin"
- // password = ""
+  password = ""
   dbname   = "svartelistede-arterpsql-db"
 )
 
@@ -27,11 +27,10 @@ const (
 
 func main() {
 
-	password := os.Getenv("DBSECRET")
-	
+
     psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
     "password=%s dbname=%s sslmode=disable",
-    host, port, user, password, dbname)
+    host, port, user, os.Getenv("DBSECRET"), dbname)
 
     var err error
     database.DB, err = sql.Open("postgres", psqlInfo)

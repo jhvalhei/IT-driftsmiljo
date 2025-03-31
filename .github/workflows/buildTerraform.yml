@@ -9,9 +9,12 @@ on:
         required: true
         type: string
       DOCKER_IMAGE_NAME:
-        required: true
+        required: false
         type: string
       DATABASE:
+        required: true
+        type: string
+      type:
         required: true
         type: string
 
@@ -59,13 +62,21 @@ jobs:
 
       - name: Check download
         run: ls -ltr ./terraform/infrastruktur
+
       
       # Set up python and run script for adding new values to variable file
-      - name: Python
+      - name: Setup python
         uses: actions/setup-python@v5
         with:
           python-version: '3.13' 
-      - run: python ./terraform/infrastruktur/scripts/add.py
+
+      - name: Python add
+        if: ${{inputs.type == 'ny'}}
+        run: python ./terraform/infrastruktur/scripts/add.py
+
+      - name: Python remove
+        if: ${{inputs.type == 'fjern'}}
+        run: python ./terraform/infrastruktur/scripts/remove.py 
 
 
       # Upload .tfvars file as artifact, will probably remove this
@@ -76,12 +87,8 @@ jobs:
           path: |
             ./terraform/infrastruktur/terraform.tfvars.json
      
-  # Runs the terraform code and builds the infrastructure in Azure
-      - name: Hent variabler
-        uses: actions/download-artifact@v4
-        with:
-          name: terraformVars
-          path: terraform/infrastruktur
+      # Runs the terraform code and builds the infrastructure in Azure
+      
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3

@@ -63,7 +63,8 @@ resource "azurerm_storage_blob" "ctemplate" {
   storage_account_name   = azurerm_storage_account.sa.name
   storage_container_name = azurerm_storage_container.sc.name
   type                   = "Block"
-  source                 = "${var.rootPath}${var.ctemplatePath}"
+  source             = "${var.rootPath}${var.ctemplatePath}"
+  content_md5 = "${md5(file("${var.rootPath}${var.ctemplatePath}"))}" // Forces upload of new file upon changes in file
 }
 
 resource "azurerm_storage_blob" "dbtemplate" {
@@ -72,31 +73,65 @@ resource "azurerm_storage_blob" "dbtemplate" {
   storage_container_name = azurerm_storage_container.sc.name
   type                   = "Block"
   source                 = "${var.rootPath}${var.dbtemplatePath}"
+  content_md5 = "${md5(file("${var.rootPath}${var.dbtemplatePath}"))}" // Forces upload of new file upon changes in file
 }
+
 resource "azurerm_storage_blob" "tfvariables" {
   name                   = "terraform.tfvars.json"
   storage_account_name   = azurerm_storage_account.sa.name
   storage_container_name = azurerm_storage_container.sc.name
   type                   = "Block"
   source                 = "${var.rootPath}${var.tfvarsPath}"
+  content_md5 = "${md5(file("${var.rootPath}${var.tfvarsPath}"))}" // Forces upload of new file upon changes in file
 }
 
-resource "random_string" "randomsdbsecret" {
+resource "random_string" "randomkvname" {
+  length  = 10
+  special = false
+  upper   = false
+}
+
+data "azurerm_client_config" "current" {}
+
+# Key vault for storage of sensitive values.
+resource "azurerm_key_vault" "kv" {
+  name                       = "keyvault${random_string.randomkvname.result}"
+  location                   = azurerm_resource_group.rgstorage.location
+  resource_group_name        = azurerm_resource_group.rgstorage.name
+  tenant_id                  = data.azurerm_client_config.current.tenant_id
+  sku_name                   = "premium"
+  soft_delete_retention_days = 7
+
+  access_policy {
+    tenant_id = data.azurerm_client_config.current.tenant_id
+    object_id = data.azurerm_client_config.current.object_id
+
+    key_permissions = [
+      "Create",
+      "Get",
+      "Delete",
+      "Purge"
+    ]
+
+    secret_permissions = [
+      "Set",
+      "Get",
+      "Delete",
+      "Purge",
+      "Recover"
+    ]
+  }
+}
+
+resource "random_password" "randomsdbsecret" {
   length = 20
 }
 
-# References key vault declared in the backend config
-data "azurerm_key_vault" "kv" {
-  name                = "keyvaulthi30c0oerc"
-  resource_group_name = "rg-backend"
-}
-
-
-# Database admin password
+# Database admin password generated with random_string
 resource "azurerm_key_vault_secret" "dbserversecret" {
   name         = "db-server-admin-secret"
-  value        = random_string.randomsdbsecret.result
-  key_vault_id = data.azurerm_key_vault.kv.id
+  value        = random_password.randomsdbsecret.result
+  key_vault_id = azurerm_key_vault.kv.id
 }
 
 

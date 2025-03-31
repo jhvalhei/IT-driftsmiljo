@@ -3,8 +3,10 @@ FROM golang:1.17
 LABEL maintainer="malenelu@stud.ntnu.no"
 
 WORKDIR /go/src/app
+ARG dbsecret
+ENV DBSECRET = $dbsecret
 
-
+EXPOSE 8080
 
 
 COPY ./admin /go/src/app/admin

@@ -40,6 +40,16 @@ variable "cae_name" {
   default     = "CA-Enviornment001"
 }
 
+variable "subnet_id" {
+  description = "The id of the subnet"
+  type        = string
+}
+
+variable "subnetcEnv_id" {
+  description = "The id of the subnet"
+  type        = string
+}
+
 
 
 variable "container" {

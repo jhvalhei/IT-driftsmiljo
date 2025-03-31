@@ -37,8 +37,15 @@ variable "subnet_name" {
 variable "subnet_address_prefixes" {
   description = "The address prefixes for the subnet"
   type        = set(string)
-  default     = ["10.0.2.0/24"]
+  default     = ["10.0.2.0/20"]
 }
+
+variable "subnetcEnv_address_prefixes" {
+  description = "The address prefixes for the subnet"
+  type        = set(string)
+  default     = ["10.0.32.0/20"]
+}
+
 
 variable "subnet_service_endpoint" {
   description = "The service endpoints for the subnet"

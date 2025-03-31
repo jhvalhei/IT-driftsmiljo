@@ -20,6 +20,8 @@ module "containers" {
   law_retention      = var.law_retention
   cae_name           = var.cae_name
   container          = var.container
+  subnet_id = module.network.subnet_id
+  subnetcEnv_id = module.network.subnetcEnv_id
 }
 
 module "database" {

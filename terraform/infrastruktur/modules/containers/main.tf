@@ -13,6 +13,7 @@ resource "azurerm_container_app_environment" "cae" {
   location                   = var.rg_location_static
   resource_group_name        = var.rg_name_static
   log_analytics_workspace_id = azurerm_log_analytics_workspace.law.id
+  infrastructure_subnet_id = var.subnetcEnv_id
 }
 
 data "azurerm_container_app_environment" "containerappenvdata" {

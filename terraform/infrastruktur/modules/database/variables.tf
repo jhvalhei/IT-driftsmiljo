@@ -91,6 +91,7 @@ variable "subnet_id" {
   type        = string
 }
 
+
 variable "privdnszone_id" {
   description = "The id of the private dns zone"
   type        = string

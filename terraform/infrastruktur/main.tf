@@ -172,6 +172,7 @@ module "deployments" {
   vnet_addresspace                  = var.vnet_addresspace
   subnet_name                       = var.subnet_name
   subnet_address_prefixes           = var.subnet_address_prefixes
+  subnetcEnv_address_prefixes = var.subnetcEnv_address_prefixes
   subnet_service_endpoint           = var.subnet_service_endpoint
   subnet_delegation_name            = var.subnet_delegation_name
   subnet_service_delegation_name    = var.subnet_service_delegation_name

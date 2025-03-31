@@ -125,6 +125,7 @@ resource "azurerm_key_vault" "kv" {
 
 resource "random_password" "randomsdbsecret" {
   length = 20
+  special = false
 }
 
 # Database admin password generated with random_string

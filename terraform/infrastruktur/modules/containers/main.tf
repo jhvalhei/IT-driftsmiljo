@@ -54,7 +54,7 @@ resource "azurerm_key_vault_secret" "dbserversecret" {
   name         = "db-server-admin-secret"
   value        = random_password.randomsdbsecret.result
   key_vault_id = var.keyVaultId
-  depends_on = [ azurerm_role_assignment.principal_rbac ]
+  depends_on   = [azurerm_role_assignment.principal_rbac]
 }
 
 
@@ -73,18 +73,18 @@ resource "azurerm_container_app" "capp" {
     value = var.regtoken
   }
 
-  # Password to database, stored in key vault
-  secret {
-    name = "dbsecret"
-    key_vault_secret_id = azurerm_key_vault_secret.dbserversecret.id
-    identity = azurerm_user_assigned_identity.ca_identity.id
-  }
-
   # Github registry credentials
   registry {
     server               = each.value.regserver
     username             = var.reguname
     password_secret_name = lower(each.key)
+  }
+
+  # Password to database, stored in key vault
+  secret {
+    name                = "dbsecret"
+    key_vault_secret_id = azurerm_key_vault_secret.dbserversecret.id
+    identity            = azurerm_user_assigned_identity.ca_identity.id
   }
 
   ingress {
@@ -96,12 +96,12 @@ resource "azurerm_container_app" "capp" {
     external_enabled = each.value.external
   }
   # Identity to access key vault secrets (service principle)
-  
-   identity {
+
+  identity {
     type         = "SystemAssigned, UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.ca_identity.id]
   }
-  
+
 
   template {
     container {
@@ -110,10 +110,10 @@ resource "azurerm_container_app" "capp" {
       cpu    = each.value.cpu
       memory = each.value.memory
       env {
-        name = "DBSECRET"
+        name        = "DBSECRET"
         secret_name = "dbsecret"
       }
     }
   }
-  
+
 }

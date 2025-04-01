@@ -100,7 +100,7 @@ resource "azurerm_key_vault" "kv" {
   resource_group_name        = azurerm_resource_group.rgstorage.name
   tenant_id                  = data.azurerm_client_config.current.tenant_id
   sku_name                   = "premium"
-  enable_rbac_authorization = true
+  enable_rbac_authorization  = true
   soft_delete_retention_days = 7
 
   access_policy {
@@ -143,19 +143,19 @@ module "deployments" {
   cae_name      = var.cae_name
   container     = var.container
   //dbserversecretId = azurerm_key_vault_secret.dbserversecret.id
-  reguname = var.reguname
-  regtoken = var.regtoken
+  reguname   = var.reguname
+  regtoken   = var.regtoken
   keyVaultId = azurerm_key_vault.kv.id
 
   # To use in database
-  postgreserver_name                  = var.postgreserver_name
-  postgreserver_skuname               = var.postgreserver_skuname
-  postgreserver_storage_mb            = var.postgreserver_storage_mb
-  postgreserver_storage_tier          = var.postgreserver_storage_tier
-  postgreserver_backup_retention      = var.postgreserver_backup_retention
-  postgreserver_redundant_backup      = var.postgreserver_redundant_backup
-  postgreserver_auto_grow             = var.postgreserver_auto_grow
-  postgreserver_admin_uname           = var.postgreserver_admin_uname
+  postgreserver_name             = var.postgreserver_name
+  postgreserver_skuname          = var.postgreserver_skuname
+  postgreserver_storage_mb       = var.postgreserver_storage_mb
+  postgreserver_storage_tier     = var.postgreserver_storage_tier
+  postgreserver_backup_retention = var.postgreserver_backup_retention
+  postgreserver_redundant_backup = var.postgreserver_redundant_backup
+  postgreserver_auto_grow        = var.postgreserver_auto_grow
+  postgreserver_admin_uname      = var.postgreserver_admin_uname
   //postgreserver_admin_password        = azurerm_key_vault_secret.dbserversecret.value
   postgreserver_version               = var.postgreserver_version
   postgreserver_public_network_access = var.postgreserver_public_network_access

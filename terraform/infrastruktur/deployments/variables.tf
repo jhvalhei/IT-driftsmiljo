@@ -55,17 +55,17 @@ variable "dbserversecretId" {
 */
 variable "reguname" {
   description = "Username for github container registry"
-  type = string
+  type        = string
 }
 
 variable "regtoken" {
   description = "Password for github container registry"
-  type = string
+  type        = string
 }
 
 variable "keyVaultId" {
   description = "ID of key vault"
-  type = string
+  type        = string
 }
 
 variable "container" {
@@ -152,7 +152,7 @@ variable "postgreserver_auto_grow" {
 variable "postgreserver_admin_uname" {
   description = "Username for the administrator user"
   type        = string
-  default = "ntnuadmin"
+  default     = "ntnuadmin"
 }
 /*
 variable "postgreserver_admin_password" {

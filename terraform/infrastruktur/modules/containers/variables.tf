@@ -57,17 +57,17 @@ variable "dbserversecretId" {
 */
 variable "reguname" {
   description = "Username for github container registry"
-  type = string
+  type        = string
 }
 
 variable "regtoken" {
   description = "Password for github container registry"
-  type = string
+  type        = string
 }
 
 variable "keyVaultId" {
   description = "ID of key vault"
-  type = string
+  type        = string
 }
 
 variable "container" {

@@ -23,8 +23,8 @@ module "containers" {
   subnet_id          = module.network.subnet_id
   cenv_subnet_id     = module.network.cenv_subnet_id
   //dbserversecretId = var.dbserversecretId
-  reguname = var.reguname
-  regtoken = var.regtoken
+  reguname   = var.reguname
+  regtoken   = var.regtoken
   keyVaultId = var.keyVaultId
 }
 

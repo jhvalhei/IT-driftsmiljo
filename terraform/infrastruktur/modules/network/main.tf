@@ -44,9 +44,11 @@ resource "azurerm_subnet" "subnet" {
     }
   }
 }
-resource "azurerm_subnet" "subnetEnv" {
+
+# Subnet for container environment
+resource "azurerm_subnet" "cenv_subnet" {
   depends_on           = [azurerm_virtual_network.vnet]
-  name                 = "cEnv-${var.rg_name_static}"
+  name                 = "container-environment"
   resource_group_name  = var.rg_name_static
   virtual_network_name = "${var.vnet_name}-${var.rg_name_static}"
   address_prefixes     = var.subnetcEnv_address_prefixes

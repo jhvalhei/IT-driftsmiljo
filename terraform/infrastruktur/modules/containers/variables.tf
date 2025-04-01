@@ -45,12 +45,30 @@ variable "subnet_id" {
   type        = string
 }
 
-variable "subnetcEnv_id" {
+variable "cenv_subnet_id" {
   description = "The id of the subnet"
   type        = string
 }
+/*
+variable "dbserversecretId" {
+  description = "ID of db secret"
+  type = string
+}
+*/
+variable "reguname" {
+  description = "Username for github container registry"
+  type = string
+}
 
+variable "regtoken" {
+  description = "Password for github container registry"
+  type = string
+}
 
+variable "keyVaultId" {
+  description = "ID of key vault"
+  type = string
+}
 
 variable "container" {
   description = "A map of variables for container"
@@ -58,8 +76,6 @@ variable "container" {
     name           = string
     revmode        = optional(string, "Single")
     regserver      = optional(string, "ghcr.io")
-    reguname       = string,
-    regtoken       = string
     trafficweight  = optional(number, 100)
     latestrevision = optional(bool, true)
     targetport     = optional(number, 5000)

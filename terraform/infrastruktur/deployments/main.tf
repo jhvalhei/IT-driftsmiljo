@@ -20,8 +20,12 @@ module "containers" {
   law_retention      = var.law_retention
   cae_name           = var.cae_name
   container          = var.container
-  subnet_id = module.network.subnet_id
-  subnetcEnv_id = module.network.subnetcEnv_id
+  subnet_id          = module.network.subnet_id
+  cenv_subnet_id     = module.network.cenv_subnet_id
+  //dbserversecretId = var.dbserversecretId
+  reguname = var.reguname
+  regtoken = var.regtoken
+  keyVaultId = var.keyVaultId
 }
 
 module "database" {
@@ -37,7 +41,7 @@ module "database" {
   postgreserver_redundant_backup      = var.postgreserver_redundant_backup
   postgreserver_auto_grow             = var.postgreserver_auto_grow
   postgreserver_admin_uname           = var.postgreserver_admin_uname
-  postgreserver_admin_password        = var.postgreserver_admin_password
+  postgreserver_admin_password        = module.containers.postgreserver_admin_password
   postgreserver_version               = var.postgreserver_version
   postgreserver_public_network_access = var.postgreserver_public_network_access
   postgreserver_zone                  = var.postgreserver_zone

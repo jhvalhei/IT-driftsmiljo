@@ -70,7 +70,7 @@ jobs:
           SUBMISSION_DIR="studentOppgaver/${{ env.STUDENT_FOLDER }}"  # Preserve original case
           
           echo "Building Docker image: ${{ env.DOCKER_IMAGE_NAME }} from $SUBMISSION_DIR"
-          docker build --build-arg dbsecret=${{ secrets.dbsecret }} -t "${{ env.DOCKER_IMAGE_NAME }}" "$SUBMISSION_DIR"
+          docker build -t "${{ env.DOCKER_IMAGE_NAME }}" "$SUBMISSION_DIR"
 
           echo "Pushing Docker image: ${{ env.DOCKER_IMAGE_NAME }}"
           docker push "${{ env.DOCKER_IMAGE_NAME }}"

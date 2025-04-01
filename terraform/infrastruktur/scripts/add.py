@@ -21,12 +21,9 @@ def write_json(new_data, resource):
         json.dump(file_data, file, indent = 4)
 
 
-
 studentFolderName = os.environ["STUDENT_FOLDER"]
 imageName = os.environ["DOCKER_IMAGE_NAME"]
 db = os.environ["DATABASE"]
-regUname = os.environ["REG_UNAME"]
-regToken = os.environ["REG_TOKEN"]
 
 newResourceGroup = {"rg_"+studentFolderName: {
     "name": "rg-"+studentFolderName,
@@ -47,8 +44,6 @@ with open("./terraform/infrastruktur/containerObj.json",'r+') as file:
     containerObj[studentFolderName]["name"] = studentFolderName
     containerObj[studentFolderName]["image"] = imageName
     containerObj[studentFolderName]["rg"] = "rg-"+studentFolderName
-    containerObj[studentFolderName]["reguname"] = regUname
-    containerObj[studentFolderName]["regtoken"] = regToken
 
 # Append the new variables to .tfvars.json
 write_json(newResourceGroup,"rg_dynamic")

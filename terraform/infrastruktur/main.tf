@@ -10,7 +10,7 @@ terraform {
     storage_account_name = "sabackendsfbgel2py5"
     container_name       = "backend-container"
     key                  = "infragjovik.terraform.tfstate"
-    use_azuread_auth = true
+    use_azuread_auth     = true
   }
 }
 
@@ -25,7 +25,7 @@ provider "azurerm" {
     }
   }
   storage_use_azuread = true
-  subscription_id = "b03b0d6e-32d0-4c8b-a3df-e5054df8ed86"
+  subscription_id     = "b03b0d6e-32d0-4c8b-a3df-e5054df8ed86"
 }
 
 
@@ -44,11 +44,11 @@ resource "azurerm_resource_group" "rgstorage" {
 
 
 resource "azurerm_storage_account" "sa" {
-  name                     = "envstoragegjovik246"
-  resource_group_name      = azurerm_resource_group.rgstorage.name
-  location                 = azurerm_resource_group.rgstorage.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
+  name                      = "envstoragegjovik246"
+  resource_group_name       = azurerm_resource_group.rgstorage.name
+  location                  = azurerm_resource_group.rgstorage.location
+  account_tier              = "Standard"
+  account_replication_type  = "LRS"
   shared_access_key_enabled = false
 }
 
@@ -63,8 +63,8 @@ resource "azurerm_storage_blob" "ctemplate" {
   storage_account_name   = azurerm_storage_account.sa.name
   storage_container_name = azurerm_storage_container.sc.name
   type                   = "Block"
-  source             = "${var.rootPath}${var.ctemplatePath}"
-  content_md5 = "${md5(file("${var.rootPath}${var.ctemplatePath}"))}" // Forces upload of new file upon changes in file
+  source                 = "${var.rootPath}${var.ctemplatePath}"
+  content_md5            = md5(file("${var.rootPath}${var.ctemplatePath}")) // Forces upload of new file upon changes in file
 }
 
 resource "azurerm_storage_blob" "dbtemplate" {
@@ -73,7 +73,7 @@ resource "azurerm_storage_blob" "dbtemplate" {
   storage_container_name = azurerm_storage_container.sc.name
   type                   = "Block"
   source                 = "${var.rootPath}${var.dbtemplatePath}"
-  content_md5 = "${md5(file("${var.rootPath}${var.dbtemplatePath}"))}" // Forces upload of new file upon changes in file
+  content_md5            = md5(file("${var.rootPath}${var.dbtemplatePath}")) // Forces upload of new file upon changes in file
 }
 
 resource "azurerm_storage_blob" "tfvariables" {
@@ -82,7 +82,7 @@ resource "azurerm_storage_blob" "tfvariables" {
   storage_container_name = azurerm_storage_container.sc.name
   type                   = "Block"
   source                 = "${var.rootPath}${var.tfvarsPath}"
-  content_md5 = "${md5(file("${var.rootPath}${var.tfvarsPath}"))}" // Forces upload of new file upon changes in file
+  content_md5            = md5(file("${var.rootPath}${var.tfvarsPath}")) // Forces upload of new file upon changes in file
 }
 
 resource "random_string" "randomkvname" {
@@ -100,6 +100,7 @@ resource "azurerm_key_vault" "kv" {
   resource_group_name        = azurerm_resource_group.rgstorage.name
   tenant_id                  = data.azurerm_client_config.current.tenant_id
   sku_name                   = "premium"
+  enable_rbac_authorization = true
   soft_delete_retention_days = 7
 
   access_policy {
@@ -123,17 +124,8 @@ resource "azurerm_key_vault" "kv" {
   }
 }
 
-resource "random_password" "randomsdbsecret" {
-  length = 20
-  special = false
-}
 
-# Database admin password generated with random_string
-resource "azurerm_key_vault_secret" "dbserversecret" {
-  name         = "db-server-admin-secret"
-  value        = random_password.randomsdbsecret.result
-  key_vault_id = azurerm_key_vault.kv.id
-}
+
 
 
 module "deployments" {
@@ -150,6 +142,10 @@ module "deployments" {
   law_retention = var.law_retention
   cae_name      = var.cae_name
   container     = var.container
+  //dbserversecretId = azurerm_key_vault_secret.dbserversecret.id
+  reguname = var.reguname
+  regtoken = var.regtoken
+  keyVaultId = azurerm_key_vault.kv.id
 
   # To use in database
   postgreserver_name                  = var.postgreserver_name
@@ -160,7 +156,7 @@ module "deployments" {
   postgreserver_redundant_backup      = var.postgreserver_redundant_backup
   postgreserver_auto_grow             = var.postgreserver_auto_grow
   postgreserver_admin_uname           = var.postgreserver_admin_uname
-  postgreserver_admin_password        = azurerm_key_vault_secret.dbserversecret.value
+  //postgreserver_admin_password        = azurerm_key_vault_secret.dbserversecret.value
   postgreserver_version               = var.postgreserver_version
   postgreserver_public_network_access = var.postgreserver_public_network_access
   postgreserver_zone                  = var.postgreserver_zone
@@ -172,7 +168,7 @@ module "deployments" {
   vnet_addresspace                  = var.vnet_addresspace
   subnet_name                       = var.subnet_name
   subnet_address_prefixes           = var.subnet_address_prefixes
-  subnetcEnv_address_prefixes = var.subnetcEnv_address_prefixes
+  subnetcEnv_address_prefixes       = var.subnetcEnv_address_prefixes
   subnet_service_endpoint           = var.subnet_service_endpoint
   subnet_delegation_name            = var.subnet_delegation_name
   subnet_service_delegation_name    = var.subnet_service_delegation_name

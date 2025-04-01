@@ -106,7 +106,6 @@ jobs:
         id: plan
         run: |
           cd terraform/infrastruktur
-          cat terraform.tfvars.json
           pwd
           terraform plan -var-file=terraform.tfvars.json
       

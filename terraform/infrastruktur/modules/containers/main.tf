@@ -63,27 +63,27 @@ resource "azurerm_log_analytics_workspace" "law" {
 resource "azurerm_container_app_environment" "cae" {
   depends_on = [azurerm_log_analytics_workspace.law]
 
-  name                       = var.cae_name
-  location                   = var.rg_location_static
-  resource_group_name        = var.rg_name_static
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.law.id
-  infrastructure_subnet_id   = var.cenv_subnet_id
+  name                               = var.cae_name
+  location                           = var.rg_location_static
+  resource_group_name                = var.rg_name_static
+  log_analytics_workspace_id         = azurerm_log_analytics_workspace.law.id
+  infrastructure_subnet_id           = var.cenv_subnet_id
   infrastructure_resource_group_name = "container-env-infra"
 
-    workload_profile {
-    name = "Consumption"
+  workload_profile {
+    name                  = "Consumption"
     workload_profile_type = "Consumption"
-    maximum_count = 0
-    minimum_count = 0
-  }  
+    maximum_count         = 0
+    minimum_count         = 0
+  }
 }
 
 # Identity for container app
 resource "azurerm_user_assigned_identity" "ca_identity" {
-  for_each = var.ca_identity
+  for_each            = var.ca_identity
   location            = var.rg_location_static
   name                = each.value.name
-  resource_group_name = var.rg_name_static
+  resource_group_name = var.rg_name_static # heller være i conainer RGen?
 }
 # Role assignment so current service principle can manage key vault
 resource "azurerm_role_assignment" "principal_rbac" {
@@ -97,7 +97,7 @@ resource "azurerm_role_assignment" "azurewaysecret_reader" {
 
   scope                = azurerm_key_vault_secret.dbserversecret.resource_versionless_id
   role_definition_name = "Key Vault Secrets User"
-  principal_id = each.value.principal_id
+  principal_id         = each.value.principal_id
   #principal_id         = azurerm_user_assigned_identity.ca_identity.principal_id
 }
 

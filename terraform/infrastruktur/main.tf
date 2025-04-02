@@ -99,26 +99,26 @@ module "deployments" {
   rg_location_static = var.rg_location_static
 
   # To use in containers
-  rg_name_storage = azurerm_resource_group.rgstorage.name
+  rg_name_storage     = azurerm_resource_group.rgstorage.name
   rg_location_storage = azurerm_resource_group.rgstorage.location
-  law_name      = var.law_name
-  law_sku       = var.law_sku
-  law_retention = var.law_retention
-  ca_identity = var.ca_identity
-  cae_name      = var.cae_name
-  container     = var.container
-  reguname   = var.reguname
-  regtoken   = var.regtoken
+  law_name            = var.law_name
+  law_sku             = var.law_sku
+  law_retention       = var.law_retention
+  ca_identity         = var.ca_identity
+  cae_name            = var.cae_name
+  container           = var.container
+  reguname            = var.reguname
+  regtoken            = var.regtoken
 
   # To use in database
-  postgreserver_name             = var.postgreserver_name
-  postgreserver_skuname          = var.postgreserver_skuname
-  postgreserver_storage_mb       = var.postgreserver_storage_mb
-  postgreserver_storage_tier     = var.postgreserver_storage_tier
-  postgreserver_backup_retention = var.postgreserver_backup_retention
-  postgreserver_redundant_backup = var.postgreserver_redundant_backup
-  postgreserver_auto_grow        = var.postgreserver_auto_grow
-  postgreserver_admin_uname      = var.postgreserver_admin_uname
+  postgreserver_name                  = var.postgreserver_name
+  postgreserver_skuname               = var.postgreserver_skuname
+  postgreserver_storage_mb            = var.postgreserver_storage_mb
+  postgreserver_storage_tier          = var.postgreserver_storage_tier
+  postgreserver_backup_retention      = var.postgreserver_backup_retention
+  postgreserver_redundant_backup      = var.postgreserver_redundant_backup
+  postgreserver_auto_grow             = var.postgreserver_auto_grow
+  postgreserver_admin_uname           = var.postgreserver_admin_uname
   postgreserver_version               = var.postgreserver_version
   postgreserver_public_network_access = var.postgreserver_public_network_access
   postgreserver_zone                  = var.postgreserver_zone

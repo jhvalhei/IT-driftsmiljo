@@ -25,13 +25,13 @@ variable "rg_location_static" {
 
 variable "rg_name_storage" {
   description = "Name for storage rg"
-  type = string
+  type        = string
 }
 
 variable "rg_location_storage" {
   description = "Location for storage rg"
-  type = string
-  default = "westeurope"
+  type        = string
+  default     = "westeurope"
 }
 
 # Identity - KEY NAME OF EACH OBJECT MUST BE IDENTICAL TO CONTAINER APP NAME

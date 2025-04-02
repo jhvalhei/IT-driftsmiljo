@@ -19,12 +19,6 @@ resource "azurerm_container_app_environment" "cae" {
   //infrastructure_resource_group_name = 
 }
 
-data "azurerm_container_app_environment" "containerappenvdata" {
-  depends_on          = [azurerm_container_app_environment.cae]
-  name                = azurerm_container_app_environment.cae.name
-  resource_group_name = azurerm_container_app_environment.cae.resource_group_name
-}
-
 # Identity for container app
 resource "azurerm_user_assigned_identity" "ca_identity" {
   location            = var.rg_location_static
@@ -59,11 +53,11 @@ resource "azurerm_key_vault_secret" "dbserversecret" {
 
 
 resource "azurerm_container_app" "capp" {
-  depends_on = [data.azurerm_container_app_environment.containerappenvdata]
+  depends_on          = [azurerm_container_app_environment.cae]
   for_each   = var.container
 
-  name                         = lower("${each.value.name}")
-  container_app_environment_id = data.azurerm_container_app_environment.containerappenvdata.id
+  name                         = lower(each.value.name)
+  container_app_environment_id = azurerm_container_app_environment.cae.id
   resource_group_name          = each.value.rg
   revision_mode                = each.value.revmode
 

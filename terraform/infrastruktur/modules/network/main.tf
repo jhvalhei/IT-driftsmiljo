@@ -94,6 +94,17 @@ resource "azurerm_subnet" "subnet_capp" {
   }
 }
 
+# Subnet for container environment
+resource "azurerm_subnet" "cenv_subnet" {
+  depends_on           = [azurerm_virtual_network.vnet]
+  name                 = "container-environment"
+  resource_group_name  = var.rg_name_static
+  virtual_network_name = "${var.vnet_name}-${var.rg_name_static}"
+  address_prefixes     = var.subnetcEnv_address_prefixes
+  service_endpoints    = var.subnet_service_endpoint
+
+}
+
 resource "azurerm_private_dns_zone" "privdnszone" {
   name                = var.privdnszone_name
   resource_group_name = var.rg_name_static

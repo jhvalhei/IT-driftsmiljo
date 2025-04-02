@@ -47,8 +47,26 @@ variable "cae_name" {
   type        = string
   default     = "CA-Enviornment001"
 }
+/**
+variable "dbserversecretId" {
+  description = "ID of db secret"
+  type = string
+}
+*/
+variable "reguname" {
+  description = "Username for github container registry"
+  type        = string
+}
 
+variable "regtoken" {
+  description = "Password for github container registry"
+  type        = string
+}
 
+variable "keyVaultId" {
+  description = "ID of key vault"
+  type        = string
+}
 
 variable "container" {
   description = "A map of variables for container"
@@ -56,8 +74,6 @@ variable "container" {
     name           = string
     revmode        = optional(string, "Single")
     regserver      = optional(string, "ghcr.io")
-    reguname       = string
-    regtoken       = string
     trafficweight  = optional(number, 100)
     latestrevision = optional(bool, true)
     targetport     = optional(number, 5000)
@@ -136,13 +152,14 @@ variable "postgreserver_auto_grow" {
 variable "postgreserver_admin_uname" {
   description = "Username for the administrator user"
   type        = string
+  default     = "ntnuadmin"
 }
-
+/*
 variable "postgreserver_admin_password" {
   description = "Password for the administrator user"
   type        = string
 }
-
+*/
 variable "postgreserver_version" {
   description = "Version number of the postgresql server"
   type        = string
@@ -222,7 +239,12 @@ variable "subnet_capp_name" {
 variable "subnet_db_address_prefixes" {
   description = "The address prefixes for the database subnet"
   type        = set(string)
-  default     = ["10.0.2.0/24"]
+  default     = ["10.0.2.0/20"]
+}
+variable "subnetcEnv_address_prefixes" {
+  description = "The address prefixes for the subnet"
+  type        = set(string)
+  default     = ["10.0.32.0/20"]
 }
 
 variable "subnet_capp_address_prefixes" {

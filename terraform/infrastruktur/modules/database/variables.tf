@@ -61,6 +61,7 @@ variable "postgreserver_auto_grow" {
 variable "postgreserver_admin_uname" {
   description = "Username for the administrator user"
   type        = string
+  default     = "ntnuadmin"
 }
 
 variable "postgreserver_admin_password" {
@@ -90,6 +91,7 @@ variable "subnet_id" {
   description = "The id of the subnet"
   type        = string
 }
+
 
 variable "privdnszone_id" {
   description = "The id of the private dns zone"

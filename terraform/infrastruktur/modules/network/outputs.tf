@@ -7,8 +7,12 @@ output "subnet_capp_id" {
   description = "The id of the subnet for the container apps"
   value       = azurerm_subnet.subnet_capp.id
 }
-
+output "cenv_subnet_id" {
+  description = "The id of the cenv subnet"
+  value       = azurerm_subnet.cenv_subnet.id
+}
 output "privdnszone_id" {
   description = "The id of the provate dns zone"
   value       = azurerm_private_dns_zone.privdnszone.id
 }
+

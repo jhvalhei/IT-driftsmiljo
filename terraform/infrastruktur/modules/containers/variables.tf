@@ -16,11 +16,6 @@ variable "rg_location_static" {
   default     = "westeurope"
 }
 
-variable "subnet_id" {
-  description = "The id of the subnet"
-  type        = string
-}
-
 variable "law_name" {
   description = "Name of the log analytics workspace"
   type        = string
@@ -43,11 +38,6 @@ variable "cae_name" {
   description = "Name of the container app enviorment"
   type        = string
   default     = "CA-Enviornment001"
-}
-
-variable "subnet_id" {
-  description = "The id of the subnet"
-  type        = string
 }
 
 variable "cenv_subnet_id" {

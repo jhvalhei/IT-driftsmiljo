@@ -17,6 +17,7 @@ resource "azurerm_network_security_group" "nsg_capp" {
     protocol                   = "Tcp"
     source_address_prefix      = "Internet"
     destination_address_prefix = "*"
+    source_port_range = "*"
     destination_port_ranges    = ["443"]
   }
 
@@ -28,6 +29,7 @@ resource "azurerm_network_security_group" "nsg_capp" {
     protocol                   = "*"
     source_address_prefix      = "VirtualNetwork"
     destination_address_prefix = "*"
+    source_port_range = "*"
     destination_port_range     = "*"
   }
 
@@ -39,6 +41,7 @@ resource "azurerm_network_security_group" "nsg_capp" {
     protocol                   = "*"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
+    source_port_range = "*"
     destination_port_range     = "*"
   }
 }
@@ -78,6 +81,7 @@ resource "azurerm_subnet" "subnet_db" {
   }
 }
 
+# Subnet for container environment
 resource "azurerm_subnet" "subnet_capp" {
   depends_on           = [azurerm_virtual_network.vnet]
   name                 = "${var.subnet_capp_name}-${var.rg_name_static}"
@@ -92,17 +96,6 @@ resource "azurerm_subnet" "subnet_capp" {
       actions = var.subnet_capp_service_delegation_actions
     }
   }
-}
-
-# Subnet for container environment
-resource "azurerm_subnet" "cenv_subnet" {
-  depends_on           = [azurerm_virtual_network.vnet]
-  name                 = "container-environment"
-  resource_group_name  = var.rg_name_static
-  virtual_network_name = "${var.vnet_name}-${var.rg_name_static}"
-  address_prefixes     = var.subnetcEnv_address_prefixes
-  service_endpoints    = var.subnet_service_endpoint
-
 }
 
 resource "azurerm_private_dns_zone" "privdnszone" {

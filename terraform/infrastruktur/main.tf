@@ -163,8 +163,6 @@ module "deployments" {
   postdb                              = var.postdb
 
   #To use in network
-  subnet_service_delegation_name    = var.subnet_service_delegation_name
-  subnet_service_delegation_actions = var.subnet_service_delegation_actions
   nsg_name_db                            = var.nsg_name_db
   nsg_name_capp                          = var.nsg_name_capp
   vnet_name                              = var.vnet_name

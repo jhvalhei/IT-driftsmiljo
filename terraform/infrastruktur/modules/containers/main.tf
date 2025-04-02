@@ -16,7 +16,14 @@ resource "azurerm_container_app_environment" "cae" {
   resource_group_name        = var.rg_name_static
   log_analytics_workspace_id = azurerm_log_analytics_workspace.law.id
   infrastructure_subnet_id   = var.cenv_subnet_id
-  //infrastructure_resource_group_name = 
+  infrastructure_resource_group_name = "container-env-infra"
+
+    workload_profile {
+    name = "Consumption"
+    workload_profile_type = "Consumption"
+    maximum_count = 0
+    minimum_count = 0
+  }  
 }
 
 # Identity for container app
@@ -53,7 +60,7 @@ resource "azurerm_key_vault_secret" "dbserversecret" {
 
 
 resource "azurerm_container_app" "capp" {
-  depends_on          = [azurerm_container_app_environment.cae]
+  depends_on = [azurerm_container_app_environment.cae]
   for_each   = var.container
 
   name                         = lower(each.value.name)
@@ -108,6 +115,7 @@ resource "azurerm_container_app" "capp" {
         secret_name = "dbsecret"
       }
     }
+    revision_suffix = "v1"
   }
 
 }

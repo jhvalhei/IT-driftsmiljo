@@ -56,7 +56,6 @@ variable "rg_location_static" {
 
 # Module: containerapp
 
-
 variable "law_name" {
   description = "Name of the log analytics workspace"
   type        = string
@@ -73,6 +72,14 @@ variable "law_retention" {
   description = "Renention of data for logs analytics workspace"
   type        = number
   default     = 30
+}
+
+# Identity - KEY NAME OF EACH OBJECT MUST BE IDENTICAL TO CONTAINER APP NAME
+variable "ca_identity" {
+  description = "Identities for container access to key vault"
+  type = map(object({
+    name = string # "ca_identity_<cApp name>
+  }))
 }
 
 variable "cae_name" {

@@ -1,5 +1,57 @@
 data "azurerm_client_config" "current" {}
 
+
+resource "random_string" "randomkvname" {
+  length  = 10
+  special = false
+  upper   = false
+}
+
+# Key vault for storage of sensitive values.
+resource "azurerm_key_vault" "kv" {
+  name                       = "keyvault${random_string.randomkvname.result}"
+  location                   = var.rg_location_storage
+  resource_group_name        = var.rg_name_storage
+  tenant_id                  = data.azurerm_client_config.current.tenant_id
+  sku_name                   = "premium"
+  enable_rbac_authorization  = true
+  soft_delete_retention_days = 7
+
+  access_policy {
+    tenant_id = data.azurerm_client_config.current.tenant_id
+    object_id = data.azurerm_client_config.current.object_id
+
+    key_permissions = [
+      "Create",
+      "Get",
+      "Delete",
+      "Purge"
+    ]
+
+    secret_permissions = [
+      "Set",
+      "Get",
+      "Delete",
+      "Purge",
+      "Recover"
+    ]
+  }
+}
+
+resource "random_password" "randomsdbsecret" {
+  length  = 20
+  special = false
+}
+
+# Database admin password generated with random_string
+resource "azurerm_key_vault_secret" "dbserversecret" {
+  name         = "db-server-admin-secret"
+  value        = random_password.randomsdbsecret.result
+  key_vault_id = azurerm_key_vault.kv.id
+  depends_on   = [azurerm_role_assignment.principal_rbac]
+}
+
+
 resource "azurerm_log_analytics_workspace" "law" {
   name                = var.law_name
   location            = var.rg_location_static
@@ -28,35 +80,28 @@ resource "azurerm_container_app_environment" "cae" {
 
 # Identity for container app
 resource "azurerm_user_assigned_identity" "ca_identity" {
+  for_each = var.ca_identity
   location            = var.rg_location_static
-  name                = "ca_identity"
+  name                = each.value.name
   resource_group_name = var.rg_name_static
 }
-# Role assignment so identity can access key vault
+# Role assignment so current service principle can manage key vault
 resource "azurerm_role_assignment" "principal_rbac" {
-  scope                = var.keyVaultId
+  scope                = azurerm_key_vault.kv.id
   role_definition_name = "Key Vault Secrets Officer"
   principal_id         = data.azurerm_client_config.current.object_id
 }
-# Role assignment so identity can use secrets
+# Role assignment so that identity (container app) can use secrets
 resource "azurerm_role_assignment" "azurewaysecret_reader" {
+  for_each = azurerm_user_assigned_identity.ca_identity
+
   scope                = azurerm_key_vault_secret.dbserversecret.resource_versionless_id
   role_definition_name = "Key Vault Secrets User"
-  principal_id         = azurerm_user_assigned_identity.ca_identity.principal_id
+  principal_id = each.value.principal_id
+  #principal_id         = azurerm_user_assigned_identity.ca_identity.principal_id
 }
 
-resource "random_password" "randomsdbsecret" {
-  length  = 20
-  special = false
-}
 
-# Database admin password generated with random_string
-resource "azurerm_key_vault_secret" "dbserversecret" {
-  name         = "db-server-admin-secret"
-  value        = random_password.randomsdbsecret.result
-  key_vault_id = var.keyVaultId
-  depends_on   = [azurerm_role_assignment.principal_rbac]
-}
 
 
 resource "azurerm_container_app" "capp" {
@@ -85,7 +130,7 @@ resource "azurerm_container_app" "capp" {
   secret {
     name                = "dbsecret"
     key_vault_secret_id = azurerm_key_vault_secret.dbserversecret.id
-    identity            = azurerm_user_assigned_identity.ca_identity.id
+    identity            = azurerm_user_assigned_identity.ca_identity[each.key].id
   }
 
   ingress {
@@ -96,11 +141,11 @@ resource "azurerm_container_app" "capp" {
     target_port      = each.value.targetport
     external_enabled = each.value.external
   }
-  # Identity to access key vault secrets (service principle)
 
+  # Identity used to access key vault secrets (service principle)
   identity {
     type         = "SystemAssigned, UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.ca_identity.id]
+    identity_ids = [azurerm_user_assigned_identity.ca_identity[each.key].id]
   }
 
 

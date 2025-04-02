@@ -16,6 +16,28 @@ variable "rg_location_static" {
   default     = "westeurope"
 }
 
+variable "rg_name_storage" {
+  description = "Name for storage rg"
+  type = string
+}
+
+variable "rg_location_storage" {
+  description = "Location for storage rg"
+  type = string
+  default = "westeurope"
+}
+
+# Identity - KEY NAME OF EACH OBJECT MUST BE IDENTICAL TO CONTAINER APP NAME
+variable "ca_identity" {
+  description = "Identities for container access to key vault"
+  type = map(object({
+    name = string # "ca_identity_<cApp name>
+  }))
+}
+
+
+
+
 variable "law_name" {
   description = "Name of the log analytics workspace"
   type        = string
@@ -57,11 +79,6 @@ variable "reguname" {
 
 variable "regtoken" {
   description = "Password for github container registry"
-  type        = string
-}
-
-variable "keyVaultId" {
-  description = "ID of key vault"
   type        = string
 }
 

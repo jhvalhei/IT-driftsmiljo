@@ -99,16 +99,17 @@ module "deployments" {
   rg_location_static = var.rg_location_static
 
   # To use in containers
-  rg_name_storage     = azurerm_resource_group.rgstorage.name
-  rg_location_storage = azurerm_resource_group.rgstorage.location
-  law_name            = var.law_name
-  law_sku             = var.law_sku
-  law_retention       = var.law_retention
-  ca_identity         = var.ca_identity
-  cae_name            = var.cae_name
-  container           = var.container
-  reguname            = var.reguname
-  regtoken            = var.regtoken
+  rg_name_storage         = azurerm_resource_group.rgstorage.name
+  rg_location_storage     = azurerm_resource_group.rgstorage.location
+  law_name                = var.law_name
+  law_sku                 = var.law_sku
+  law_retention           = var.law_retention
+  ca_identity             = var.ca_identity
+  random_password_db_capp = var.random_password_db_capp
+  cae_name                = var.cae_name
+  container               = var.container
+  reguname                = var.reguname
+  regtoken                = var.regtoken
 
   # To use in database
   postgreserver_name                  = var.postgreserver_name

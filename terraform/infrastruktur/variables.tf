@@ -22,19 +22,12 @@ variable "tfvarsPath" {
 }
 
 # resource group
-
 variable "rg_dynamic" {
   description = "A map of resource groups variables"
   type = map(object({
     name     = string
-    location = string
+    location = optional(string, "westeurope")
   }))
-  default = {
-    "dfrg" = {
-      name     = "dfrg"
-      location = "westeurpoe"
-    }
-  }
 }
 
 
@@ -74,11 +67,19 @@ variable "law_retention" {
   default     = 30
 }
 
+variable "random_password_db_capp" {
+  description = "Generates random password for db secrets"
+  type = map(object({
+    name = string # "db_password_<cApp name>"
+  }))
+}
+
 # Identity - KEY NAME OF EACH OBJECT MUST BE IDENTICAL TO CONTAINER APP NAME
 variable "ca_identity" {
   description = "Identities for container access to key vault"
   type = map(object({
-    name = string # "ca_identity_<cApp name>
+    name = string # "ca_identity_<cApp name>"
+    rg   = string
   }))
 }
 

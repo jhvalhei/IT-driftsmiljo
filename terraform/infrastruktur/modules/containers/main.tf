@@ -38,18 +38,40 @@ resource "azurerm_key_vault" "kv" {
   }
 }
 
-resource "random_password" "randomsdbsecret" {
+resource "random_password" "db_admin_serversecret" {
   length  = 20
   special = false
 }
 
+
+
 # Database admin password generated with random_string
-resource "azurerm_key_vault_secret" "dbserversecret" {
+resource "azurerm_key_vault_secret" "db_admin_serversecret" {
   name         = "db-server-admin-secret"
-  value        = random_password.randomsdbsecret.result
+  value        = random_password.db_admin_serversecret.result
   key_vault_id = azurerm_key_vault.kv.id
   depends_on   = [azurerm_role_assignment.principal_rbac]
 }
+
+/*
+resource "random_password" "db_capp_secret" {
+  for_each = var.random_password_db_capp
+
+  length = 20
+  special = false
+}
+*/
+
+/*
+# DB password for each container
+resource "azurerm_key_vault_secret" "db_capp_secret" {
+  for_each = var.db_capp_secret
+
+  name = each.value.name
+  value = random_password.db_capp_secret[each.key].value
+}
+*/
+
 
 
 resource "azurerm_log_analytics_workspace" "law" {
@@ -78,30 +100,32 @@ resource "azurerm_container_app_environment" "cae" {
   }
 }
 
-# Identity for container app
-resource "azurerm_user_assigned_identity" "ca_identity" {
-  for_each            = var.ca_identity
-  location            = var.rg_location_static
-  name                = each.value.name
-  resource_group_name = var.rg_name_static # heller være i conainer RGen?
-}
-# Role assignment so current service principle can manage key vault
+# Grant key vault management access to service principle
 resource "azurerm_role_assignment" "principal_rbac" {
   scope                = azurerm_key_vault.kv.id
   role_definition_name = "Key Vault Secrets Officer"
   principal_id         = data.azurerm_client_config.current.object_id
 }
-# Role assignment so that identity (container app) can use secrets
+
+
+
+# Identity for container app
+resource "azurerm_user_assigned_identity" "ca_identity" {
+  for_each = var.ca_identity
+
+  location            = var.rg_location_static
+  name                = each.value.name
+  resource_group_name = each.value.rg # Reference rg directly?
+}
+
+# Grant secret accss to each identity
 resource "azurerm_role_assignment" "azurewaysecret_reader" {
   for_each = azurerm_user_assigned_identity.ca_identity
 
-  scope                = azurerm_key_vault_secret.dbserversecret.resource_versionless_id
+  scope                = azurerm_key_vault_secret.db_admin_serversecret.resource_versionless_id
   role_definition_name = "Key Vault Secrets User"
   principal_id         = each.value.principal_id
-  #principal_id         = azurerm_user_assigned_identity.ca_identity.principal_id
 }
-
-
 
 
 resource "azurerm_container_app" "capp" {
@@ -115,7 +139,7 @@ resource "azurerm_container_app" "capp" {
 
   # Password for github container registry, stored in github secrets
   secret {
-    name  = lower(each.key)
+    name  = "ghcr-password"
     value = var.regtoken
   }
 
@@ -123,13 +147,13 @@ resource "azurerm_container_app" "capp" {
   registry {
     server               = each.value.regserver
     username             = var.reguname
-    password_secret_name = lower(each.key)
+    password_secret_name = "ghcr-password"
   }
 
   # Password to database, stored in key vault
   secret {
     name                = "dbsecret"
-    key_vault_secret_id = azurerm_key_vault_secret.dbserversecret.id
+    key_vault_secret_id = azurerm_key_vault_secret.db_admin_serversecret.id
     identity            = azurerm_user_assigned_identity.ca_identity[each.key].id
   }
 

@@ -102,16 +102,8 @@ variable "postdb" {
   description = "Variables for a postgresql database"
   type = map(object({
     name            = string
-    charset         = string
-    collation       = string
-    prevent_destroy = bool
+    charset         = optional(string, "UTF8")
+    collation       = optional(string, "en_US.utf8")
+    prevent_destroy = optional(bool, false)
   }))
-  default = {
-    "dfpostdb" = {
-      name            = "dfdapostdb"
-      charset         = "UTF8"
-      collation       = "en_US.utf8"
-      prevent_destroy = false
-    }
-  }
 }

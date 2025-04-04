@@ -27,11 +27,19 @@ variable "rg_location_storage" {
   default     = "westeurope"
 }
 
+variable "random_password_db_capp" {
+  description = "Generates random password for db secrets"
+  type = map(object({
+    name = string # "db_password_<cApp name>"
+  }))
+}
+
 # Identity - KEY NAME OF EACH OBJECT MUST BE IDENTICAL TO CONTAINER APP NAME
 variable "ca_identity" {
   description = "Identities for container access to key vault"
   type = map(object({
-    name = string # "ca_identity_<cApp name>
+    name = string # "ca_id_<cApp name>"
+    rg   = string
   }))
 }
 
@@ -90,7 +98,7 @@ variable "container" {
     regserver      = optional(string, "ghcr.io")
     trafficweight  = optional(number, 100)
     latestrevision = optional(bool, true)
-    targetport     = optional(number, 5000)
+    targetport     = optional(number, 8080)
     external       = optional(bool, true)
     image          = string
     cpu            = optional(number, 0.25)

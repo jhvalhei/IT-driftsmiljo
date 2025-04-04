@@ -164,6 +164,11 @@ resource "azurerm_container_app" "capp" {
     }
     target_port      = each.value.targetport
     external_enabled = each.value.external
+    ip_security_restriction {
+      name = "Container app IP restriction allow"
+      action = "Allow"
+      ip_address_range = each.value.ip_restriction_range
+    }
   }
 
   # Identity used to access key vault secrets (service principle)

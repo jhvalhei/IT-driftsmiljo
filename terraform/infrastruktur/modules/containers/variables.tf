@@ -100,6 +100,7 @@ variable "container" {
     latestrevision = optional(bool, true)
     targetport     = optional(number, 8080)
     external       = optional(bool, true)
+    ip_restriction_range = string
     image          = string
     cpu            = optional(number, 0.25)
     memory         = optional(string, "0.5Gi")

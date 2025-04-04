@@ -17,7 +17,7 @@ resource "azurerm_network_security_group" "nsg_capp" {
     protocol                   = "Tcp"
     source_address_prefix      = "Internet"
     destination_address_prefix = "*"
-    source_port_range = "*"
+    source_port_range          = "*"
     destination_port_ranges    = ["443"]
   }
 
@@ -29,7 +29,7 @@ resource "azurerm_network_security_group" "nsg_capp" {
     protocol                   = "*"
     source_address_prefix      = "VirtualNetwork"
     destination_address_prefix = "*"
-    source_port_range = "*"
+    source_port_range          = "*"
     destination_port_range     = "*"
   }
 
@@ -41,7 +41,7 @@ resource "azurerm_network_security_group" "nsg_capp" {
     protocol                   = "*"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
-    source_port_range = "*"
+    source_port_range          = "*"
     destination_port_range     = "*"
   }
 }

@@ -23,6 +23,32 @@ variable "rg_location_static" {
 
 # Module: containers
 
+variable "rg_name_storage" {
+  description = "Name for storage rg"
+  type        = string
+}
+
+variable "rg_location_storage" {
+  description = "Location for storage rg"
+  type        = string
+  default     = "westeurope"
+}
+
+variable "random_password_db_capp" {
+  description = "Generates random password for db secrets"
+  type = map(object({
+    name = string # "db_password_<cApp name>"
+  }))
+}
+
+# Identity - KEY NAME OF EACH OBJECT MUST BE IDENTICAL TO CONTAINER APP NAME
+variable "ca_identity" {
+  description = "Identities for container access to key vault"
+  type = map(object({
+    name = string # "ca_identity_<cApp name>"
+    rg   = string
+  }))
+}
 
 variable "law_name" {
   description = "Name of the log analytics workspace"
@@ -60,11 +86,6 @@ variable "reguname" {
 
 variable "regtoken" {
   description = "Password for github container registry"
-  type        = string
-}
-
-variable "keyVaultId" {
-  description = "ID of key vault"
   type        = string
 }
 
@@ -182,18 +203,10 @@ variable "postdb" {
   description = "Variables for a postgresql database"
   type = map(object({
     name            = string
-    charset         = string
-    collation       = string
-    prevent_destroy = bool
+    charset         = optional(string, "UTF8")
+    collation       = optional(string, "en_US.utf8")
+    prevent_destroy = optional(bool, false)
   }))
-  default = {
-    "dfpostdb" = {
-      name            = "dfdapostdb"
-      charset         = "UTF8"
-      collation       = "en_US.utf8"
-      prevent_destroy = false
-    }
-  }
 }
 
 # Module: network

@@ -85,44 +85,6 @@ resource "azurerm_storage_blob" "tfvariables" {
   content_md5            = md5(file("${var.rootPath}${var.tfvarsPath}")) // Forces upload of new file upon changes in file
 }
 
-resource "random_string" "randomkvname" {
-  length  = 10
-  special = false
-  upper   = false
-}
-
-data "azurerm_client_config" "current" {}
-
-# Key vault for storage of sensitive values.
-resource "azurerm_key_vault" "kv" {
-  name                       = "keyvault${random_string.randomkvname.result}"
-  location                   = azurerm_resource_group.rgstorage.location
-  resource_group_name        = azurerm_resource_group.rgstorage.name
-  tenant_id                  = data.azurerm_client_config.current.tenant_id
-  sku_name                   = "premium"
-  enable_rbac_authorization  = true
-  soft_delete_retention_days = 7
-
-  access_policy {
-    tenant_id = data.azurerm_client_config.current.tenant_id
-    object_id = data.azurerm_client_config.current.object_id
-
-    key_permissions = [
-      "Create",
-      "Get",
-      "Delete",
-      "Purge"
-    ]
-
-    secret_permissions = [
-      "Set",
-      "Get",
-      "Delete",
-      "Purge",
-      "Recover"
-    ]
-  }
-}
 
 
 
@@ -137,26 +99,27 @@ module "deployments" {
   rg_location_static = var.rg_location_static
 
   # To use in containers
-  law_name      = var.law_name
-  law_sku       = var.law_sku
-  law_retention = var.law_retention
-  cae_name      = var.cae_name
-  container     = var.container
-  //dbserversecretId = azurerm_key_vault_secret.dbserversecret.id
-  reguname   = var.reguname
-  regtoken   = var.regtoken
-  keyVaultId = azurerm_key_vault.kv.id
+  rg_name_storage         = azurerm_resource_group.rgstorage.name
+  rg_location_storage     = azurerm_resource_group.rgstorage.location
+  law_name                = var.law_name
+  law_sku                 = var.law_sku
+  law_retention           = var.law_retention
+  ca_identity             = var.ca_identity
+  random_password_db_capp = var.random_password_db_capp
+  cae_name                = var.cae_name
+  container               = var.container
+  reguname                = var.reguname
+  regtoken                = var.regtoken
 
   # To use in database
-  postgreserver_name             = var.postgreserver_name
-  postgreserver_skuname          = var.postgreserver_skuname
-  postgreserver_storage_mb       = var.postgreserver_storage_mb
-  postgreserver_storage_tier     = var.postgreserver_storage_tier
-  postgreserver_backup_retention = var.postgreserver_backup_retention
-  postgreserver_redundant_backup = var.postgreserver_redundant_backup
-  postgreserver_auto_grow        = var.postgreserver_auto_grow
-  postgreserver_admin_uname      = var.postgreserver_admin_uname
-  //postgreserver_admin_password        = azurerm_key_vault_secret.dbserversecret.value
+  postgreserver_name                  = var.postgreserver_name
+  postgreserver_skuname               = var.postgreserver_skuname
+  postgreserver_storage_mb            = var.postgreserver_storage_mb
+  postgreserver_storage_tier          = var.postgreserver_storage_tier
+  postgreserver_backup_retention      = var.postgreserver_backup_retention
+  postgreserver_redundant_backup      = var.postgreserver_redundant_backup
+  postgreserver_auto_grow             = var.postgreserver_auto_grow
+  postgreserver_admin_uname           = var.postgreserver_admin_uname
   postgreserver_version               = var.postgreserver_version
   postgreserver_public_network_access = var.postgreserver_public_network_access
   postgreserver_zone                  = var.postgreserver_zone

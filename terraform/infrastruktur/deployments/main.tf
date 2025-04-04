@@ -11,20 +11,23 @@ resource "azurerm_resource_group" "rg_static" {
 }
 
 module "containers" {
-  depends_on         = [azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_static]
-  source             = "../modules/containers"
-  rg_name_static     = var.rg_name_static
-  rg_location_static = var.rg_location_static
-  law_name           = var.law_name
-  law_sku            = var.law_sku
-  law_retention      = var.law_retention
-  cae_name           = var.cae_name
-  container          = var.container
-  cenv_subnet_id     = module.network.subnet_capp_id
+  depends_on              = [azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_static]
+  source                  = "../modules/containers"
+  rg_name_static          = var.rg_name_static
+  rg_location_static      = var.rg_location_static
+  rg_name_storage         = var.rg_name_storage
+  rg_location_storage     = var.rg_location_storage
+  law_name                = var.law_name
+  law_sku                 = var.law_sku
+  law_retention           = var.law_retention
+  ca_identity             = var.ca_identity
+  random_password_db_capp = var.random_password_db_capp
+  cae_name                = var.cae_name
+  container               = var.container
+  cenv_subnet_id          = module.network.subnet_capp_id
   //dbserversecretId = var.dbserversecretId
-  reguname   = var.reguname
-  regtoken   = var.regtoken
-  keyVaultId = var.keyVaultId
+  reguname = var.reguname
+  regtoken = var.regtoken
 }
 
 module "database" {

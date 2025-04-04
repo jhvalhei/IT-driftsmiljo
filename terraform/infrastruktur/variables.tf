@@ -6,13 +6,13 @@ variable "rootPath" {
 variable "ctemplatePath" {
   description = "Path to container template file"
   type        = string
-  default     = "/terraform/infrastruktur/containerObj.json"
+  default     = "/terraform/infrastruktur/templates/containerObj.json"
 }
 
 variable "dbtemplatePath" {
   description = "Path to database template file"
   type        = string
-  default     = "/terraform/infrastruktur/databaseObj.json"
+  default     = "/terraform/infrastruktur/templates/databaseObj.json"
 }
 
 variable "tfvarsPath" {

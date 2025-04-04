@@ -33,7 +33,7 @@ newResourceGroup = {"rg_"+studentFolderName: {
 
 # Add new container to .tfvars.json
 # First create new container object
-with open("./terraform/infrastruktur/containerObj.json",'r+') as file:
+with open("./terraform/infrastruktur/templates/containerObj.json",'r+') as file:
 
     # Load data from container template into a dict.
     containerObj = json.load(file)
@@ -51,7 +51,7 @@ write_json(containerObj,"container")
 # Only add database resource if student program has a database
 if (db == "true"):
 
-    with open("./terraform/infrastruktur/databaseObj.json",'r+') as file:
+    with open("./terraform/infrastruktur/templates/databaseObj.json",'r+') as file:
 
         # Load data from database template into a dict.
         databaseObj = json.load(file)

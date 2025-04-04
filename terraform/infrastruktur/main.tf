@@ -41,8 +41,6 @@ resource "azurerm_resource_group" "rgstorage" {
 
 
 # Storage of terraform variables
-
-
 resource "azurerm_storage_account" "sa" {
   name                      = "envstoragegjovik246"
   resource_group_name       = azurerm_resource_group.rgstorage.name
@@ -85,20 +83,23 @@ resource "azurerm_storage_blob" "tfvariables" {
   content_md5            = md5(file("${var.rootPath}${var.tfvarsPath}")) // Forces upload of new file upon changes in file
 }
 
+resource "azurerm_resource_group" "rg_dynamic" {
+  for_each = var.rg_dynamic
 
+  name     = each.value.name
+  location = each.value.location
+}
 
+resource "azurerm_resource_group" "rg_static" {
+  name     = var.rg_name_static
+  location = var.rg_location_static
+}
 
-
-
-module "deployments" {
-  source = "./deployments"
-
-  # To use in deployments
-  rg_dynamic         = var.rg_dynamic
-  rg_name_static     = var.rg_name_static
-  rg_location_static = var.rg_location_static
-
-  # To use in containers
+module "containers" {
+  depends_on              = [azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_static]
+  source                  = "./modules/containers"
+  rg_name_static          = var.rg_name_static
+  rg_location_static      = var.rg_location_static
   rg_name_storage         = azurerm_resource_group.rgstorage.name
   rg_location_storage     = azurerm_resource_group.rgstorage.location
   law_name                = var.law_name
@@ -108,10 +109,17 @@ module "deployments" {
   random_password_db_capp = var.random_password_db_capp
   cae_name                = var.cae_name
   container               = var.container
-  reguname                = var.reguname
-  regtoken                = var.regtoken
+  cenv_subnet_id          = module.network.subnet_capp_id
+  //dbserversecretId = var.dbserversecretId
+  reguname = var.reguname
+  regtoken = var.regtoken
+}
 
-  # To use in database
+module "database" {
+  depends_on                          = [azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_static, module.network]
+  source                              = "./modules/database"
+  rg_name_static                      = var.rg_name_static
+  rg_location_static                  = var.rg_location_static
   postgreserver_name                  = var.postgreserver_name
   postgreserver_skuname               = var.postgreserver_skuname
   postgreserver_storage_mb            = var.postgreserver_storage_mb
@@ -120,12 +128,20 @@ module "deployments" {
   postgreserver_redundant_backup      = var.postgreserver_redundant_backup
   postgreserver_auto_grow             = var.postgreserver_auto_grow
   postgreserver_admin_uname           = var.postgreserver_admin_uname
+  postgreserver_admin_password        = module.containers.postgreserver_admin_password
   postgreserver_version               = var.postgreserver_version
   postgreserver_public_network_access = var.postgreserver_public_network_access
   postgreserver_zone                  = var.postgreserver_zone
   postdb                              = var.postdb
+  subnet_id                           = module.network.subnet_db_id
+  privdnszone_id                      = module.network.privdnszone_id
+}
 
-  #To use in network
+module "network" {
+  depends_on                             = [azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_static]
+  source                                 = "./modules/network"
+  rg_name_static                         = var.rg_name_static
+  rg_location_static                     = var.rg_location_static
   nsg_name_db                            = var.nsg_name_db
   nsg_name_capp                          = var.nsg_name_capp
   vnet_name                              = var.vnet_name

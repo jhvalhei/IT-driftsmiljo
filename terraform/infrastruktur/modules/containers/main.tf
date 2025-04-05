@@ -154,7 +154,7 @@ resource "azurerm_container_app" "capp" {
   secret {
     name                = "dbsecret"
     key_vault_secret_id = azurerm_key_vault_secret.db_admin_serversecret.id
-    identity            = azurerm_user_assigned_identity.ca_identity[each.key].id
+    identity            = azurerm_user_assigned_identity.ca_identity["${each.key}-id"].id
   }
 
   ingress {
@@ -174,7 +174,7 @@ resource "azurerm_container_app" "capp" {
   # Identity used to access key vault secrets (service principle)
   identity {
     type         = "SystemAssigned, UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.ca_identity[each.key].id]
+    identity_ids = [azurerm_user_assigned_identity.ca_identity["${each.key}-id"].id]
   }
 
 

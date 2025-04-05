@@ -71,11 +71,15 @@ jobs:
 
       - name: Python add
         if: ${{inputs.type == 'ny'}}
-        run: python ./terraform/infrastruktur/scripts/add.py
+        run: |
+          cd terraform/infrastruktur
+          python ./scripts/add.py
 
       - name: Python remove
         if: ${{inputs.type == 'fjern'}}
-        run: python ./terraform/infrastruktur/scripts/remove.py 
+        run: |
+          cd terraform/infrastruktur
+          python ./terraform/infrastruktur/scripts/remove.py 
 
 
       # Upload .tfvars file as artifact, will probably remove this

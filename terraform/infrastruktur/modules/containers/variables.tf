@@ -36,7 +36,7 @@ variable "random_password_db_capp" {
 
 # Identity - KEY NAME OF EACH OBJECT MUST BE IDENTICAL TO CONTAINER APP NAME
 variable "ca_identity" {
-  description = "Identities for container access to key vault"
+  description = "Identity for each container"
   type = map(object({
     name = string # "ca_id_<cApp name>"
     rg   = string

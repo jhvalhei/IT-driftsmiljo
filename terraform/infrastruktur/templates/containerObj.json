@@ -1,0 +1,10 @@
+{
+    "container": {
+        "name": "",
+        "targetport": 8080,
+        "external": "true",
+        "ip_restriction_range": "",
+        "image": "",
+        "rg": ""
+    }
+}

@@ -73,18 +73,18 @@ if (db == "true"):
       
     write_tfvars(databaseObj, "db")
 
-     # Set ca_identity values
-    with open(templatesPath / 'ca_identityObj.json', 'r+') as file:
+    # Set ca_identity values
+with open(templatesPath / 'ca_identityObj.json', 'r+') as file:
 
-        # Load data from ca_identity template into dict
-        ca_idObj = json.load(file)
+    # Load data from ca_identity template into dict
+    ca_idObj = json.load(file)
 
-        ca_idKeyName = studentFolderName+"_id"
-        ca_idName = studentFolderName+"-id"
-        ca_idObj[ca_idKeyName] = ca_idObj["ca_identity"]
-        del ca_idObj["ca_identity"]
-        ca_idObj[ca_idKeyName]["name"] = ca_idName
-        ca_idObj[ca_idKeyName]["rg"] = "rg-"+studentFolderName
+    ca_idKeyName = studentFolderName+"_id"
+    ca_idName = studentFolderName+"-id"
+    ca_idObj[ca_idKeyName] = ca_idObj["ca_identity"]
+    del ca_idObj["ca_identity"]
+    ca_idObj[ca_idKeyName]["name"] = ca_idName
+    ca_idObj[ca_idKeyName]["rg"] = "rg-"+studentFolderName
 
-      
-    write_tfvars(ca_idObj, "ca_id")
+    
+write_tfvars(ca_idObj, "ca_id")

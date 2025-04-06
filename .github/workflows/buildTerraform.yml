@@ -72,8 +72,7 @@ jobs:
       - name: Python add
         if: ${{inputs.type == 'ny'}}
         run: |
-          cd terraform/infrastruktur
-          python ./scripts/add.py
+          python ./terraform/infrastruktur/scripts/add.py
 
       - name: Python remove
         if: ${{inputs.type == 'fjern'}}

@@ -9,9 +9,7 @@ db = os.environ["DATABASE"]
 
 infra_dir = Path(__file__).resolve().parent.parent
 templatesPath = infra_dir / 'templates'
-
 tfvarsPath = infra_dir / 'terraform' / 'infrastruktur' / 'terraform.tfvars.json'
-print(infra_dir)
 
 ## Appends new variables for resource group, container and database to .tfvars.json file
 def write_tfvars(new_data, resource):

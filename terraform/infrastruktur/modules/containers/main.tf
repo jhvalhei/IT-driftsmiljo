@@ -129,8 +129,8 @@ resource "azurerm_role_assignment" "azurewaysecret_reader" {
 
 
 resource "azurerm_container_app" "capp" {
-  depends_on = [azurerm_container_app_environment.cae]
   for_each   = var.container
+  depends_on = [azurerm_container_app_environment.cae, azurerm_role_assignment.azurewaysecret_reader]
 
   name                         = lower(each.value.name)
   container_app_environment_id = azurerm_container_app_environment.cae.id

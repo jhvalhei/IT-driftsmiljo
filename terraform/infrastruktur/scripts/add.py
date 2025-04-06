@@ -32,7 +32,7 @@ def write_tfvars(new_data, resource):
         json.dump(file_data, file, indent = 4)
 
 
-newResourceGroup = {"rg-"+studentFolderName: {
+newResourceGroup = {"rg_"+studentFolderName: {
     "name": "rg-"+studentFolderName,
     "location": "westeurope"
     }
@@ -79,12 +79,12 @@ if (db == "true"):
         # Load data from ca_identity template into dict
         ca_idObj = json.load(file)
 
-
+        ca_idKeyName = studentFolderName+"_id"
         ca_idName = studentFolderName+"-id"
-        ca_idObj[ca_idName] = ca_idObj["ca_identity"]
+        ca_idObj[ca_idKeyName] = ca_idObj["ca_identity"]
         del ca_idObj["ca_identity"]
-        ca_idObj[ca_idName]["name"] = ca_idName
-        ca_idObj[ca_idName]["rg"] = "rg-"+studentFolderName
+        ca_idObj[ca_idKeyName]["name"] = ca_idName
+        ca_idObj[ca_idKeyName]["rg"] = "rg-"+studentFolderName
 
       
     write_tfvars(ca_idObj, "ca_id")

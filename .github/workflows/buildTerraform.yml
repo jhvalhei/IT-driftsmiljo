@@ -55,8 +55,8 @@ jobs:
         run: |
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
           az login --service-principal --username ${{env.ARM_CLIENT_ID}} --password ${{env.ARM_CLIENT_SECRET}} --tenant ${{env.ARM_TENANT_ID}}
-          az storage blob download --account-name envstoragegjovik246 --container-name variables --name containerObj.json --file './terraform/infrastruktur/containerObj.json' --auth-mode login
-          az storage blob download --account-name envstoragegjovik246 --container-name variables --name databaseObj.json --file './terraform/infrastruktur/databaseObj.json' --auth-mode login
+          az storage blob download --account-name envstoragegjovik246 --container-name variables --name containerObj.json --file './terraform/infrastruktur/templates/containerObj.json' --auth-mode login
+          az storage blob download --account-name envstoragegjovik246 --container-name variables --name databaseObj.json --file './terraform/infrastruktur/templates/databaseObj.json' --auth-mode login
           az storage blob download --account-name envstoragegjovik246 --container-name variables --name terraform.tfvars.json --file './terraform/infrastruktur/terraform.tfvars.json' --auth-mode login
 
       - name: Check download

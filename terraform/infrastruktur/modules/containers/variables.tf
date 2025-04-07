@@ -106,23 +106,5 @@ variable "container" {
     memory         = optional(string, "0.5Gi")
     rg             = string
   }))
-  /*
-        default = {
-          "dfcontainer" = {
-            name = "dfmc-app"
-            revmode = optional(string,"Single")
-            regserver = optional(string,"ghcr.io")
-            reguname = "test"
-            regtoken = "test"
-            trafficweight = optional(number,100)
-            latestrevision = true
-            targetport = 5000
-            external = true
-            image = "ghcr.io/bachelorgruppe117-ntnu-gjovik/testwebapp-app:latest"
-            cpu = 0.25
-            memory = "0.5Gi"
-            rg = "rgstatic001"
-          }
-        }
-        */
 }
+

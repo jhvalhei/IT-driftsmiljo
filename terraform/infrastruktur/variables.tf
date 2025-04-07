@@ -76,7 +76,7 @@ variable "random_password_db_capp" {
 
 # Identity - KEY NAME OF EACH OBJECT MUST BE IDENTICAL TO CONTAINER APP NAME
 variable "ca_identity" {
-  description = "Identities for container access to key vault"
+  description = "Identity for each container"
   type = map(object({
     name = string # "ca_identity_<cApp name>"
     rg   = string
@@ -107,9 +107,9 @@ variable "container" {
     regserver      = optional(string, "ghcr.io")
     trafficweight  = optional(number, 100)
     latestrevision = optional(bool, true)
-    targetport     = optional(number, 5000)
+    targetport     = optional(number, 8080)
     external       = optional(bool, true)
-    ip_restriction_range = string
+    ip_restriction_range = optional(string, "0.0.0.0/0") # 0.0.0.0/0 = all ip addresses
     image          = string
     cpu            = optional(number, 0.25)
     memory         = optional(string, "0.5Gi")

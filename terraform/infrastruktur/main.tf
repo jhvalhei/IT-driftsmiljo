@@ -86,7 +86,7 @@ resource "azurerm_storage_blob" "tfvariables" {
 resource "azurerm_resource_group" "rg_dynamic" {
   for_each = var.rg_dynamic
 
-  name     = each.value.name
+  name     = lower(each.value.name)
   location = each.value.location
 }
 

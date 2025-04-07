@@ -20,7 +20,7 @@ const (
   port     = 5432
   user     = "ntnuadmin"
   password = ""
-  dbname   = "svartelistede-arterpsql-db"
+  dbname   = "svartelistede-arterpsql_db"
 )
 
 

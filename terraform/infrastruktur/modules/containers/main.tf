@@ -113,8 +113,8 @@ resource "azurerm_role_assignment" "principal_rbac" {
 resource "azurerm_user_assigned_identity" "ca_identity" {
   for_each = var.ca_identity
 
+  name                = lower(each.value.name)
   location            = var.rg_location_static
-  name                = each.value.name
   resource_group_name = each.value.rg # Reference rg directly?
 }
 
@@ -129,12 +129,12 @@ resource "azurerm_role_assignment" "azurewaysecret_reader" {
 
 
 resource "azurerm_container_app" "capp" {
-  depends_on = [azurerm_container_app_environment.cae]
   for_each   = var.container
+  depends_on = [azurerm_container_app_environment.cae, azurerm_role_assignment.azurewaysecret_reader]
 
   name                         = lower(each.value.name)
   container_app_environment_id = azurerm_container_app_environment.cae.id
-  resource_group_name          = each.value.rg
+  resource_group_name          = lower(each.value.rg)
   revision_mode                = each.value.revmode
 
   # Password for github container registry, stored in github secrets
@@ -154,7 +154,7 @@ resource "azurerm_container_app" "capp" {
   secret {
     name                = "dbsecret"
     key_vault_secret_id = azurerm_key_vault_secret.db_admin_serversecret.id
-    identity            = azurerm_user_assigned_identity.ca_identity[each.key].id
+    identity            = azurerm_user_assigned_identity.ca_identity["${each.key}_id"].id
   }
 
   ingress {
@@ -174,7 +174,7 @@ resource "azurerm_container_app" "capp" {
   # Identity used to access key vault secrets (service principle)
   identity {
     type         = "SystemAssigned, UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.ca_identity[each.key].id]
+    identity_ids = [azurerm_user_assigned_identity.ca_identity["${each.key}_id"].id]
   }
 
 
@@ -193,3 +193,4 @@ resource "azurerm_container_app" "capp" {
   }
 
 }
+

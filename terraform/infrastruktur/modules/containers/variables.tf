@@ -36,7 +36,7 @@ variable "random_password_db_capp" {
 
 # Identity - KEY NAME OF EACH OBJECT MUST BE IDENTICAL TO CONTAINER APP NAME
 variable "ca_identity" {
-  description = "Identities for container access to key vault"
+  description = "Identity for each container"
   type = map(object({
     name = string # "ca_id_<cApp name>"
     rg   = string
@@ -100,29 +100,11 @@ variable "container" {
     latestrevision = optional(bool, true)
     targetport     = optional(number, 8080)
     external       = optional(bool, true)
-    ip_restriction_range = string
+    ip_restriction_range = optional(string, "0.0.0.0/0") # 0.0.0.0/0 = all ip addresses
     image          = string
     cpu            = optional(number, 0.25)
     memory         = optional(string, "0.5Gi")
     rg             = string
   }))
-  /*
-        default = {
-          "dfcontainer" = {
-            name = "dfmc-app"
-            revmode = optional(string,"Single")
-            regserver = optional(string,"ghcr.io")
-            reguname = "test"
-            regtoken = "test"
-            trafficweight = optional(number,100)
-            latestrevision = true
-            targetport = 5000
-            external = true
-            image = "ghcr.io/bachelorgruppe117-ntnu-gjovik/testwebapp-app:latest"
-            cpu = 0.25
-            memory = "0.5Gi"
-            rg = "rgstatic001"
-          }
-        }
-        */
 }
+

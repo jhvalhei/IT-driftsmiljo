@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir flask
 ENV FLASK_APP=app.py
 
 # Make port 5000 available to the world outside this container
-EXPOSE 5000
+EXPOSE 8080
 
 # Run app.py when the container launches
 CMD ["python", "app.py"]

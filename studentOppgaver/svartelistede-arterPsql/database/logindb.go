@@ -28,4 +28,3 @@ func CreateNewUser(newUser structs.AdminUser) error {
 	}
 	return nil
 }
-

@@ -52,7 +52,7 @@ IP_ADDRESS=$(az vm show --show-details --resource-group "${RESOURCE_GROUP_NAME}"
 if [[ -d ${STUDENTFOLDERPATH} ]]; then
 	for n in "${STUDENTFOLDERPATH}"/*.txt; do # Optional: switch to .sql if desirable
 		if [[ -f ${n} ]] && [[ ${n} == *DDL* || ${n} == *DML* ]]; then
-			STUDENTDB="$(echo "${STUDENTFOLDER}" | awk '{print tolower($0)}')-db"
+			STUDENTDB="$(echo "${STUDENTFOLDER}" | awk '{print tolower($0)}')_db"
 			ssh -o StrictHostKeyChecking=no "${USERNAME}"@"${IP_ADDRESS}" "mkdir -p ${STUDENTDB}" && scp -o StrictHostKeyChecking=no "${n}" "${USERNAME}"@"${IP_ADDRESS}":/home/"${USERNAME}"/"${STUDENTDB}"/
 		fi
 	done

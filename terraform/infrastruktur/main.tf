@@ -28,11 +28,6 @@ provider "azurerm" {
   subscription_id     = "b03b0d6e-32d0-4c8b-a3df-e5054df8ed86"
 }
 
-resource "azurerm_resource_group" "rgstorage" {
-  name     = "rg-variablestorage"
-  location = var.rg_location_static
-}
-
 resource "azurerm_resource_group" "rg_dynamic" {
   for_each = var.rg_dynamic
 
@@ -45,8 +40,15 @@ resource "azurerm_resource_group" "rg_static" {
   location = var.rg_location_static
 }
 
+resource "azurerm_resource_group" "rg_storage" {
+  name     = var.rg_name_storage
+  location = var.rg_location_storage
+}
+
 module "storage" {
   source = "./modules/storage"
+  rg_name_storage = var.rg_name_storage
+  rg_location_storage = var.rg_location_storage
   rootPath = var.rootPath
   ctemplatePath = var.ctemplatePath
   dbtemplatePath = var.dbtemplatePath

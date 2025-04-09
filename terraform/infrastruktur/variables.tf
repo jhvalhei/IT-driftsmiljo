@@ -30,9 +30,6 @@ variable "rg_dynamic" {
   }))
 }
 
-
-
-
 variable "rg_name_static" {
   description = "Static name for resourcegroup used for shared resources"
   type        = string
@@ -44,6 +41,18 @@ variable "rg_location_static" {
   description = "Static location for resourcegroup used for shared resources"
   type        = string
   default     = "westeurope"
+}
+
+variable "rg_name_storage" {
+  description = "Name of the storage resource group"
+  type = string
+  default = "rg-variablestorage"
+}
+
+variable "rg_location_storage" {
+  description = "Location of the storage resource group"
+  type = string
+  default = "westeurope"
 }
 
 

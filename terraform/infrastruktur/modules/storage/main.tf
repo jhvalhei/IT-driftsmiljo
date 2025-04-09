@@ -1,8 +1,8 @@
 # Storage of terraform variables
 resource "azurerm_storage_account" "sa" {
   name                      = "envstoragegjovik246"
-  resource_group_name       = azurerm_resource_group.rgstorage.name
-  location                  = azurerm_resource_group.rgstorage.location
+  resource_group_name       = var.rg_name_storage
+  location                  = var.rg_location_storage
   account_tier              = "Standard"
   account_replication_type  = "LRS"
   shared_access_key_enabled = false

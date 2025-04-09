@@ -60,8 +60,8 @@ module "containers" {
   source                  = "./modules/containers"
   rg_name_static          = var.rg_name_static
   rg_location_static      = var.rg_location_static
-  rg_name_storage         = azurerm_resource_group.rgstorage.name
-  rg_location_storage     = azurerm_resource_group.rgstorage.location
+  rg_name_storage         = var.rg_name_storage
+  rg_location_storage     = var.rg_location_storage
   law_name                = var.law_name
   law_sku                 = var.law_sku
   law_retention           = var.law_retention

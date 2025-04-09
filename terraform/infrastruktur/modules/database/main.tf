@@ -1,7 +1,7 @@
 resource "azurerm_postgresql_flexible_server" "postgreserver" {
-  name                          = "${var.postgreserver_name}-${var.rg_name_static}"
-  resource_group_name           = var.rg_name_static
-  location                      = var.rg_location_static
+  name                          = var.postgreserver_name
+  resource_group_name           = var.rg_name_global
+  location                      = var.rg_location_global
   version                       = var.postgreserver_version
   delegated_subnet_id           = var.subnet_id
   private_dns_zone_id           = var.privdnszone_id

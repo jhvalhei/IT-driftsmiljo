@@ -35,9 +35,9 @@ resource "azurerm_resource_group" "rg_dynamic" {
   location = each.value.location
 }
 
-resource "azurerm_resource_group" "rg_static" {
-  name     = var.rg_name_static
-  location = var.rg_location_static
+resource "azurerm_resource_group" "rg_global" {
+  name     = var.rg_name_global
+  location = var.rg_location_global
 }
 
 resource "azurerm_resource_group" "rg_storage" {
@@ -56,10 +56,10 @@ module "storage" {
 }
 
 module "containers" {
-  depends_on              = [azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_static]
+  depends_on              = [azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_global]
   source                  = "./modules/containers"
-  rg_name_static          = var.rg_name_static
-  rg_location_static      = var.rg_location_static
+  rg_name_global          = var.rg_name_global
+  rg_location_global      = var.rg_location_global
   rg_name_storage         = var.rg_name_storage
   rg_location_storage     = var.rg_location_storage
   law_name                = var.law_name
@@ -76,10 +76,10 @@ module "containers" {
 }
 
 module "database" {
-  depends_on                          = [azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_static, module.network]
+  depends_on                          = [azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_global, module.network]
   source                              = "./modules/database"
-  rg_name_static                      = var.rg_name_static
-  rg_location_static                  = var.rg_location_static
+  rg_name_global                      = var.rg_name_global
+  rg_location_global                  = var.rg_location_global
   postgreserver_name                  = var.postgreserver_name
   postgreserver_skuname               = var.postgreserver_skuname
   postgreserver_storage_mb            = var.postgreserver_storage_mb
@@ -98,10 +98,10 @@ module "database" {
 }
 
 module "network" {
-  depends_on                             = [azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_static]
+  depends_on                             = [azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_global]
   source                                 = "./modules/network"
-  rg_name_static                         = var.rg_name_static
-  rg_location_static                     = var.rg_location_static
+  rg_name_global                         = var.rg_name_global
+  rg_location_global                     = var.rg_location_global
   nsg_name_db                            = var.nsg_name_db
   nsg_name_capp                          = var.nsg_name_capp
   vnet_name                              = var.vnet_name

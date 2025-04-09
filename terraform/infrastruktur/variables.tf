@@ -30,15 +30,14 @@ variable "rg_dynamic" {
   }))
 }
 
-variable "rg_name_static" {
-  description = "Static name for resourcegroup used for shared resources"
+variable "rg_name_global" {
+  description = "Name of reasource group for global resources"
   type        = string
-  default     = "rgstatic001"
+  default     = "rg-globalresources"
 }
 
-
-variable "rg_location_static" {
-  description = "Static location for resourcegroup used for shared resources"
+variable "rg_location_global" {
+  description = "Location of reasource group for global resources"
   type        = string
   default     = "westeurope"
 }

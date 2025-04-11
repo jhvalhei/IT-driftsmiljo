@@ -1,5 +1,5 @@
 resource "azurerm_postgresql_flexible_server" "postgreserver" {
-  name                          = var.postgreserver_name
+  name                          = "${var.postgreserver_name}-${var.rg_name_global}"
   resource_group_name           = var.rg_name_global
   location                      = var.rg_location_global
   version                       = var.postgreserver_version

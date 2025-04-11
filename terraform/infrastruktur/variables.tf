@@ -102,18 +102,18 @@ variable "regtoken" {
 variable "container" {
   description = "A map of variables for container"
   type = map(object({
-    name           = string
-    revmode        = optional(string, "Single")
-    regserver      = optional(string, "ghcr.io")
-    trafficweight  = optional(number, 100)
-    latestrevision = optional(bool, true)
-    targetport     = optional(number, 8080)
-    external       = optional(bool, true)
+    name                 = string
+    revmode              = optional(string, "Single")
+    regserver            = optional(string, "ghcr.io")
+    trafficweight        = optional(number, 100)
+    latestrevision       = optional(bool, true)
+    targetport           = optional(number, 8080)
+    external             = optional(bool, true)
     ip_restriction_range = optional(string, "0.0.0.0/0") # 0.0.0.0/0 = all ip addresses
-    image          = string
-    cpu            = optional(number, 0.25)
-    memory         = optional(string, "0.5Gi")
-    rg             = string
+    image                = string
+    cpu                  = optional(number, 0.25)
+    memory               = optional(string, "0.5Gi")
+    rg                   = string
   }))
   /*
         default = {

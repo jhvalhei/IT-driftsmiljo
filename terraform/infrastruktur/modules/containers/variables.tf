@@ -37,7 +37,7 @@ variable "random_password_db_capp" {
 # Identity - KEY NAME OF EACH OBJECT MUST BE IDENTICAL TO CONTAINER APP NAME
 variable "ca_identity" {
   description = "Identity for each container"
-  type = map(object({
+  type = map(object({   # key name: <cAppName_id>
     name = string # "ca_id_<cApp name>"
     rg   = string
   }))
@@ -90,7 +90,7 @@ variable "regtoken" {
   type        = string
 }
 
-variable "container" {
+variable "capp_with_db" {
   description = "A map of variables for container"
   type = map(object({
     name           = string
@@ -106,5 +106,31 @@ variable "container" {
     memory         = optional(string, "0.5Gi")
     rg             = string
   }))
+}
+
+variable "capp_without_db" {
+  description = "A map of variables for container"
+  type = map(object({
+    name           = string
+    revmode        = optional(string, "Single")
+    regserver      = optional(string, "ghcr.io")
+    trafficweight  = optional(number, 100)
+    latestrevision = optional(bool, true)
+    targetport     = optional(number, 8080)
+    external       = optional(bool, true)
+    ip_restriction_range = optional(string, "0.0.0.0/0") # 0.0.0.0/0 = all ip addresses
+    image          = string
+    cpu            = optional(number, 0.25)
+    memory         = optional(string, "0.5Gi")
+    rg             = string
+  }))
+}
+
+variable "db_cappdb_secret" {     
+  description = "Secrets to container apps"
+
+  type = map(object({   # key name: <cappName>
+  name = string   # <cappName>-dbsecret
+}))
 }
 

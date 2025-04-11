@@ -53,26 +53,23 @@ resource "azurerm_key_vault_secret" "db_admin_serversecret" {
   depends_on   = [azurerm_role_assignment.principal_rbac]
 }
 
-/*
+
 resource "random_password" "db_capp_secret" {
-  for_each = var.random_password_db_capp
+  for_each = var.db_cappdb_secret
 
   length = 20
   special = false
 }
-*/
 
-/*
 # DB password for each container
 resource "azurerm_key_vault_secret" "db_capp_secret" {
-  for_each = var.db_capp_secret
+  for_each = random_password.db_capp_secret
 
   name = each.value.name
   value = random_password.db_capp_secret[each.key].value
+  key_vault_id = azurerm_key_vault.kv.id
+  depends_on   = [azurerm_role_assignment.principal_rbac]
 }
-*/
-
-
 
 resource "azurerm_log_analytics_workspace" "law" {
   name                = var.law_name
@@ -107,8 +104,6 @@ resource "azurerm_role_assignment" "principal_rbac" {
   principal_id         = data.azurerm_client_config.current.object_id
 }
 
-
-
 # Identity for container app
 resource "azurerm_user_assigned_identity" "ca_identity" {
   for_each = var.ca_identity
@@ -122,14 +117,14 @@ resource "azurerm_user_assigned_identity" "ca_identity" {
 resource "azurerm_role_assignment" "azurewaysecret_reader" {
   for_each = azurerm_user_assigned_identity.ca_identity
 
-  scope                = azurerm_key_vault_secret.db_admin_serversecret.resource_versionless_id
+  scope                = azurerm_key_vault_secret.db_capp_secret
   role_definition_name = "Key Vault Secrets User"
   principal_id         = each.value.principal_id
 }
 
 
-resource "azurerm_container_app" "capp" {
-  for_each   = var.container
+resource "azurerm_container_app" "capp_with_db" {
+  for_each   = var.capp_with_db
   depends_on = [azurerm_container_app_environment.cae, azurerm_role_assignment.azurewaysecret_reader]
 
   name                         = lower(each.value.name)
@@ -152,9 +147,9 @@ resource "azurerm_container_app" "capp" {
 
   # Password to database, stored in key vault
   secret {
-    name                = "dbsecret"
-    key_vault_secret_id = azurerm_key_vault_secret.db_admin_serversecret.id
-    identity            = azurerm_user_assigned_identity.ca_identity["${each.key}_id"].id
+      name                = "dbsecret"
+      key_vault_secret_id = azurerm_key_vault_secret.db_admin_serversecret.id
+      identity            = azurerm_user_assigned_identity.ca_identity["${each.key}_id"].id
   }
 
   ingress {
@@ -189,8 +184,51 @@ resource "azurerm_container_app" "capp" {
         secret_name = "dbsecret"
       }
     }
-    revision_suffix = "v1"
+  }
+}
+
+resource "azurerm_container_app" "capp_without_db" {
+  for_each   = var.capp_without_db
+  depends_on = [azurerm_container_app_environment.cae]
+
+  name                         = lower(each.value.name)
+  container_app_environment_id = azurerm_container_app_environment.cae.id
+  resource_group_name          = lower(each.value.rg)
+  revision_mode                = each.value.revmode
+
+  # Password for github container registry, stored in github secrets
+  secret {
+    name  = "ghcr-password"
+    value = var.regtoken
   }
 
+  # Github registry credentials
+  registry {
+    server               = each.value.regserver
+    username             = var.reguname
+    password_secret_name = "ghcr-password"
+  }
+
+  ingress {
+    traffic_weight {
+      percentage      = each.value.trafficweight
+      latest_revision = each.value.latestrevision
+    }
+    target_port      = each.value.targetport
+    external_enabled = each.value.external
+    ip_security_restriction {
+      name = "Container app IP restriction allow"
+      action = "Allow"
+      ip_address_range = each.value.ip_restriction_range
+    }
+  }
+  template {
+    container {
+      name   = lower(each.value.name)
+      image  = each.value.image
+      cpu    = each.value.cpu
+      memory = each.value.memory
+    }
+  }
 }
 

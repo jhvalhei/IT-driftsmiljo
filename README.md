@@ -2,6 +2,10 @@
 ## Beskrivelse
 Repo for all koden som blir produsert under bacheloroppgaven vår
 
+## Krav
+- Azure abonnement
+- Github bruker
+
 
 ## Førstegangsoppsett
 
@@ -24,7 +28,7 @@ az role assignment create \
 
 ### Steg x: Logg inn med service principle
 Hvis du allerede har innstallert Azure CLIet kan du hoppe over første punkt nr. 1.
-1. [Innstaller](https://learn.microsoft.com/nb-no/cli/azure/install-azure-cli) Azure CLI
+1. [Installer](https://learn.microsoft.com/nb-no/cli/azure/install-azure-cli) Azure CLI
 2. Logg inn med service principle:
    ```
    az login --service-principal --username <appId> --password <password> --tenant <tenant>
@@ -42,8 +46,6 @@ Hvis du allerede har innstallert Azure CLIet kan du hoppe over første punkt nr.
    For linux:
    ```
    ```
-
-
 
 ### Steg x: Sett opp repo
 
@@ -75,16 +77,11 @@ Disse stegene kan gjøres både i en linux terminal og Powershell.
 
 ## Legge inn ny studentoppgave
 ### Steg 1: Laste ned og sjekke filer
-Last ned git repo eller finn mappen som har blitt levert av studentene. Sjekk at mappen har denne strukturen og inneholder en config.yml fil og en Dockerfile.
+Last ned git repo eller finn mappen som har blitt levert av studentene. Sjekk at mappen har en Dockerfil og en databasemappe i root. Databasemappen kan vøre tom, men den skal bare være der for å vise at studentoppgaven inneholder en database.
 ```plaintext
 <studentoppgavenavn>/
 ├── README.md      # Dokumentasjon og installasjonsinstrukser
-├── src/           # Kildekode
-├── testing/       # Tester
 ├── database/      # Databasefiler
-├── dokumentasjon/ # Dokumentasjon (API, databasdesign, etc.)
-├── vedlegg/       # Eventuelle eksterne ressurser/dokumenter
-├── config.yml     # Konfigurasjons instillinger
 └── Dockerfile     # Fil for bygging av Docker-image
 ```
 

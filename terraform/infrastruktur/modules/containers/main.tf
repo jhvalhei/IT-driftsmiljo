@@ -73,8 +73,8 @@ resource "azurerm_key_vault_secret" "db_capp_secret" {
 
 resource "azurerm_log_analytics_workspace" "law" {
   name                = var.law_name
-  location            = var.rg_location_static
-  resource_group_name = var.rg_name_static
+  location            = var.rg_location_global
+  resource_group_name = var.rg_name_global
   sku                 = var.law_sku
   retention_in_days   = var.law_retention
 }
@@ -83,11 +83,11 @@ resource "azurerm_container_app_environment" "cae" {
   depends_on = [azurerm_log_analytics_workspace.law]
 
   name                               = var.cae_name
-  location                           = var.rg_location_static
-  resource_group_name                = var.rg_name_static
+  location                           = var.rg_location_global
+  resource_group_name                = var.rg_name_global
   log_analytics_workspace_id         = azurerm_log_analytics_workspace.law.id
   infrastructure_subnet_id           = var.cenv_subnet_id
-  infrastructure_resource_group_name = "container-env-infra"
+  infrastructure_resource_group_name = "rg-container-env-infra"
 
   workload_profile {
     name                  = "Consumption"
@@ -109,7 +109,7 @@ resource "azurerm_user_assigned_identity" "ca_identity" {
   for_each = var.ca_identity
 
   name                = lower(each.value.name)
-  location            = var.rg_location_static
+  location            = var.rg_location_global
   resource_group_name = each.value.rg # Reference rg directly?
 }
 

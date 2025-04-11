@@ -25,7 +25,7 @@ VM_IMAGE="Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
 az login --service-principal --username ${AZUNAME} --password ${AZPASS} --tenant ${TENANT}
 KEYVAULTNAME=$(az keyvault list -o table | awk 'NR>2 {print $2}')
 SECRET=$(az keyvault secret show --vault-name ${KEYVAULTNAME} -n db-server-admin-secret -o table | awk 'NR==3 {print $2}')
-RESOURCE_GROUP_NAME=$(az group list -o table | awk '/rgstatic/ {print $1}')
+RESOURCE_GROUP_NAME=$(az group list -o table | awk '/global/ {print $1}')
 VNET=$(az network vnet list -o table | awk '/'"${RESOURCE_GROUP_NAME}"'/ {print $1}')
 
 # Creates a jump host vm and dependable resources in azure
@@ -52,7 +52,7 @@ IP_ADDRESS=$(az vm show --show-details --resource-group "${RESOURCE_GROUP_NAME}"
 if [[ -d ${STUDENTFOLDERPATH} ]]; then
 	for n in "${STUDENTFOLDERPATH}"/*.txt; do # Optional: switch to .sql if desirable
 		if [[ -f ${n} ]] && [[ ${n} == *DDL* || ${n} == *DML* ]]; then
-			STUDENTDB="$(echo "${STUDENTFOLDER}" | awk '{print tolower($0)}')-db"
+			STUDENTDB="$(echo "${STUDENTFOLDER}" | awk '{print tolower($0)}')_db"
 			ssh -o StrictHostKeyChecking=no "${USERNAME}"@"${IP_ADDRESS}" "mkdir -p ${STUDENTDB}" && scp -o StrictHostKeyChecking=no "${n}" "${USERNAME}"@"${IP_ADDRESS}":/home/"${USERNAME}"/"${STUDENTDB}"/
 		fi
 	done

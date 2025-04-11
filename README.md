@@ -77,7 +77,7 @@ Disse stegene kan gjøres både i en linux terminal og Powershell.
 
 ## Legge inn ny studentoppgave
 ### Steg 1: Laste ned og sjekke filer
-Last ned git repo eller finn mappen som har blitt levert av studentene. Sjekk at mappen har en Dockerfil og en databasemappe i root. Databasemappen kan vøre tom, men den skal bare være der for å vise at studentoppgaven inneholder en database.
+Last ned git repo eller finn mappen som har blitt levert av studentene. Sjekk at mappen har en Dockerfil og en databasemappe i root. Databasemappen kan være tom, men den skal bare være der for å vise at studentoppgaven inneholder en database.
 ```plaintext
 <studentoppgavenavn>/
 ├── README.md      # Dokumentasjon og installasjonsinstrukser

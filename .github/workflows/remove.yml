@@ -60,7 +60,7 @@ jobs:
         id: database
         run: |
           if [[ -e ./studentOppgaver/${{env.STUDENT_FOLDER}}/database ]]; then 
-            echo "DATABASE=true" >> $GITHUB_ENV;
+            echo "DATABASE=true" >> $GITHUB_ENV
             echo "database=true" >> "$GITHUB_OUTPUT" 
           else 
             echo "DATABASE=false" >> $GITHUB_ENV; fi

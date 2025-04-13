@@ -63,8 +63,9 @@ jobs:
             echo "DATABASE=true" >> $GITHUB_ENV
             echo "database=true" >> "$GITHUB_OUTPUT" 
           else 
-            echo "DATABASE=false" >> $GITHUB_ENV; fi
-            echo "database=false" >> "$GITHUB_OUTPUT" 
+            echo "DATABASE=false" >> $GITHUB_ENV
+            echo "database=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Lower name
         id: lowerstring
@@ -87,7 +88,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: echo database
-        run: echo ${{needs.remove.outputs.studentFolderName}}
+        run: echo ${{needs.remove.outputs.database}}
 
   startWF:
     needs: remove

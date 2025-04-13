@@ -14,15 +14,18 @@ with open(infra_dir / 'terraform.tfvars.json','r+') as file:
     file_data = json.load(file)
 
     # Remove if exists
-    if "rg_"+studentFolderName in file_data["rg_dynamic"].keys():
+    if studentFolderName in file_data["rg_dynamic"].keys():
          # Remove resource group
-        del file_data["rg_dynamic"]["rg_"+studentFolderName]
+        del file_data["rg_dynamic"][studentFolderName]
         # Remove container objecr
-        del file_data["container"][studentFolderName]
-        # Remove database
+           
+        # Remove container and belonging resources
         if (db == "true"):
-            del file_data["postdb"][studentFolderName+"_db"]
-            del file_data["ca_identity"][studentFolderName+"_id"]
+            del file_data["capp_with_db"][studentFolderName]
+            del file_data["postdb"][studentFolderName]
+            del file_data["capp_identity"][studentFolderName]
+        elif (db == "false"):
+            del file_data["capp_without_db"][studentFolderName]
 
         # Sets file's current position at offset.
         file.seek(0)

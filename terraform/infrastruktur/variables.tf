@@ -44,14 +44,14 @@ variable "rg_location_global" {
 
 variable "rg_name_storage" {
   description = "Name of the storage resource group"
-  type = string
-  default = "rg-variablestorage"
+  type        = string
+  default     = "rg-variablestorage"
 }
 
 variable "rg_location_storage" {
   description = "Location of the storage resource group"
-  type = string
-  default = "westeurope"
+  type        = string
+  default     = "westeurope"
 }
 
 
@@ -75,19 +75,11 @@ variable "law_retention" {
   default     = 30
 }
 
-variable "random_password_db_capp" {
-  description = "Generates random password for db secrets"
-  type = map(object({
-    name = string # "db_password_<cApp name>"
-  }))
-}
-
 # Identity - KEY NAME OF EACH OBJECT MUST BE IDENTICAL TO CONTAINER APP NAME
-variable "ca_identity" {
+variable "capp_identity" {
   description = "Identity for each container"
   type = map(object({
     name = string # "ca_identity_<cApp name>"
-    rg   = string
   }))
 }
 
@@ -107,7 +99,7 @@ variable "regtoken" {
   type        = string
 }
 
-variable "container" {
+variable "capp_with_db" {
   description = "A map of variables for container"
   type = map(object({
     name                 = string
@@ -121,28 +113,26 @@ variable "container" {
     image                = string
     cpu                  = optional(number, 0.25)
     memory               = optional(string, "0.5Gi")
-    rg                   = string
   }))
-  /*
-        default = {
-          "dfcontainer" = {
-            name = "dfmc-app"
-            revmode = optional(string,"Single")
-            regserver = optional(string,"ghcr.io")
-            reguname = "test"
-            regtoken = "test"
-            trafficweight = optional(number,100)
-            latestrevision = true
-            targetport = 5000
-            external = true
-            image = "ghcr.io/bachelorgruppe117-ntnu-gjovik/testwebapp-app:latest"
-            cpu = 0.25
-            memory = "0.5Gi"
-            rg = "rgstatic001"
-          }
-        }
-        */
 }
+
+variable "capp_without_db" {
+  description = "A map of variables for container"
+  type = map(object({
+    name                 = string
+    revmode              = optional(string, "Single")
+    regserver            = optional(string, "ghcr.io")
+    trafficweight        = optional(number, 100)
+    latestrevision       = optional(bool, true)
+    targetport           = optional(number, 8080)
+    external             = optional(bool, true)
+    ip_restriction_range = optional(string, "0.0.0.0/0") # 0.0.0.0/0 = all ip addresses
+    image                = string
+    cpu                  = optional(number, 0.25)
+    memory               = optional(string, "0.5Gi")
+  }))
+}
+
 
 # Module: database
 
@@ -165,7 +155,7 @@ variable "postgreserver_storage_mb" {
 }
 
 variable "postgreserver_storage_tier" {
-  description = "Storage toer for the postgresql flexible server"
+  description = "Storage tier for the postgresql flexible server"
   type        = string
   default     = "P4"
 }

@@ -46,13 +46,13 @@ resource "azurerm_resource_group" "rg_storage" {
 }
 
 module "storage" {
-  source = "./modules/storage"
-  rg_name_storage = var.rg_name_storage
-  rg_location_storage = var.rg_location_storage
-  rootPath = var.rootPath
-  ctemplatePath = var.ctemplatePath
-  dbtemplatePath = var.dbtemplatePath
-  tfvarsPath = var.tfvarsPath
+  source              = "./modules/storage"
+  rg_name_storage     = azurerm_resource_group.rg_storage.name
+  rg_location_storage = azurerm_resource_group.rg_storage.location
+  rootPath            = var.rootPath
+  ctemplatePath       = var.ctemplatePath
+  dbtemplatePath      = var.dbtemplatePath
+  tfvarsPath          = var.tfvarsPath
 }
 
 module "containers" {
@@ -62,17 +62,17 @@ module "containers" {
   rg_location_global      = var.rg_location_global
   rg_name_storage         = var.rg_name_storage
   rg_location_storage     = var.rg_location_storage
+  rg_dynamic = var.rg_dynamic
   law_name                = var.law_name
   law_sku                 = var.law_sku
   law_retention           = var.law_retention
-  ca_identity             = var.ca_identity
-  random_password_db_capp = var.random_password_db_capp
+  capp_identity             = var.capp_identity
   cae_name                = var.cae_name
-  container               = var.container
+  capp_with_db            = var.capp_with_db
+  capp_without_db         = var.capp_without_db
   cenv_subnet_id          = module.network.subnet_capp_id
-  //dbserversecretId = var.dbserversecretId
-  reguname = var.reguname
-  regtoken = var.regtoken
+  reguname       = var.reguname
+  regtoken       = var.regtoken
 }
 
 module "database" {

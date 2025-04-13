@@ -83,6 +83,7 @@ jobs:
             "https://api.github.com/orgs/Bachelorgruppe117-NTNU-Gjovik/packages/container/${{ steps.lowerstring.outputs.lowercase }}-app"
 
   displayDatabase:
+    needs: remove
     runs-on: ubuntu-latest
     steps:
       - name: echo database

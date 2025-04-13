@@ -60,11 +60,12 @@ jobs:
         id: database
         run: |
           if [[ -e ./studentOppgaver/${{env.STUDENT_FOLDER}}/database ]]; then 
-            echo "DATABASE=true" >> $GITHUB_ENV;
+            echo "DATABASE=true" >> $GITHUB_ENV
             echo "database=true" >> "$GITHUB_OUTPUT" 
           else 
-            echo "DATABASE=false" >> $GITHUB_ENV; fi
-            echo "database=false" >> "$GITHUB_OUTPUT" 
+            echo "DATABASE=false" >> $GITHUB_ENV
+            echo "database=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Lower name
         id: lowerstring
@@ -81,6 +82,13 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.REG_TOKEN }}" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/orgs/Bachelorgruppe117-NTNU-Gjovik/packages/container/${{ steps.lowerstring.outputs.lowercase }}-app"
+
+  displayDatabase:
+    needs: remove
+    runs-on: ubuntu-latest
+    steps:
+      - name: echo database
+        run: echo ${{needs.remove.outputs.database}}
 
   startWF:
     needs: remove

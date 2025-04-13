@@ -21,24 +21,26 @@ def write_tfvars(new_data, resource):
         if (resource == "rg_dynamic"):
             file_data[resource].update(new_data)
         elif (resource == "container"):
-            file_data["container"].update(new_data)
+            if (db=="true"):
+                file_data["capp_with_db"].update(new_data)
+            elif(db=="false"):
+                file_data["capp_without_db"].update(new_data)
+
         elif (resource == "db"):
             file_data["postdb"].update(new_data)
-        elif (resource == "ca_id"):
-            file_data["ca_identity"].update(new_data)
+        elif (resource == "capp_id"):
+            file_data["capp_identity"].update(new_data)
         # Sets file's current position at offset.
         file.seek(0)
         # convert back to json and save.
         json.dump(file_data, file, indent = 4)
 
 
-newResourceGroup = {"rg_"+studentFolderName: {
+newResourceGroup = {studentFolderName: {
     "name": "rg-"+studentFolderName,
     "location": "westeurope"
     }
 }
-
-
 
 # Add new container to .tfvars.json
 # First create new container object
@@ -52,7 +54,6 @@ with open(templatesPath / 'containerObj.json','r+') as file:
     del containerObj["container"]
     containerObj[studentFolderName]["name"] = studentFolderName
     containerObj[studentFolderName]["image"] = imageName
-    containerObj[studentFolderName]["rg"] = "rg-"+studentFolderName
 
 # Append the new variables to .tfvars.json
 write_tfvars(newResourceGroup,"rg_dynamic")
@@ -66,25 +67,22 @@ if (db == "true"):
         databaseObj = json.load(file)
 
         # Set database values
-        dbName = studentFolderName+"_db"
-        databaseObj[dbName] = databaseObj["db"]
+        databaseObj[studentFolderName] = databaseObj["db"]
         del databaseObj["db"]
-        databaseObj[dbName]["name"] = dbName
+        databaseObj[studentFolderName]["name"] = studentFolderName+"-db"
       
     write_tfvars(databaseObj, "db")
 
-    # Set ca_identity values
-with open(templatesPath / 'ca_identityObj.json', 'r+') as file:
+    # Set capp_identity values
+    with open(templatesPath / 'capp_identityObj.json', 'r+') as file:
 
-    # Load data from ca_identity template into dict
-    ca_idObj = json.load(file)
+    # Load data from capp_identity template into dict
+        capp_idObj = json.load(file)
 
-    ca_idKeyName = studentFolderName+"_id"
-    ca_idName = studentFolderName+"-id"
-    ca_idObj[ca_idKeyName] = ca_idObj["ca_identity"]
-    del ca_idObj["ca_identity"]
-    ca_idObj[ca_idKeyName]["name"] = ca_idName
-    ca_idObj[ca_idKeyName]["rg"] = "rg-"+studentFolderName
+        capp_idName = studentFolderName+"-id"
+        capp_idObj[studentFolderName] = capp_idObj["capp_identity"]
+        del capp_idObj["capp_identity"]
+        capp_idObj[studentFolderName]["name"] = capp_idName
 
-    
-write_tfvars(ca_idObj, "ca_id")
+        
+    write_tfvars(capp_idObj, "capp_id")

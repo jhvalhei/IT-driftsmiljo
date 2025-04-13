@@ -28,61 +28,6 @@ provider "azurerm" {
   subscription_id     = "b03b0d6e-32d0-4c8b-a3df-e5054df8ed86"
 }
 
-
-
-
-
-resource "azurerm_resource_group" "rgstorage" {
-  name     = "rg-variablestorage"
-  location = var.rg_location_static
-}
-
-
-
-
-# Storage of terraform variables
-resource "azurerm_storage_account" "sa" {
-  name                      = "envstoragegjovik246"
-  resource_group_name       = azurerm_resource_group.rgstorage.name
-  location                  = azurerm_resource_group.rgstorage.location
-  account_tier              = "Standard"
-  account_replication_type  = "LRS"
-  shared_access_key_enabled = false
-}
-
-resource "azurerm_storage_container" "sc" {
-  name                  = "variables"
-  storage_account_name  = azurerm_storage_account.sa.name
-  container_access_type = "private"
-}
-
-resource "azurerm_storage_blob" "ctemplate" {
-  name                   = "containerObj.json"
-  storage_account_name   = azurerm_storage_account.sa.name
-  storage_container_name = azurerm_storage_container.sc.name
-  type                   = "Block"
-  source                 = "${var.rootPath}${var.ctemplatePath}"
-  content_md5            = md5(file("${var.rootPath}${var.ctemplatePath}")) // Forces upload of new file upon changes in file
-}
-
-resource "azurerm_storage_blob" "dbtemplate" {
-  name                   = "databaseObj.json"
-  storage_account_name   = azurerm_storage_account.sa.name
-  storage_container_name = azurerm_storage_container.sc.name
-  type                   = "Block"
-  source                 = "${var.rootPath}${var.dbtemplatePath}"
-  content_md5            = md5(file("${var.rootPath}${var.dbtemplatePath}")) // Forces upload of new file upon changes in file
-}
-
-resource "azurerm_storage_blob" "tfvariables" {
-  name                   = "terraform.tfvars.json"
-  storage_account_name   = azurerm_storage_account.sa.name
-  storage_container_name = azurerm_storage_container.sc.name
-  type                   = "Block"
-  source                 = "${var.rootPath}${var.tfvarsPath}"
-  content_md5            = md5(file("${var.rootPath}${var.tfvarsPath}")) // Forces upload of new file upon changes in file
-}
-
 resource "azurerm_resource_group" "rg_dynamic" {
   for_each = var.rg_dynamic
 
@@ -90,36 +35,51 @@ resource "azurerm_resource_group" "rg_dynamic" {
   location = each.value.location
 }
 
-resource "azurerm_resource_group" "rg_static" {
-  name     = var.rg_name_static
-  location = var.rg_location_static
+resource "azurerm_resource_group" "rg_global" {
+  name     = var.rg_name_global
+  location = var.rg_location_global
+}
+
+resource "azurerm_resource_group" "rg_storage" {
+  name     = var.rg_name_storage
+  location = var.rg_location_storage
+}
+
+module "storage" {
+  source              = "./modules/storage"
+  rg_name_storage     = azurerm_resource_group.rg_storage.name
+  rg_location_storage = azurerm_resource_group.rg_storage.location
+  rootPath            = var.rootPath
+  ctemplatePath       = var.ctemplatePath
+  dbtemplatePath      = var.dbtemplatePath
+  tfvarsPath          = var.tfvarsPath
 }
 
 module "containers" {
-  depends_on              = [azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_static]
+  depends_on              = [azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_global]
   source                  = "./modules/containers"
-  rg_name_static          = var.rg_name_static
-  rg_location_static      = var.rg_location_static
-  rg_name_storage         = azurerm_resource_group.rgstorage.name
-  rg_location_storage     = azurerm_resource_group.rgstorage.location
+  rg_name_global          = var.rg_name_global
+  rg_location_global      = var.rg_location_global
+  rg_name_storage         = var.rg_name_storage
+  rg_location_storage     = var.rg_location_storage
+  rg_dynamic = var.rg_dynamic
   law_name                = var.law_name
   law_sku                 = var.law_sku
   law_retention           = var.law_retention
-  ca_identity             = var.ca_identity
-  random_password_db_capp = var.random_password_db_capp
+  capp_identity             = var.capp_identity
   cae_name                = var.cae_name
-  container               = var.container
+  capp_with_db            = var.capp_with_db
+  capp_without_db         = var.capp_without_db
   cenv_subnet_id          = module.network.subnet_capp_id
-  //dbserversecretId = var.dbserversecretId
-  reguname = var.reguname
-  regtoken = var.regtoken
+  reguname       = var.reguname
+  regtoken       = var.regtoken
 }
 
 module "database" {
-  depends_on                          = [azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_static, module.network]
+  depends_on                          = [azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_global, module.network]
   source                              = "./modules/database"
-  rg_name_static                      = var.rg_name_static
-  rg_location_static                  = var.rg_location_static
+  rg_name_global                      = var.rg_name_global
+  rg_location_global                  = var.rg_location_global
   postgreserver_name                  = var.postgreserver_name
   postgreserver_skuname               = var.postgreserver_skuname
   postgreserver_storage_mb            = var.postgreserver_storage_mb
@@ -138,10 +98,10 @@ module "database" {
 }
 
 module "network" {
-  depends_on                             = [azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_static]
+  depends_on                             = [azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_global]
   source                                 = "./modules/network"
-  rg_name_static                         = var.rg_name_static
-  rg_location_static                     = var.rg_location_static
+  rg_name_global                         = var.rg_name_global
+  rg_location_global                     = var.rg_location_global
   nsg_name_db                            = var.nsg_name_db
   nsg_name_capp                          = var.nsg_name_capp
   vnet_name                              = var.vnet_name

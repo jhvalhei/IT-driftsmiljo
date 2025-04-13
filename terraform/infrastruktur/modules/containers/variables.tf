@@ -1,17 +1,25 @@
+variable "rg_dynamic" {
+  description = "A map of resource groups variables"
+  type = map(object({
+    name     = string
+    location = optional(string, "westeurope")
+  }))
+}
+
 variable "rg_name_dynamic" {
   description = "Name of the resource group"
   type        = string
   default     = "rgname001"
 }
 
-variable "rg_name_static" {
-  description = "Static name for resourcegroup used for shared resources"
+variable "rg_name_global" {
+  description = "Name of reasource group for global resources"
   type        = string
-  default     = "rgstatic001"
+  default     = "rg-globalresources"
 }
 
-variable "rg_location_static" {
-  description = "Static location for resourcegroup used for shared resources"
+variable "rg_location_global" {
+  description = "Location of reasource group for global resources"
   type        = string
   default     = "westeurope"
 }
@@ -27,19 +35,11 @@ variable "rg_location_storage" {
   default     = "westeurope"
 }
 
-variable "random_password_db_capp" {
-  description = "Generates random password for db secrets"
-  type = map(object({
-    name = string # "db_password_<cApp name>"
-  }))
-}
-
 # Identity - KEY NAME OF EACH OBJECT MUST BE IDENTICAL TO CONTAINER APP NAME
-variable "ca_identity" {
+variable "capp_identity" {
   description = "Identity for each container"
-  type = map(object({
-    name = string # "ca_id_<cApp name>"
-    rg   = string
+  type = map(object({ # key name: <cAppName_id>
+    name = string     # 
   }))
 }
 
@@ -90,21 +90,38 @@ variable "regtoken" {
   type        = string
 }
 
-variable "container" {
+variable "capp_with_db" {
   description = "A map of variables for container"
   type = map(object({
-    name           = string
-    revmode        = optional(string, "Single")
-    regserver      = optional(string, "ghcr.io")
-    trafficweight  = optional(number, 100)
-    latestrevision = optional(bool, true)
-    targetport     = optional(number, 8080)
-    external       = optional(bool, true)
+    name                 = string
+    revmode              = optional(string, "Single")
+    regserver            = optional(string, "ghcr.io")
+    trafficweight        = optional(number, 100)
+    latestrevision       = optional(bool, true)
+    targetport           = optional(number, 8080)
+    external             = optional(bool, true)
     ip_restriction_range = optional(string, "0.0.0.0/0") # 0.0.0.0/0 = all ip addresses
-    image          = string
-    cpu            = optional(number, 0.25)
-    memory         = optional(string, "0.5Gi")
-    rg             = string
+    image                = string
+    cpu                  = optional(number, 0.25)
+    memory               = optional(string, "0.5Gi")
   }))
 }
+
+variable "capp_without_db" {
+  description = "A map of variables for container"
+  type = map(object({
+    name                 = string
+    revmode              = optional(string, "Single")
+    regserver            = optional(string, "ghcr.io")
+    trafficweight        = optional(number, 100)
+    latestrevision       = optional(bool, true)
+    targetport           = optional(number, 8080)
+    external             = optional(bool, true)
+    ip_restriction_range = optional(string, "0.0.0.0/0") # 0.0.0.0/0 = all ip addresses
+    image                = string
+    cpu                  = optional(number, 0.25)
+    memory               = optional(string, "0.5Gi")
+  }))
+}
+
 

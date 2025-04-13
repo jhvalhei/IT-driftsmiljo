@@ -4,7 +4,6 @@
         "targetport": 8080,
         "external": "true",
         "ip_restriction_range": "0.0.0.0/0",
-        "image": "",
-        "rg": ""
+        "image": ""
     }
 }

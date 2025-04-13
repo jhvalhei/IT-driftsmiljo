@@ -14,7 +14,7 @@ on:
       DATABASE:
         required: true
         type: string
-      type:
+      TYPE:
         required: true
         type: string
 
@@ -41,7 +41,7 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     env:
-      # Input variables
+      # Terraform input variables
       TF_VAR_reguname: ${{ secrets.REG_UNAME }}  # Github container registry credentials
       TF_VAR_regtoken: ${{ secrets.REG_TOKEN }}
       
@@ -68,12 +68,12 @@ jobs:
           python-version: '3.13' 
 
       - name: Python add
-        if: ${{inputs.type == 'ny'}}
+        if: ${{inputs.TYPE == 'ny'}}
         run: |
           python ./terraform/infrastruktur/scripts/add.py
 
       - name: Python remove
-        if: ${{inputs.type == 'fjern'}}
+        if: ${{inputs.TYPE == 'fjern'}}
         run: |
           python ./terraform/infrastruktur/scripts/remove.py 
 

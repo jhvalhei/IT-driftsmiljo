@@ -82,13 +82,6 @@ resource "azurerm_container_app_environment" "cae" {
   }
 }
 
-resource "azurerm_container_app_environment_custom_domain" "custom_domain" {
-  container_app_environment_id = azurerm_container_app_environment.cae.id
-  certificate_blob_base64      = filebase64("C:/Users/jensh/OneDrive - NTNU/6.semester/bachelor/domenecert.pem")
-  certificate_password         = ""
-  dns_suffix                   = "jensherman.no"
-}
-
 # Grant key vault management access to service principle
 resource "azurerm_role_assignment" "principal_rbac" {
   scope                = azurerm_key_vault.kv.id

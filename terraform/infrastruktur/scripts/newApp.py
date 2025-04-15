@@ -1,14 +1,26 @@
 # Arguments:
 # 1. Name of student folder
+# 2. Access level - either 'private' or 'public'
 
 import sys
 from pathlib import Path
 from git import Repo
+import argparse
+
+parser = argparse.ArgumentParser(
+                    prog='newApp',
+                    description='Adds new container app to infrastructure'
+                    )
+
+parser.add_argument('name')           # positional argument
+parser.add_argument('-a', '--access', choices=['public','private'], required=True)      # option that takes a value
+
+args = parser.parse_args()
+print(args.name, args.access)
 
 
-
-studentFolder = sys.argv[1]
-access = sys.argv[2]
+studentFolder = args.name
+access = args.access
 
 
 repo_dirPath = Path(__file__).resolve().parent.parent.parent.parent
@@ -16,9 +28,6 @@ studentDirPath = repo_dirPath / 'studentOppgaver'
 match = False
 database = False
 
-if len(sys.argv != 2):
-    print("Two parameters are required")
-    exit(1)
 
 for x in studentDirPath.iterdir():
     
@@ -29,9 +38,7 @@ if (match == False):
     print("Did not find '"+studentFolder+"' in "+studentDirPath.as_posix())
     exit(1)
 
-if (access != "private" and access != "public"):
-    print("Incorrect access parameter, must be set to either 'private' or 'public'")
-    exit(1)
+
 
 
 repo = Repo(repo_dirPath)
@@ -69,4 +76,3 @@ if (database == True):
 
 #result = subprocess.run(["dir"], shell=True, capture_output=True, text=True)
 #print(result.stdout)
-

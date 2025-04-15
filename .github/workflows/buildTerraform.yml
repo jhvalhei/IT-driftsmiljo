@@ -36,7 +36,7 @@ env:
   DATABASE: ${{ inputs.DATABASE }}
   ACCESS: ${{ inputs.ACCESS }}
   
-  ALLOWED_IP_RANGE: ${{ secrets.ALLOWE_IP_RANGE }}
+  ALLOWED_IP_RANGE: ${{ secrets.ALLOWED_IP_RANGE }}
 
  
 jobs:

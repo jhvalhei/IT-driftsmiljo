@@ -18,7 +18,7 @@ on:
         required: true
         type: string
       ACCESS:
-        required: true
+        required: false
         type: string
 
   # Allows you to run this workflow manually from the Actions tab

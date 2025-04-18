@@ -164,7 +164,13 @@ def main():
     #    EOF
     #""")
     print("Installing requierments on the jump host")
-    run_command(f"ssh -o StrictHostKeyChecking=no {USERNAME}@{IP_ADDRESS} bash -s -- {AZUNAME} {AZPASS} {TENANT} <./installRequirements.sh")
+    #run_command(f"ssh -o StrictHostKeyChecking=no {USERNAME}@{IP_ADDRESS} bash -s -- {AZUNAME} {AZPASS} {TENANT} <./installRequirements.sh")
+    
+    run_remote_script(
+        USERNAME, IP_ADDRESS,
+        "./installRequirements.sh",
+        AZUNAME, AZPASS, TENANT
+    )
 
     # Execute SQL configs on corresponding database for the student assignment
     #with open("executeSqlConfig.sh", "r") as f:
@@ -176,7 +182,13 @@ def main():
     #    EOF
     #""")
     print("Executeing sql queries on the jump host")
-    run_command(f"ssh -o StrictHostKeyChecking=no {USERNAME}@{IP_ADDRESS} bash -s -- {SECRET} {USERNAME} {STUDENTDB} {STUDENTFOLDER} <./executeSqlConfig.sh")
+    #run_command(f"ssh -o StrictHostKeyChecking=no {USERNAME}@{IP_ADDRESS} bash -s -- {SECRET} {USERNAME} {STUDENTDB} {STUDENTFOLDER} <./executeSqlConfig.sh")
+    
+    run_remote_script(
+        USERNAME, IP_ADDRESS,
+        "./executeSqlConfig.sh",
+        SECRET, USERNAME, STUDENTDB, STUDENTFOLDER
+    )
 
     # Delete jump host
     print("Deleting the jump host and the dependent resources")

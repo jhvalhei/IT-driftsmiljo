@@ -18,8 +18,6 @@ env:
   DOCKER_IMAGE_NAME: ${{ inputs.DOCKER_IMAGE_NAME }}
   DATABASE: ${{ inputs.DATABASE }}
 
-  TF_VAR_postgreserver_admin_uname: ${{ secrets.DB_SERVER_UNAME }}
-  TF_VAR_rootPath: ${{ github.workspace }}
 
 jobs:
   remove:

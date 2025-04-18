@@ -17,6 +17,9 @@ on:
       TYPE:
         required: true
         type: string
+      ACCESS:
+        required: false
+        type: string
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -31,6 +34,9 @@ env:
   STUDENT_FOLDER: ${{ inputs.STUDENT_FOLDER }}
   DOCKER_IMAGE_NAME: ${{ inputs.DOCKER_IMAGE_NAME }}
   DATABASE: ${{ inputs.DATABASE }}
+  ACCESS: ${{ inputs.ACCESS }}
+  
+  ALLOWED_IP_RANGE: ${{ secrets.ALLOWED_IP_RANGE }}
 
  
 jobs:

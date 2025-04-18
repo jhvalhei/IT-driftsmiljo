@@ -18,6 +18,7 @@ jobs:
       studentFolderName: ${{ steps.extract_folder.outputs.studentFolderName }}
       imageName: ${{ steps.set-image.outputs.imageName }}
       database: ${{ steps.database.outputs.database }}
+      access: ${{ steps.check_access.outputs.access }}
     steps:
       # Step 1: Checkout the repository
       - name: Checkout Repository
@@ -45,6 +46,22 @@ jobs:
             echo "Fant ikke \"${{env.STUDENT_FOLDER}}\"" 
             exit 1
           fi 
+
+      # Step 2,75: Check access
+      - name: Check access
+        id: check_access
+        run: |
+          msg="${{ github.event.head_commit.message}}"
+          access=$(echo "$msg" | awk '{print $4}')
+          if [[ "$access" == "private" ]]; then
+            echo "access=private" >> $GITHUB_OUTPUT
+          elif [[ "$access" == "public" ]]; then
+            echo "access=public" >> $GITHUB_OUTPUT
+          else
+            echo "No access parameter found"
+            exit 1
+          fi
+
     
 
       # Step 3: Convert gitHub repository owner to Lowercase (Docker image requires lowercase name)
@@ -95,4 +112,5 @@ jobs:
       STUDENT_FOLDER: ${{needs.build-and-push.outputs.studentFolderName}}
       DOCKER_IMAGE_NAME: ${{needs.build-and-push.outputs.imageName}}
       DATABASE: ${{needs.build-and-push.outputs.database}}
-      type: ny
+      TYPE: ny
+      ACCESS: ${{needs.build-and-push.outputs.access}}

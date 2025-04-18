@@ -47,6 +47,34 @@ def run_command(command, check=True):
         print(f"Command failed: {e.cmd}", file=sys.stderr)
         print(f"Error: {e.stderr}", file=sys.stderr)
         sys.exit(1)
+        
+def run_remote_script(username, ip, script_path, *args, ssh_options="-o StrictHostKeyChecking=no"):
+    """
+    Execute a local script on a remote Linux VM with variable arguments.
+    
+    Args:
+        username (str): SSH username
+        ip (str): Remote IP/hostname
+        script_path (str): Local script path to run remotely
+        *args: Variable arguments to pass to the remote script
+        ssh_options (str): Additional SSH options (default: disable host key checking)
+    """
+    script_path = Path(script_path).absolute()
+    if not script_path.exists():
+        raise FileNotFoundError(f"Script {script_path} not found")
+
+    with open(script_path, 'r') as f:
+        script_content = f.read()
+
+    arg_string = ' '.join(str(arg) for arg in args)
+
+    cmd = (
+        f'ssh {ssh_options} {username}@{ip} '
+        f'"bash -s -- {arg_string}" '
+        f'<<EOF\n{script_content}\nEOF'
+    )
+    
+    return run_command(cmd)
 
 def main():
     if len(sys.argv) != 6:

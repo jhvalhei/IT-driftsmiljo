@@ -42,40 +42,13 @@ def run_command(command, check=True):
             stderr=subprocess.PIPE,
             text=True
         )
+        print(f"{result.stdout.strip()}") # Comment out to prevent results beeing printed while the scripts are running
         return result.stdout.strip()
     except subprocess.CalledProcessError as e:
         print(f"Command failed: {e.cmd}", file=sys.stderr)
         print(f"Error: {e.stderr}", file=sys.stderr)
-        sys.exit(1)
+        #sys.exit(1)
         
-def run_remote_script(username, ip, script_path, *args, ssh_options="-o StrictHostKeyChecking=no"):
-    """
-    Execute a local script on a remote Linux VM with variable arguments.
-    
-    Args:
-        username (str): SSH username
-        ip (str): Remote IP/hostname
-        script_path (str): Local script path to run remotely
-        *args: Variable arguments to pass to the remote script
-        ssh_options (str): Additional SSH options (default: disable host key checking)
-    """
-    script_path = Path(script_path).absolute()
-    if not script_path.exists():
-        raise FileNotFoundError(f"Script {script_path} not found")
-
-    with open(script_path, 'r') as f:
-        script_content = f.read()
-
-    arg_string = ' '.join(str(arg) for arg in args)
-
-    cmd = (
-        f'ssh {ssh_options} {username}@{ip} '
-        f'"bash -s -- {arg_string}" '
-        f'<<EOF\n{script_content}\nEOF'
-    )
-    
-    return run_command(cmd)
-
 def main():
     if len(sys.argv) != 6:
         print("Illegal number of parameters!", file=sys.stderr)
@@ -88,111 +61,97 @@ def main():
     AZPASS = sys.argv[4]
     TENANT = sys.argv[5]
     
-    VM_NAME = "jmphost"
-    SUBNET = "jmphostsubnet"
-    STUDENTFOLDERPATH = (Path(__file__).parent / "../../../studentOppgaver" / STUDENTFOLDER).resolve()
-    VM_IMAGE = "Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
+    vmName = "jmphost"
+    subnet = "jmphostsubnet"
+    studentFolderPath = (Path(__file__).parent / "../../../studentOppgaver" / STUDENTFOLDER).resolve()
+    vmImage = "Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
 
     # Azure login
     run_command(f"az login --service-principal --username {AZUNAME} --password {AZPASS} --tenant {TENANT}")
 
     # Get information/data form Azure resources
-    KEYVAULTNAME = run_command('az keyvault list --query "[0].name" -o tsv')
-    SECRET = run_command(f'az keyvault secret show --vault-name {KEYVAULTNAME} -n db-server-admin-secret --query "value" -o tsv')
-    RESOURCE_GROUP_NAME = run_command('az group list --query "[?contains(name,\'global\')].name" -o tsv')
-    VNET = run_command(f'az network vnet list --query "[?resourceGroup==\'{RESOURCE_GROUP_NAME}\'].name" -o tsv')
+    keyvaultName = run_command('az keyvault list --query "[0].name" -o tsv')
+    SECRET = run_command(f'az keyvault secret show --vault-name {keyvaultName} -n db-server-admin-secret --query "value" -o tsv')
+    resourceGroupName = run_command('az group list --query "[?contains(name,\'global\')].name" -o tsv')
+    vnet = run_command(f'az network vnet list --query "[?resourceGroup==\'{resourceGroupName}\'].name" -o tsv')
 
     # Create VM jump host
-    run_command(f"""
-        az vm create \
-            --resource-group "{RESOURCE_GROUP_NAME}" \
-            --name "{VM_NAME}" \
-            --image "{VM_IMAGE}" \
-            --admin-username "{USERNAME}" \
-            --vnet-name "{VNET}" \
-            --subnet "{SUBNET}" \
-            --assign-identity \
-            --generate-ssh-keys \
-            --public-ip-sku Standard
-    """)
+    print("Creating the jump host VM")
+    run_command(
+        f'az vm create ' 
+        f'--resource-group "{resourceGroupName}" '
+        f'--name "{vmName}" '
+        f'--image "{vmImage}" '
+        f'--admin-username "{USERNAME}" '
+        f'--vnet-name "{vnet}" '
+        f'--subnet "{subnet}" '
+        '--assign-identity '
+        '--generate-ssh-keys '
+        '--public-ip-sku Standard'
+    )
 
-    # Set AD VM extension
-    run_command(f"""
-        az vm extension set \
-            --publisher Microsoft.Azure.ActiveDirectory \
-            --name AADSSHLoginForLinux \
-            --resource-group "{RESOURCE_GROUP_NAME}" \
-            --vm-name "{VM_NAME}"
-    """)
-
-    # Get IP address
-    IP_ADDRESS = run_command(f"""
-        az vm show --show-details \
-            --resource-group "{RESOURCE_GROUP_NAME}" \
-            --name "{VM_NAME}" \
-            --query publicIps \
-            --output tsv
-    """)
+    run_command(
+        'az vm extension set '
+        '--publisher Microsoft.Azure.ActiveDirectory '
+        '--name AADSSHLoginForLinux '
+        f'--resource-group "{resourceGroupName}" '
+        f'--vm-name "{vmName}"'
+    )
+    
+    IP_ADDRESS = run_command(
+        'az vm show --show-details '
+        f'--resource-group "{resourceGroupName}" '
+        f'--name "{vmName}" '
+        '--query publicIps '
+        '--output tsv'
+    )
     print(f"IP-address for jump host: {IP_ADDRESS}")
 
     # Transfer SQL config files to jump host
-    if STUDENTFOLDERPATH.exists() and STUDENTFOLDERPATH.is_dir():
-        for file_path in STUDENTFOLDERPATH.glob("*.txt"):
-            if file_path.is_file() and ("DDL" in file_path.name or "DML" in file_path.name):
-                STUDENTDB = f"{STUDENTFOLDER.lower()}-db"
-                remote_path = f"/home/{USERNAME}/{STUDENTDB}/{file_path.name}"
+    if studentFolderPath.exists() and studentFolderPath.is_dir():
+        for filePath in studentFolderPath.glob("*.txt"):
+            if filePath.is_file() and ("DDL" in filePath.name or "DML" in filePath.name):
+                studentDB = f"{STUDENTFOLDER.lower()}-db"
+                remotePath = f"/home/{USERNAME}/{studentDB}/{filePath.name}"
                 if sys.platform == "win32":
-                    run_command(f"""
-                        ssh -o StrictHostKeyChecking=no {USERNAME}@{IP_ADDRESS} "mkdir -p {STUDENTDB}"
-                    """)
-                    run_command(f"""
-                        scp -o StrictHostKeyChecking=no "{file_path}" {USERNAME}@{IP_ADDRESS}:"{remote_path.replace('/', '\\')}"
-                    """)
+                    run_command(f'ssh -o UserKnownHostsFile=NUL -o StrictHostKeyChecking=no {USERNAME}@{IP_ADDRESS} "mkdir -p /home/{USERNAME}/{studentDB}"')
+                    run_command(f'scp -o StrictHostKeyChecking=no "{filePath}" {USERNAME}@{IP_ADDRESS}:"{remotePath}"')
                 else:
                     run_command(f"""
-                        ssh -o StrictHostKeyChecking=no {USERNAME}@{IP_ADDRESS} "mkdir -p {STUDENTDB}" && \
-                        scp -o StrictHostKeyChecking=no "{file_path}" {USERNAME}@{IP_ADDRESS}:"{remote_path}"
+                        ssh -o StrictHostKeyChecking=no {USERNAME}@{IP_ADDRESS} "mkdir -p {studentDB}" && \
+                        scp -o StrictHostKeyChecking=no "{filePath}" {USERNAME}@{IP_ADDRESS}:"{remotePath}"
                     """)
 
-    # Install requirements on jump host
-    #with open("installRequirements.sh", "r") as f:
-    #    install_script = f.read()
-    
-    #run_command(f"""
-    #    ssh -o StrictHostKeyChecking=no {USERNAME}@{IP_ADDRESS} "bash -s" -- {AZUNAME} {AZPASS} {TENANT} <<'EOF'
-    #    {install_script}
-    #    EOF
-    #""")
-    print("Installing requierments on the jump host")
-    #run_command(f"ssh -o StrictHostKeyChecking=no {USERNAME}@{IP_ADDRESS} bash -s -- {AZUNAME} {AZPASS} {TENANT} <./installRequirements.sh")
-    
-    run_remote_script(
-        USERNAME, IP_ADDRESS,
-        "./installRequirements.sh",
-        AZUNAME, AZPASS, TENANT
-    )
+    reqScript = Path("installRequirements.sh").absolute()
+    sqlScript = Path("executeSqlConfig.sh").absolute()
 
-    # Execute SQL configs on corresponding database for the student assignment
-    #with open("executeSqlConfig.sh", "r") as f:
-    #    sql_script = f.read()
+    remotePath = f"/home/{USERNAME}/"
+
+    run_command(f'scp -o StrictHostKeyChecking=no "{reqScript}" {USERNAME}@{IP_ADDRESS}:"{remotePath}"')
+    run_command(f'scp -o StrictHostKeyChecking=no "{sqlScript}" {USERNAME}@{IP_ADDRESS}:"{remotePath}"')
     
-    #run_command(f"""
-    #    ssh -o StrictHostKeyChecking=no {USERNAME}@{IP_ADDRESS} "bash -s" -- {SECRET} {USERNAME} {STUDENTDB} {STUDENTFOLDER} <<'EOF'
-    #    {sql_script}
-    #    EOF
-    #""")
-    print("Executeing sql queries on the jump host")
-    #run_command(f"ssh -o StrictHostKeyChecking=no {USERNAME}@{IP_ADDRESS} bash -s -- {SECRET} {USERNAME} {STUDENTDB} {STUDENTFOLDER} <./executeSqlConfig.sh")
+    # Install requirements on jump host
+    print("Installing requierments on the jump host")
+    run_command(
+        f'ssh -o StrictHostKeyChecking=no {USERNAME}@{IP_ADDRESS} '
+        f'"chmod +x {remotePath}installRequirements.sh && '
+        f'{remotePath}installRequirements.sh {AZUNAME} {AZPASS} {TENANT}"'
+    )
     
-    run_remote_script(
-        USERNAME, IP_ADDRESS,
-        "./executeSqlConfig.sh",
-        SECRET, USERNAME, STUDENTDB, STUDENTFOLDER
+    # Execute sql queries from the jump host on the database
+    print("Executeing sql queries from the jump host on the database")
+    run_command(
+        f'ssh -o StrictHostKeyChecking=no {USERNAME}@{IP_ADDRESS} '
+        f'"chmod +x {remotePath}executeSqlConfig.sh && '
+        f'{remotePath}executeSqlConfig.sh {SECRET} {USERNAME} {studentDB} {STUDENTFOLDER}"'
     )
 
     # Delete jump host
     print("Deleting the jump host and the dependent resources")
-    run_command("python deleteJmpHost.py" if sys.platform == "win32" else "./deleteJmpHost.sh")
+    if sys.platform == "win32":
+        run_command("python deleteJmpHost.py")
+    else:
+        run_command("python3 deleteJmpHost.py")
 
 if __name__ == "__main__":
     main()

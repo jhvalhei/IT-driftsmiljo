@@ -113,9 +113,9 @@ jobs:
         run: |
           cd terraform/infrastruktur
           pwd
-          terraform plan -var-file=terraform.tfvars.json
+          terraform plan -var-file=terraform.tfvars.json -out="main.tfplan"
       
       - name: Terraform apply
         run: |
           cd terraform/infrastruktur
-          terraform apply -auto-approve
+          terraform apply "main.tfplan"

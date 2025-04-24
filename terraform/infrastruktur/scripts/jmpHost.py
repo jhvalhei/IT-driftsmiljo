@@ -47,7 +47,7 @@ def run_command(command, check=True):
     except subprocess.CalledProcessError as e:
         print(f"Command failed: {e.cmd}", file=sys.stderr)
         print(f"Error: {e.stderr}", file=sys.stderr)
-        #sys.exit(1)
+        sys.exit(1)
         
 def main():
     if len(sys.argv) != 6:
@@ -128,6 +128,8 @@ def main():
     remotePath = f"/home/{USERNAME}/"
 
     run_command(f'scp -o StrictHostKeyChecking=no "{reqScript}" {USERNAME}@{IP_ADDRESS}:"{remotePath}"')
+    #run_command(f"sed -i -e 's/\r$//' {remotePath}installRequirements.sh")
+    print(reqScript)
     run_command(f'scp -o StrictHostKeyChecking=no "{sqlScript}" {USERNAME}@{IP_ADDRESS}:"{remotePath}"')
     
     # Install requirements on jump host
@@ -137,6 +139,7 @@ def main():
         f'"chmod +x {remotePath}installRequirements.sh && '
         f'{remotePath}installRequirements.sh {AZUNAME} {AZPASS} {TENANT}"'
     )
+ 
     
     # Execute sql queries from the jump host on the database
     print("Executeing sql queries from the jump host on the database")

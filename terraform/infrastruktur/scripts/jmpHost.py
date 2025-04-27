@@ -1,3 +1,14 @@
+# Arguments:
+# 1. Name of the student project
+# 2. Username for the database
+# 3. App id for the service principal
+# 4. Password for the service principal
+# 5. Tenant id for the azure tenant
+# 6. Action to be executed. 
+#   - Ommit to only set up jumphost
+#   - "init" to set up jumphost, execute sql statements and delete jumphost
+#   - "delete" to only delete jumphost
+
 import sys
 import platform
 import subprocess
@@ -50,7 +61,7 @@ def run_command(command, check=True):
         sys.exit(1)
         
 def main():
-    if len(sys.argv) != 6:
+    if len(sys.argv) != 7:
         print("Illegal number of parameters!", file=sys.stderr)
         print("Usage: python script.py <STUDENTFOLDER> <USERNAME> <AZUNAME> <AZPASS> <TENANT>", file=sys.stderr)
         sys.exit(2)
@@ -60,6 +71,7 @@ def main():
     AZUNAME = sys.argv[3]
     AZPASS = sys.argv[4]
     TENANT = sys.argv[5]
+    ACTION = sys.argv[6]
     
     vmName = "jmphost"
     subnet = "jmphostsubnet"
@@ -122,11 +134,12 @@ def main():
                         scp -o StrictHostKeyChecking=no "{filePath}" {USERNAME}@{IP_ADDRESS}:"{remotePath}"
                     """)
 
+
     reqScript = Path("installRequirements.sh").absolute()
     sqlScript = Path("executeSqlConfig.sh").absolute()
 
     remotePath = f"/home/{USERNAME}/"
-
+    
     run_command(f'scp -o StrictHostKeyChecking=no "{reqScript}" {USERNAME}@{IP_ADDRESS}:"{remotePath}"')
     #run_command(f"sed -i -e 's/\r$//' {remotePath}installRequirements.sh")
     print(reqScript)
@@ -140,21 +153,24 @@ def main():
         f'{remotePath}installRequirements.sh {AZUNAME} {AZPASS} {TENANT}"'
     )
  
-    
-    # Execute sql queries from the jump host on the database
-    print("Executeing sql queries from the jump host on the database")
-    run_command(
-        f'ssh -o StrictHostKeyChecking=no {USERNAME}@{IP_ADDRESS} '
-        f'"chmod +x {remotePath}executeSqlConfig.sh && '
-        f'{remotePath}executeSqlConfig.sh {SECRET} {USERNAME} {studentDB} {STUDENTFOLDER}"'
-    )
+    if (ACTION == "init"):
+        # Execute sql queries from the jump host on the database
+        print("Executeing sql queries from the jump host on the database")
+        run_command(
+            f'ssh -o StrictHostKeyChecking=no {USERNAME}@{IP_ADDRESS} '
+            f'"chmod +x {remotePath}executeSqlConfig.sh && '
+            f'{remotePath}executeSqlConfig.sh {SECRET} {USERNAME} {studentDB} {STUDENTFOLDER}"'
+        )
 
-    # Delete jump host
-    print("Deleting the jump host and the dependent resources")
-    if sys.platform == "win32":
-        run_command("python deleteJmpHost.py")
-    else:
-        run_command("python3 deleteJmpHost.py")
+    if (ACTION == "init" or ACTION == "delete"):
+        # Delete jump host
+        print("Deleting the jump host and the dependent resources")
+        if sys.platform == "win32":
+            run_command("python deleteJmpHost.py")
+        else:
+            run_command("python3 deleteJmpHost.py")
+
+
 
 if __name__ == "__main__":
     main()

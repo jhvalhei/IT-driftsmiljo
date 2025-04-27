@@ -57,8 +57,8 @@ Hvis du allerede har innstallert Azure CLIet kan du hoppe over punkt nr. 1.
    Eksempel i Powershell:
    ```
    $env:ARM_CLIENT_ID="APPID"
-   $env:ARM_CLIENT_SECRET="password"
-   $env:ARM_TENANT_ID = "tenant"
+   $env:ARM_CLIENT_SECRET="PASSWORD"
+   $env:ARM_TENANT_ID = "TENANTID"
    $env:ARM_SUBSCRIPTION_ID = "SUBSCRIPTIONID"
    ```
 
@@ -105,7 +105,7 @@ Last ned git repo eller finn mappen som har blitt levert av studentene. Sjekk at
 ```plaintext
 <studentoppgavenavn>/
 ├── README.md      # Dokumentasjon og installasjonsinstrukser
-├── database/      # Databasefiler
+├── database/      # Databasefiler (hvis studentoppgaven trenger databasetilgang)
 └── Dockerfile     # Fil for bygging av Docker-image
 ```
 
@@ -120,6 +120,22 @@ Studentoppgavenavn er mappenavnet til studentoppgaven.
 Dette aktiverer først workflowen Docker-build.yml. Den lager et nytt Docker image og lagrer det i Githubs container register tilknyttet brukeren repoet tilhører. Deretter aktiveres buildTerraform.yml som legger til nye verdier i Terraform og applyer den nye konfigurasjonen.
 
 For å se utførelse av workflows, gå til Actions fanen på repoets Github side.
+
+### Steg 3: Initiere database
+Dette seteget utføres kun hvis studentoppgaven trenger tilgang til en database.
+
+1. Legg DDL og DML filer inn i mappen til den aktuelle studentoppgavens rotmappe:
+```plaintext
+<studentoppgavenavn>/
+├── DML.txt
+├── DDL.txt
+```
+2. Kjør scriptet "jmphost.py". Merk at "APPID" og "PASSWORD" tilhører service principle som ble opprettet tidligere.
+```bash
+python jmphost.py <studentoppgavenavn> <database-adminbrukernavn> <APPID> <PASSWORD> <TENANTID> init
+```
+
+3. Restart container appen. Dette kan gjøres i Azure portalen.
 
 ## Fjerne studentoppgave
 Fjerning av studentoppgave fra dritfsmiljøet skjer via workflowsene remove.yml og buildTerraform.yml. For å aktivere disse må repoet pushes til remote med commit meldingen:

@@ -4,8 +4,8 @@ name: Docker build
 on:
   push:
     branches: ["testDeploy"]
-    paths:
-      - 'studentOppgaver/**'  # Only runs when it detects new changes in the folder studentOppgaver/
+  #  paths:
+  #    - 'studentOppgaver/**'  # Only runs when it detects new changes in the folder studentOppgaver/
   
   workflow_dispatch:
 

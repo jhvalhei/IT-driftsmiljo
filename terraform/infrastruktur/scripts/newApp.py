@@ -65,7 +65,9 @@ repo.index.add(add_file)  # notice the add function requires a list of paths
 
 
 # Commit
-repo.index.commit("ny studentoppgave " + studentFolder + " " + access)
+#repo.index.commit("ny studentoppgave " + studentFolder + " " + access)
+repo.git.commit('--allow-empty', '-m', "ny studentoppgave " + studentFolder + " " + access)
+
 
 # Push to remote
 repo.git.push("--set-upstream", origin, repo.head.ref)

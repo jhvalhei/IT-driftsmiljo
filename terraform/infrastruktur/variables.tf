@@ -321,3 +321,25 @@ variable "privdnslink_name" {
   default     = "exampleVnetZone.com"
 }
 
+
+# Module: alerts
+
+variable "email_name" {
+    description = "Name of the email receiver for alerts"
+    type = string
+}
+
+variable "email_address" {
+    description = "Email address of the email receiver for alerts"
+    type = string
+}
+
+variable "sms_name" {
+    description = "Name of the sms receiver for alerts"
+    type = string
+}
+
+variable "sms_number" {
+    description = "Number for the sms receiver for alerts"
+    type = number
+}

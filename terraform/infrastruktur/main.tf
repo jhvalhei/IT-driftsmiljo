@@ -45,8 +45,7 @@ resource "azurerm_resource_group" "rg_storage" {
   location = var.rg_location_storage
 }
 
-
-output "all_container_app_ids" {
+locals {
   value = merge(module.containers.capp_with_db_ids, module.containers.capp_without_db_ids)
 }
 
@@ -134,5 +133,6 @@ module "alerts" {
   email_address = var.email_address
   sms_name = var.sms_name
   sms_number = var.sms_number
-  capp_ids = output.all_container_app_ids
+  capp_ids = local.value
+  postdb_ids = module.database.postdb_ids
 }

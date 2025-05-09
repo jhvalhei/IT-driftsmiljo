@@ -35,7 +35,7 @@ variable "postgreserver_storage_mb" {
 }
 
 variable "postgreserver_storage_tier" {
-  description = "Storage toer for the postgresql flexible server"
+  description = "Storage tier for the postgresql flexible server"
   type        = string
   default     = "P4"
 }

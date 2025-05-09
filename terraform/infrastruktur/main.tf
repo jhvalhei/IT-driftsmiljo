@@ -45,6 +45,12 @@ resource "azurerm_resource_group" "rg_storage" {
   location = var.rg_location_storage
 }
 
+
+output "all_container_app_ids" {
+  value = merge(module.containers.capp_with_db_ids, module.containers.capp_without_db_ids)
+}
+
+
 module "storage" {
   source              = "./modules/storage"
   rg_name_storage     = azurerm_resource_group.rg_storage.name
@@ -117,4 +123,16 @@ module "network" {
   subnet_capp_service_delegation_actions = var.subnet_capp_service_delegation_actions
   privdnszone_name                       = var.privdnszone_name
   privdnslink_name                       = var.privdnslink_name
+}
+
+module "alerts" {
+  depends_on = [ azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_global, module.containers ]
+  source = "./modules/alerts"
+  rg_name_global = var.rg_name_global
+  rg_location_global = var.rg_location_global
+  email_name = var.email_name
+  email_address = var.email_address
+  sms_name = var.sms_name
+  sms_number = var.sms_number
+  capp_ids = output.all_container_app_ids
 }

@@ -157,25 +157,3 @@ resource "azurerm_monitor_metric_alert" "mma_connection_failed_db" {
 
   depends_on = [ azurerm_monitor_action_group.mag ]
 }
-
-resource "azurerm_monitor_metric_alert" "mma_connection_failed_db" {
-  for_each = var.capp_ids
-  name                = "connection-failed-alert-db"
-  resource_group_name = var.rg_name_global
-  scopes              = [each.value]
-  description         = "Action will be triggered when connection failed equals to or exceeds 3"
-
-  criteria {
-    metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
-    metric_name      = "connections_failed"
-    aggregation      = "Average"
-    operator         = "GreaterThanOrEqual"
-    threshold        = 2
-  }
-
-  action {
-    action_group_id = azurerm_monitor_action_group.mag.id
-  }
-
-  depends_on = [ azurerm_monitor_action_group.mag ]
-}

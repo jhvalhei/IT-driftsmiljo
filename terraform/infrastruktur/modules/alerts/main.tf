@@ -85,18 +85,17 @@ resource "azurerm_monitor_metric_alert" "mma_high_requests_capp" {
 }
 
 resource "azurerm_monitor_metric_alert" "mma_high_tps_db" {
-  for_each = var.postdb_ids
   name                = "high-transactions-per-second-alert-db"
   resource_group_name = var.rg_name_global
-  scopes              = [each.value]
+  scopes              = var.psql_fs_id
   description         = "Action will be triggered when transactions per second equals to or exceeds 50"
 
   criteria {
     metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
     metric_name      = "tps"
-    aggregation      = "Average"
+    aggregation      = "Maximum"
     operator         = "GreaterThanOrEqual"
-    threshold        = 10
+    threshold        = 50
   }
 
   action {
@@ -107,18 +106,17 @@ resource "azurerm_monitor_metric_alert" "mma_high_tps_db" {
 }
 
 resource "azurerm_monitor_metric_alert" "mma_connection_failed_db" {
-  for_each = var.postdb_ids
   name                = "connection-failed-alert-db"
   resource_group_name = var.rg_name_global
-  scopes              = [each.value]
+  scopes              = var.psql_fs_id
   description         = "Action will be triggered when connection failed equals to or exceeds 3"
 
   criteria {
     metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
     metric_name      = "connections_failed"
-    aggregation      = "Average"
+    aggregation      = "Total"
     operator         = "GreaterThanOrEqual"
-    threshold        = 2
+    threshold        = 3
   }
 
   action {

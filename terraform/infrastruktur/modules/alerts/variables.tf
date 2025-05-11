@@ -35,7 +35,7 @@ variable "capp_ids" {
     type = map(string)
 }
 
-variable "postdb_ids" {
+variable "psql_fs_id" {
     description = "The ids for the PostgreSQL databases"
-    type = map(string)
+    type = set(string)
 }

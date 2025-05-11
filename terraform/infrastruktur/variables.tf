@@ -42,6 +42,18 @@ variable "rg_location_storage" {
   default     = "westeurope"
 }
 
+variable "rg_name_alerts" {
+  description = "Name of the alerts resource group"
+  type        = string
+  default     = "rg-alerts"
+}
+
+variable "rg_location_alerts" {
+  description = "Location of the alerts resource group"
+  type        = string
+  default     = "westeurope"
+}
+
 
 # Module: containerapp
 

@@ -3,7 +3,7 @@ data "azurerm_client_config" "current" {
 
 resource "azurerm_monitor_action_group" "mag" {
   name                = "CriticalAlertsAction"
-  resource_group_name = var.rg_name_global
+  resource_group_name = var.rg_name_alerts
   short_name          = "email-sms"
 
   email_receiver {
@@ -19,10 +19,9 @@ resource "azurerm_monitor_action_group" "mag" {
 }
 
 resource "azurerm_monitor_metric_alert" "mma_high_cpu_capp" {
-  for_each = var.capp_ids
   name                = "high-cpu-alert-capp"
-  resource_group_name = var.rg_name_global
-  scopes              = [each.value]
+  resource_group_name = var.rg_name_alerts
+  scopes              = var.capp_ids
   description         = "Action will be triggered when cpu usage equals to or exceeds 90%"
 
   criteria {
@@ -41,10 +40,9 @@ resource "azurerm_monitor_metric_alert" "mma_high_cpu_capp" {
 }
 
 resource "azurerm_monitor_metric_alert" "mma_high_memory_capp" {
-  for_each = var.capp_ids
   name                = "high-memory-alert-capp"
-  resource_group_name = var.rg_name_global
-  scopes              = [each.value]
+  resource_group_name = var.rg_name_alerts
+  scopes              = var.capp_ids
   description         = "Action will be triggered when memory usage equals to or exceeds 90%"
 
   criteria {
@@ -63,10 +61,9 @@ resource "azurerm_monitor_metric_alert" "mma_high_memory_capp" {
 }
 
 resource "azurerm_monitor_metric_alert" "mma_high_requests_capp" {
-  for_each = var.capp_ids
   name                = "high-requests-alert-capp"
-  resource_group_name = var.rg_name_global
-  scopes              = [each.value]
+  resource_group_name = var.rg_name_alerts
+  scopes              = var.capp_ids
   description         = "Action will be triggered when request count equals to or exceeds 50"
 
   criteria {
@@ -86,7 +83,7 @@ resource "azurerm_monitor_metric_alert" "mma_high_requests_capp" {
 
 resource "azurerm_monitor_metric_alert" "mma_high_tps_db" {
   name                = "high-transactions-per-second-alert-db"
-  resource_group_name = var.rg_name_global
+  resource_group_name = var.rg_name_alerts
   scopes              = var.psql_fs_id
   description         = "Action will be triggered when transactions per second equals to or exceeds 50"
 
@@ -107,7 +104,7 @@ resource "azurerm_monitor_metric_alert" "mma_high_tps_db" {
 
 resource "azurerm_monitor_metric_alert" "mma_connection_failed_db" {
   name                = "connection-failed-alert-db"
-  resource_group_name = var.rg_name_global
+  resource_group_name = var.rg_name_alerts
   scopes              = var.psql_fs_id
   description         = "Action will be triggered when connection failed equals to or exceeds 3"
 

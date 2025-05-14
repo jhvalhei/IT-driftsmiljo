@@ -31,6 +31,11 @@ variable "sms_number" {
 }
 
 variable "capp_ids" {
-    description = "The id for the container app"
+    description = "The ids for the container apps"
+    type = map(string)
+}
+
+variable "postdb_ids" {
+    description = "The ids for the PostgreSQL databases"
     type = map(string)
 }

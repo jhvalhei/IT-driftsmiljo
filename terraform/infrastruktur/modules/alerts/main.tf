@@ -1,52 +1,22 @@
 data "azurerm_client_config" "current" {
 }
 
-resource "azurerm_monitor_workspace" "mw" {
-  name                = "mamw001"
-  resource_group_name = var.rg_name_global
-  location            = "West Europe"
-}
-
 resource "azurerm_monitor_action_group" "mag" {
   name                = "CriticalAlertsAction"
   resource_group_name = var.rg_name_global
-  short_name          = "email-and-sms"
+  short_name          = "email-sms"
 
   email_receiver {
-    name          = var.email_name
+    name          = "${var.email_name}-email"
     email_address = var.email_address
   }
 
   sms_receiver {
-    name         = var.sms_name
+    name         = "${var.sms_name}-sms"
     country_code = "47"
     phone_number = var.sms_number
   }
 }
-
-/**
-resource "azurerm_monitor_activity_log_alert" "mala" {
-  name                = "example-activitylogalert"
-  resource_group_name = var.rg_name_global
-  location            = var.rg_location_global
-  scopes              = [azurerm_resource_group.example.id]
-  description         = "This alert will monitor a specific storage account updates."
-
-  criteria {
-    resource_id    = azurerm_storage_account.to_monitor.id
-    operation_name = "Microsoft.Storage/storageAccounts/write"
-    category       = "Recommendation"
-  }
-
-  action {
-    action_group_id = azurerm_monitor_action_group.mag.id
-
-    webhook_properties = {
-      from = "terraform"
-    }
-  }
-}
-**/
 
 resource "azurerm_monitor_metric_alert" "mma_high_cpu_capp" {
   for_each = var.capp_ids
@@ -115,7 +85,7 @@ resource "azurerm_monitor_metric_alert" "mma_high_requests_capp" {
 }
 
 resource "azurerm_monitor_metric_alert" "mma_high_tps_db" {
-  for_each = var.capp_ids
+  for_each = var.postdb_ids
   name                = "high-transactions-per-second-alert-db"
   resource_group_name = var.rg_name_global
   scopes              = [each.value]
@@ -126,7 +96,7 @@ resource "azurerm_monitor_metric_alert" "mma_high_tps_db" {
     metric_name      = "tps"
     aggregation      = "Average"
     operator         = "GreaterThanOrEqual"
-    threshold        = 50
+    threshold        = 10
   }
 
   action {
@@ -137,7 +107,7 @@ resource "azurerm_monitor_metric_alert" "mma_high_tps_db" {
 }
 
 resource "azurerm_monitor_metric_alert" "mma_connection_failed_db" {
-  for_each = var.capp_ids
+  for_each = var.postdb_ids
   name                = "connection-failed-alert-db"
   resource_group_name = var.rg_name_global
   scopes              = [each.value]

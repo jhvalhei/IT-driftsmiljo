@@ -45,10 +45,10 @@ resource "azurerm_resource_group" "rg_storage" {
   location = var.rg_location_storage
 }
 
-locals {
-  value = merge(module.containers.capp_with_db_ids, module.containers.capp_without_db_ids)
+resource "azurerm_resource_group" "rg_alerts" {
+  name = var.rg_name_alerts
+  location = var.rg_location_alerts
 }
-
 
 module "storage" {
   source              = "./modules/storage"
@@ -125,14 +125,13 @@ module "network" {
 }
 
 module "alerts" {
-  depends_on = [ azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_global, module.containers ]
+  depends_on = [ azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_global, module.containers, module.database ]
   source = "./modules/alerts"
-  rg_name_global = var.rg_name_global
-  rg_location_global = var.rg_location_global
+  rg_name_alerts = var.rg_name_alerts
   email_name = var.email_name
   email_address = var.email_address
   sms_name = var.sms_name
   sms_number = var.sms_number
-  capp_ids = local.value
-  postdb_ids = module.database.postdb_ids
+  capp_ids = module.containers.capp_ids
+  psql_fs_id = [ module.database.server_id ]
 }

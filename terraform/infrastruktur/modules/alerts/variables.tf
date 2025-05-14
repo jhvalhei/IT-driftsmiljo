@@ -1,13 +1,7 @@
-variable "rg_name_global" {
-  description = "Name of reasource group for global resources"
+variable "rg_name_alerts" {
+  description = "Name of the alerts resource group"
   type        = string
-  default     = "rg-globalresources"
-}
-
-variable "rg_location_global" {
-  description = "Location of reasource group for global resources"
-  type        = string
-  default     = "westeurope"
+  default     = "rg-alerts"
 }
 
 variable "email_name" {
@@ -32,10 +26,10 @@ variable "sms_number" {
 
 variable "capp_ids" {
     description = "The ids for the container apps"
-    type = map(string)
+    type = set(string)
 }
 
-variable "postdb_ids" {
+variable "psql_fs_id" {
     description = "The ids for the PostgreSQL databases"
-    type = map(string)
+    type = set(string)
 }

@@ -158,8 +158,9 @@ Dette seteget utføres kun hvis studentoppgaven trenger tilgang til en database.
 1. Legg DDL og DML filer inn i mappen til den aktuelle studentoppgavens rotmappe:
 ```plaintext
 <studentoppgavenavn>/
-├── DML.txt
-├── DDL.txt
+├── database/
+│   ├── *DDL*.txt
+│   └── *DML*.txt
 ```
 2. Kjør scriptet "jmphost.py". Merk at "APPID" og "PASSWORD" tilhører service principle som ble opprettet tidligere.
 ```bash

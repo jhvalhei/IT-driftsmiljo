@@ -164,7 +164,7 @@ az role assignment create \
 ```
 
 ### Steg 2: Laste opp filer til github
-For å legge inn en ny studentoppgave i driftsmiljøet benyttes Github workflows. Etter at studentoppgaven er plassert i /studentOppgaver/, kjøres /terraform/infrastruktur/scripts/newApp.py. Dette scriptet pusher den nye studentoppgaven til remote repoet og aktiverer workflowsene.
+For å legge inn en ny studentoppgave i driftsmiljøet benyttes Github workflows. Etter at studentoppgaven er plassert i /studentOppgaver/, kjøres /terraform/infrastruktur/scripts/newApp.py. Dette scriptet pusher den nye studentoppgaven til remote repoet og aktiverer workflowsene docker-build.yml og buildTerraform.yml.
 <br> 
 ```bash
 python newApp.py <studentoppgavenavn> -a <public/private>
@@ -193,10 +193,11 @@ python jmphost.py <studentoppgavenavn> <database-adminbrukernavn> <APPID> <PASSW
 1. Restart container appen. Dette kan gjøres i Azure portalen.
 
 ## Fjerne studentoppgave
-Fjerning av studentoppgave fra dritfsmiljøet skjer via workflowsene remove.yml og buildTerraform.yml. For å aktivere disse må repoet pushes til remote med følgende commit:
+Fjerning av studentoppgave fra dritfsmiljøet skjer via workflowsene remove.yml og buildTerraform.yml. For å aktivere disse må følgende kommandoer kjøres:
 
 ```
 git commit --allow-empty -am "fjern studentoppgave <studentoppgavenavn>"
+git push origin main
 ```
 De aktiverte workflowsene vil fjerne studentoppgavens Docker image fra Github, redigere Terraform koden og kjøre en ny Terraform apply.
 

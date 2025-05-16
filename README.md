@@ -22,13 +22,6 @@ Ta vare på objektet som kommer i retur, da du ikke får hentet dette ut igjen.
 
 2. Tildel roller: 
    
-- "Storage blob data contributor":
-```
-az role assignment create \
-  --assignee <APPID> \
-  --role "Storage Blob Contributor" \
-  --scope "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<rg-variablestorage>/providers/Microsoft.Storage/storageAccounts/<envstoragegjovik246>"
-```
 - "Key Vault Administrator":
 ```
 az role assignment create \
@@ -137,7 +130,7 @@ Disse stegene kan gjøres både i en linux terminal og Powershell.
 
 ## Legge inn ny studentoppgave
 ### Steg 1: Laste ned og sjekke filer
-Last ned git repo eller finn mappen som har blitt levert av studentene. Sjekk at mappen har en Dockerfil og en databasemappe i root dersom studentoppgaven trenger en database. Databasemappen kan være tom, men den skal bare være der for å vise at studentoppgaven inneholder en database. Legg studentoppgave inn i /studentOppgaver/ mappen. Husk å sette eventuelle git filer i studentoppgavemappen, f.eks. .git.
+Last ned git repo eller finn mappen som har blitt levert av studentene. Sjekk at mappen har en Dockerfil og en databasemappe i root dersom studentoppgaven trenger en database. Databasemappen kan være tom, men den skal bare være der for å vise at studentoppgaven inneholder en database. Legg studentoppgave inn i /studentOppgaver/ mappen. Husk å slette eventuelle git filer i studentoppgavemappen, f.eks. .git.
 ```plaintext
 <studentoppgavenavn>/
 ├── README.md            # Dokumentasjon og installasjonsinstrukser
@@ -146,6 +139,17 @@ Last ned git repo eller finn mappen som har blitt levert av studentene. Sjekk at
 │   └── *DML*.txt        # Database data (INSERT, UPDATE, osv.)
 ├── Dockerfile           # Fil for bygging av Docker image
 └── ...                  # Andre filer for studentoppgaven
+```
+
+### Steg 2: Opprett rolle
+
+Åpne Azure ClI som du finner i Azure portalen. Kjør følgende kommando:
+
+```
+az role assignment create \
+  --assignee <APPID> \
+  --role "Storage Blob Contributor" \
+  --scope "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<rg-variablestorage>/providers/Microsoft.Storage/storageAccounts/<envstoragegjovik246>"
 ```
 
 ### Steg 2: Laste opp filer til github

@@ -69,6 +69,9 @@ Merk at ALLOWED_IP_RANGE brukes til studentoppgaver som skal konfigureres med be
 
 4. Tillat Github Actions
 
+5. Tilpass workflows
+Workflowsene remove.yml og docker-build.yml bruker linken til github repoet. Siden linken inneholder brukernavnet til eieren av repoet, må riktig brukernavn settes inn. I remove.yml settes riktig brukernavn inn i steget Delete package via API og startWF. I docker-build.yml settes riktig brukernavn inn i startWf.
+
 
 
 

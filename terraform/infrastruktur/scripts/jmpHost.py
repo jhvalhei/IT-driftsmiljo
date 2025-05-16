@@ -61,7 +61,7 @@ def run_command(command, check=True):
         sys.exit(1)
         
 def main():
-    if len(sys.argv) != 7:
+    if len(sys.argv) > 7 or len(sys.argv) < 6:
         print("Illegal number of parameters!", file=sys.stderr)
         print("Usage: python script.py <STUDENTFOLDER> <USERNAME> <AZUNAME> <AZPASS> <TENANT>", file=sys.stderr)
         sys.exit(2)
@@ -71,7 +71,10 @@ def main():
     AZUNAME = sys.argv[3]
     AZPASS = sys.argv[4]
     TENANT = sys.argv[5]
-    ACTION = sys.argv[6]
+    if len(sys.argv) == 7:
+        ACTION = sys.argv[6]
+    else:
+        ACTION = "Just jmp"
     
     vmName = "jmphost"
     subnet = "jmphostsubnet"
@@ -88,72 +91,73 @@ def main():
     resourceGroupName = run_command('az group list --query "[?contains(name,\'global\')].name" -o tsv')
     vnet = run_command(f'az network vnet list --query "[?resourceGroup==\'{resourceGroupName}\'].name" -o tsv')
 
-    # Create VM jump host
-    print("Creating the jump host VM")
-    run_command(
-        f'az vm create ' 
-        f'--resource-group "{resourceGroupName}" '
-        f'--name "{vmName}" '
-        f'--image "{vmImage}" '
-        f'--admin-username "{USERNAME}" '
-        f'--vnet-name "{vnet}" '
-        f'--subnet "{subnet}" '
-        '--assign-identity '
-        '--generate-ssh-keys '
-        '--public-ip-sku Standard'
-    )
+    if (ACTION == "init" or len(sys.argv) == 6):
+        # Create VM jump host
+        print("Creating the jump host VM")
+        run_command(
+            f'az vm create ' 
+            f'--resource-group "{resourceGroupName}" '
+            f'--name "{vmName}" '
+            f'--image "{vmImage}" '
+            f'--admin-username "{USERNAME}" '
+            f'--vnet-name "{vnet}" '
+            f'--subnet "{subnet}" '
+            '--assign-identity '
+            '--generate-ssh-keys '
+            '--public-ip-sku Standard'
+        )
 
-    run_command(
-        'az vm extension set '
-        '--publisher Microsoft.Azure.ActiveDirectory '
-        '--name AADSSHLoginForLinux '
-        f'--resource-group "{resourceGroupName}" '
-        f'--vm-name "{vmName}"'
-    )
-    
-    IP_ADDRESS = run_command(
-        'az vm show --show-details '
-        f'--resource-group "{resourceGroupName}" '
-        f'--name "{vmName}" '
-        '--query publicIps '
-        '--output tsv'
-    )
-    print(f"IP-address for jump host: {IP_ADDRESS}")
+        run_command(
+            'az vm extension set '
+            '--publisher Microsoft.Azure.ActiveDirectory '
+            '--name AADSSHLoginForLinux '
+            f'--resource-group "{resourceGroupName}" '
+            f'--vm-name "{vmName}"'
+        )
+        
+        IP_ADDRESS = run_command(
+            'az vm show --show-details '
+            f'--resource-group "{resourceGroupName}" '
+            f'--name "{vmName}" '
+            '--query publicIps '
+            '--output tsv'
+        )
+        print(f"IP-address for jump host: {IP_ADDRESS}")
 
-    # Transfer SQL config files to jump host
-    
-    if databaseFolderPath.exists() and databaseFolderPath.is_dir():
-        for filePath in databaseFolderPath.glob("*.txt"):
-            if filePath.is_file() and ("DDL" in filePath.name or "DML" in filePath.name):
-                studentDB = f"{STUDENTFOLDER.lower()}-db"
-                remotePath = f"/home/{USERNAME}/{studentDB}/{filePath.name}"
-                if sys.platform == "win32":
-                    run_command(f'ssh -o UserKnownHostsFile=NUL -o StrictHostKeyChecking=no {USERNAME}@{IP_ADDRESS} "mkdir -p /home/{USERNAME}/{studentDB}"')
-                    run_command(f'scp -o StrictHostKeyChecking=no "{filePath}" {USERNAME}@{IP_ADDRESS}:"{remotePath}"')
-                else:
-                    run_command(f"""
-                        ssh -o StrictHostKeyChecking=no {USERNAME}@{IP_ADDRESS} "mkdir -p {studentDB}" && \
-                        scp -o StrictHostKeyChecking=no "{filePath}" {USERNAME}@{IP_ADDRESS}:"{remotePath}"
-                    """)
+        # Transfer SQL config files to jump host
+        
+        if databaseFolderPath.exists() and databaseFolderPath.is_dir():
+            for filePath in databaseFolderPath.glob("*.txt"):
+                if filePath.is_file() and ("DDL" in filePath.name or "DML" in filePath.name):
+                    studentDB = f"{STUDENTFOLDER.lower()}-db"
+                    remotePath = f"/home/{USERNAME}/{studentDB}/{filePath.name}"
+                    if sys.platform == "win32":
+                        run_command(f'ssh -o UserKnownHostsFile=NUL -o StrictHostKeyChecking=no {USERNAME}@{IP_ADDRESS} "mkdir -p /home/{USERNAME}/{studentDB}"')
+                        run_command(f'scp -o StrictHostKeyChecking=no "{filePath}" {USERNAME}@{IP_ADDRESS}:"{remotePath}"')
+                    else:
+                        run_command(f"""
+                            ssh -o StrictHostKeyChecking=no {USERNAME}@{IP_ADDRESS} "mkdir -p {studentDB}" && \
+                            scp -o StrictHostKeyChecking=no "{filePath}" {USERNAME}@{IP_ADDRESS}:"{remotePath}"
+                        """)
 
 
-    reqScript = Path("installRequirements.sh").absolute()
-    sqlScript = Path("executeSqlConfig.sh").absolute()
+        reqScript = Path("installRequirements.sh").absolute()
+        sqlScript = Path("executeSqlConfig.sh").absolute()
 
-    remotePath = f"/home/{USERNAME}/"
-    
-    run_command(f'scp -o StrictHostKeyChecking=no "{reqScript}" {USERNAME}@{IP_ADDRESS}:"{remotePath}"')
-    #run_command(f"sed -i -e 's/\r$//' {remotePath}installRequirements.sh")
-    print(reqScript)
-    run_command(f'scp -o StrictHostKeyChecking=no "{sqlScript}" {USERNAME}@{IP_ADDRESS}:"{remotePath}"')
-    
-    # Install requirements on jump host
-    print("Installing requierments on the jump host")
-    run_command(
-        f'ssh -o StrictHostKeyChecking=no {USERNAME}@{IP_ADDRESS} '
-        f'"chmod +x {remotePath}installRequirements.sh && '
-        f'{remotePath}installRequirements.sh {AZUNAME} {AZPASS} {TENANT}"'
-    )
+        remotePath = f"/home/{USERNAME}/"
+        
+        run_command(f'scp -o StrictHostKeyChecking=no "{reqScript}" {USERNAME}@{IP_ADDRESS}:"{remotePath}"')
+        #run_command(f"sed -i -e 's/\r$//' {remotePath}installRequirements.sh")
+        print(reqScript)
+        run_command(f'scp -o StrictHostKeyChecking=no "{sqlScript}" {USERNAME}@{IP_ADDRESS}:"{remotePath}"')
+        
+        # Install requirements on jump host
+        print("Installing requirements on the jump host")
+        run_command(
+            f'ssh -o StrictHostKeyChecking=no {USERNAME}@{IP_ADDRESS} '
+            f'"chmod +x {remotePath}installRequirements.sh && '
+            f'{remotePath}installRequirements.sh {AZUNAME} {AZPASS} {TENANT}"'
+        )
  
     if (ACTION == "init"):
         # Execute sql queries from the jump host on the database

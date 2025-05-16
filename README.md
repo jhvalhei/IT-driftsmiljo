@@ -46,31 +46,39 @@ az role assignment create \
 
 1. Fork repoet https://github.com/Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo
 
+2. Opprett token til Github Container Registry
+- opprett classic tokeen
+- gi følgende rettigheter:
+  - repo
+  - write:packages
+  - delete:packages
 
-2. Opprett secrets i Github repo
+3. Opprett secrets i Github repo
 
-Workflowsene i løsningen er avhengig av at visse verdier lagres som Secrets. Disse kan opprettes i Github grensesnittet, under "settings" i repoet. Opprett følgende secrets med tilhørende verdier:
+Workflowsene i løsningen er avhengig av at visse verdier lagres som Secrets. Disse kan opprettes i Github grensesnittet, under "settings" i repoet. Merk at verdien til secretsene som begynner med ARM hentes fra service principle objektet fra steg 1.  Opprett følgende secrets med tilhørende verdier:
 
-- ARM_CLIENT_ID      
-- ARM_CLIENT_SECRET
+- ARM_CLIENT_ID      //kalles "client_id" i service principle objektet.
+- ARM_CLIENT_SECRET     //kalles "password" i service principle objektet
 - ARM_SUBSCRIPTION_ID
 - ARM_TENANT_ID
 - REG_TOKEN       //token til Github Container Registry
-- REG_UNAME       //brukernavn til Github Container Registry
+- REG_UNAME       //Github brukernavn
 - ALLOWED_IP_RANGE   //offentlig IP-adresse i CIDR format
 
 Merk at ALLOWED_IP_RANGE brukes til studentoppgaver som skal konfigureres med begrenset nettverkstilgang. Slike studentoppgaver vil kun være tilgjengelige fra hoster innenfor nettverket som ligger i ALLOWED_IP_RANGE.
 
-3. Opprett Github Container Registry
+4. Tillat Github Actions
+
+
 
 
 ### Steg 3: Logg inn med service principle
 Hvis du allerede har installert Azure CLIet kan du hoppe over punkt nr. 1.
 
 1. [Installer](https://learn.microsoft.com/nb-no/cli/azure/install-azure-cli) Azure CLI
-2. Logg inn med service principle:
+2. Logg inn med service principle i terminal:
    ```
-   az login --service-principal --username <appId> --password <password> --tenant <tenant>
+   az login --service-principal --username <APPID> --password <PASSWORD> --tenant <TENANTID>
    ```
 3. Klon repo
 
@@ -89,22 +97,9 @@ Om du allerede har Terraform installert på maskinen, kan du hoppe over dette st
 
 
 
-### Steg 6: Sett variabler:
-   
-   Sett følgende miljøvariabler i terminalen:
-   
-   ```
-   ARM_CLIENT_ID
-   ARM_CLIENT_SECRET
-   ARM_TENANT_ID 
-   ARM_SUBSCRIPTION_ID
 
-   TF_VAR_reguname   //brukernavn til Github Container Registry
-   TF_VAR_regtoken   //token til Gtihub Container Registry
-   TF_VAR_rootPath   //full path til mappen IT-dritfsmiljø (bruk '/' til å skille mellom mappene, f.eks. "C:/Users/user1/IT-driftsmiljo")
-   ```
 
-### Steg 7: Apply backend
+### Steg 6: Apply backend
 Disse stegene kan gjøres både i en linux terminal og Powershell.
 
 1. Naviger til /terraform/backend.
@@ -121,6 +116,22 @@ Disse stegene kan gjøres både i en linux terminal og Powershell.
    ```bash
    terraform apply "main.tfplan
    ```
+
+### Steg 7: Sett variabler:
+   
+   Sett følgende miljøvariabler i terminalen. Merk at variablene som begynner med "ARM_" hentes fra service principle objektet i steg 1.
+   
+   ```
+   ARM_CLIENT_ID
+   ARM_CLIENT_SECRET
+   ARM_TENANT_ID 
+   ARM_SUBSCRIPTION_ID
+
+   TF_VAR_reguname   //brukernavn til Github Container Registry
+   TF_VAR_regtoken   //token til Github Container Registry
+   TF_VAR_rootPath   //full path til mappen IT-dritfsmiljø (bruk '/' til å skille mellom mappene, f.eks. "C:/Users/user1/IT-driftsmiljo")
+   ```
+
 ### Steg 8: Apply infrastruktur
 
 1. Åpne /terraform/infrastruktur/main.tf.
@@ -148,7 +159,7 @@ Last ned git repo eller finn mappen som har blitt levert av studentene. Sjekk at
 ```
 az role assignment create \
   --assignee <APPID> \
-  --role "Storage Blob Contributor" \
+  --role "Storage Data Blob Contributor" \
   --scope "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<rg-variablestorage>/providers/Microsoft.Storage/storageAccounts/<envstoragegjovik246>"
 ```
 
@@ -167,25 +178,25 @@ For å se utførelse av workflows, gå til Actions fanen på repoets Github side
 ### Steg 3: Initiere database
 Dette seteget utføres kun hvis studentoppgaven trenger tilgang til en database.
 
-1. Legg DDL og DML filer inn i database mappen til den aktuelle studentoppgaven:
+1. Legg DDL og DML filer inn i databasemappen til den aktuelle studentoppgaven:
 ```plaintext
 <studentoppgavenavn>/
 ├── database/
 │   ├── *DDL*.txt
 │   └── *DML*.txt
 ```
-2. Kjør scriptet "jmphost.py". Merk at "APPID" og "PASSWORD" tilhører service principle som ble opprettet tidligere.
+2. Naviger til /terraform/infrastruktur/scripts. Kjør scriptet "jmphost.py". Merk at "APPID" og "PASSWORD" tilhører service principle som ble opprettet tidligere. Pass på at filene deleteJmpHost.py, executeSqlConfig.sh og installRequirments.sh
 ```bash
 python jmphost.py <studentoppgavenavn> <database-adminbrukernavn> <APPID> <PASSWORD> <TENANTID> init
 ```
 
-3. Restart container appen. Dette kan gjøres i Azure portalen.
+1. Restart container appen. Dette kan gjøres i Azure portalen.
 
 ## Fjerne studentoppgave
-Fjerning av studentoppgave fra dritfsmiljøet skjer via workflowsene remove.yml og buildTerraform.yml. For å aktivere disse må repoet pushes til remote med commit meldingen:
+Fjerning av studentoppgave fra dritfsmiljøet skjer via workflowsene remove.yml og buildTerraform.yml. For å aktivere disse må repoet pushes til remote med følgende commit:
 
 ```
-fjern studentoppgave <studentoppgavenavn>
+git commit --allow-empty -am "fjern studentoppgave <studentoppgavenavn>"
 ```
 De aktiverte workflowsene vil fjerne studentoppgavens Docker image fra Github, redigere Terraform koden og kjøre en ny Terraform apply.
 

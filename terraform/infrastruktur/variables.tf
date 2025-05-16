@@ -183,12 +183,6 @@ variable "postgreserver_admin_uname" {
   default     = "ntnuadmin"
 }
 
-/*
-variable "postgreserver_admin_password" {
-  description = "Password for the administrator user"
-  type        = string
-}
-*/
 
 variable "postgreserver_version" {
   description = "Version number of the postgresql server"
@@ -215,15 +209,7 @@ variable "postdb" {
     charset         = optional(string, "UTF8")
     collation       = optional(string, "en_US.utf8")
     prevent_destroy = optional(bool, false)
-  })) /*
-        default = {
-            "dfpostdb" = {
-            name = "dfdapostdb"
-            charset = "UTF8"
-            collation = "en_US.utf8"
-            prevent_destroy = false
-            }
-        }*/
+  })) 
 }
 
 # Module: network

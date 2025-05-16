@@ -6,6 +6,7 @@ from pathlib import Path
 studentFolderName = os.environ["STUDENT_FOLDER"]
 imageName = os.environ["DOCKER_IMAGE_NAME"]
 db = os.environ["DATABASE"]
+access = os.environ["ACCESS"]
 
 infra_dir = Path(__file__).resolve().parent.parent
 templatesPath = infra_dir / 'templates'
@@ -54,6 +55,8 @@ with open(templatesPath / 'containerObj.json','r+') as file:
     del containerObj["container"]
     containerObj[studentFolderName]["name"] = studentFolderName
     containerObj[studentFolderName]["image"] = imageName
+    if (access == "private"):
+        containerObj[studentFolderName]["ip_restriction_range"] = os.environ["ALLOWED_IP_RANGE"]
 
 # Append the new variables to .tfvars.json
 write_tfvars(newResourceGroup,"rg_dynamic")

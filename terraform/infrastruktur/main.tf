@@ -45,23 +45,26 @@ resource "azurerm_resource_group" "rg_storage" {
   location = var.rg_location_storage
 }
 
+resource "azurerm_resource_group" "rg_alerts" {
+  name = var.rg_name_alerts
+  location = var.rg_location_alerts
+}
+
 module "storage" {
   source              = "./modules/storage"
   rg_name_storage     = azurerm_resource_group.rg_storage.name
   rg_location_storage = azurerm_resource_group.rg_storage.location
   rootPath            = var.rootPath
-  ctemplatePath       = var.ctemplatePath
-  dbtemplatePath      = var.dbtemplatePath
   tfvarsPath          = var.tfvarsPath
 }
 
 module "containers" {
   depends_on              = [azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_global]
   source                  = "./modules/containers"
-  rg_name_global          = var.rg_name_global
-  rg_location_global      = var.rg_location_global
-  rg_name_storage         = var.rg_name_storage
-  rg_location_storage     = var.rg_location_storage
+  rg_name_global          = azurerm_resource_group.rg_global.name
+  rg_location_global      = azurerm_resource_group.rg_global.location
+  rg_name_storage         = azurerm_resource_group.rg_storage.name
+  rg_location_storage     = azurerm_resource_group.rg_storage.location
   rg_dynamic = var.rg_dynamic
   law_name                = var.law_name
   law_sku                 = var.law_sku
@@ -78,8 +81,8 @@ module "containers" {
 module "database" {
   depends_on                          = [azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_global, module.network]
   source                              = "./modules/database"
-  rg_name_global                      = var.rg_name_global
-  rg_location_global                  = var.rg_location_global
+  rg_name_global                      = azurerm_resource_group.rg_global.name
+  rg_location_global                  = azurerm_resource_group.rg_global.location
   postgreserver_name                  = var.postgreserver_name
   postgreserver_skuname               = var.postgreserver_skuname
   postgreserver_storage_mb            = var.postgreserver_storage_mb
@@ -119,4 +122,15 @@ module "network" {
   subnet_capp_service_delegation_actions = var.subnet_capp_service_delegation_actions
   privdnszone_name                       = var.privdnszone_name
   privdnslink_name                       = var.privdnslink_name
+}
+
+module "alerts" {
+  depends_on = [ azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_global, module.containers, module.database ]
+  source = "./modules/alerts"
+  rg_name_alerts = var.rg_name_alerts
+  alert_name = var.alert_name
+  email_address = var.email_address
+  sms_number = var.sms_number
+  capp_ids = module.containers.capp_ids
+  psql_fs_id = [ module.database.server_id ]
 }

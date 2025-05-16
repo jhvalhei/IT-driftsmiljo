@@ -16,11 +16,11 @@ import (
 	_ "github.com/lib/pq"
 )
 const (
-  host     = "postgresql-flexible-server-rgstatic001.postgres.database.azure.com"
+  host     = "postgresql-server-001-rg-globalresources.postgres.database.azure.com"
   port     = 5432
-  user     = "ntnuadmin"
+  user     = "svartelistede-arterPsql"
   password = ""
-  dbname   = "svartelistede-arterpsql_db"
+  dbname   = "svartelistede-arterpsql-db"
 )
 
 

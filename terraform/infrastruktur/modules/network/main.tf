@@ -10,7 +10,7 @@ resource "azurerm_network_security_group" "nsg_capp" {
   resource_group_name = var.rg_name_global
 
   security_rule {
-    name                       = "Allow-Internet-HTTP-HTTPS"
+    name                       = "Allow-Internet-HTTPS"
     priority                   = 100
     direction                  = "Inbound"
     access                     = "Allow"

@@ -3,18 +3,6 @@ variable "rootPath" {
   type        = string
 }
 
-variable "ctemplatePath" {
-  description = "Path to container template file"
-  type        = string
-  default     = "/terraform/infrastruktur/templates/containerObj.json"
-}
-
-variable "dbtemplatePath" {
-  description = "Path to database template file"
-  type        = string
-  default     = "/terraform/infrastruktur/templates/databaseObj.json"
-}
-
 variable "tfvarsPath" {
   description = "Path to .tfvars.json file"
   type        = string
@@ -50,6 +38,18 @@ variable "rg_name_storage" {
 
 variable "rg_location_storage" {
   description = "Location of the storage resource group"
+  type        = string
+  default     = "westeurope"
+}
+
+variable "rg_name_alerts" {
+  description = "Name of the alerts resource group"
+  type        = string
+  default     = "rg-alerts"
+}
+
+variable "rg_location_alerts" {
+  description = "Location of the alerts resource group"
   type        = string
   default     = "westeurope"
 }
@@ -111,8 +111,8 @@ variable "capp_with_db" {
     external             = optional(bool, true)
     ip_restriction_range = optional(string, "0.0.0.0/0") # 0.0.0.0/0 = all ip addresses
     image                = string
-    cpu                  = optional(number, 0.25)
-    memory               = optional(string, "0.5Gi")
+    cpu                  = optional(number, 4.0)
+    memory               = optional(string, "8.0Gi")
   }))
 }
 
@@ -128,11 +128,10 @@ variable "capp_without_db" {
     external             = optional(bool, true)
     ip_restriction_range = optional(string, "0.0.0.0/0") # 0.0.0.0/0 = all ip addresses
     image                = string
-    cpu                  = optional(number, 0.25)
-    memory               = optional(string, "0.5Gi")
+    cpu                  = optional(number, 4.0)
+    memory               = optional(string, "8.0Gi")
   }))
 }
-
 
 # Module: database
 
@@ -333,3 +332,20 @@ variable "privdnslink_name" {
   default     = "exampleVnetZone.com"
 }
 
+
+# Module: alerts
+
+variable "alert_name" {
+    description = "Name of the receiver for alerts"
+    type = string
+}
+
+variable "email_address" {
+    description = "Email address of the email receiver for alerts"
+    type = string
+}
+
+variable "sms_number" {
+    description = "Number for the sms receiver for alerts"
+    type = number
+}

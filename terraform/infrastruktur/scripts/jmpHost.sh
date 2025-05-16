@@ -52,7 +52,7 @@ IP_ADDRESS=$(az vm show --show-details --resource-group "${RESOURCE_GROUP_NAME}"
 if [[ -d ${STUDENTFOLDERPATH} ]]; then
 	for n in "${STUDENTFOLDERPATH}"/*.txt; do # Optional: switch to .sql if desirable
 		if [[ -f ${n} ]] && [[ ${n} == *DDL* || ${n} == *DML* ]]; then
-			STUDENTDB="$(echo "${STUDENTFOLDER}" | awk '{print tolower($0)}')_db"
+			STUDENTDB="$(echo "${STUDENTFOLDER}" | awk '{print tolower($0)}')-db"
 			ssh -o StrictHostKeyChecking=no "${USERNAME}"@"${IP_ADDRESS}" "mkdir -p ${STUDENTDB}" && scp -o StrictHostKeyChecking=no "${n}" "${USERNAME}"@"${IP_ADDRESS}":/home/"${USERNAME}"/"${STUDENTDB}"/
 		fi
 	done
@@ -62,7 +62,7 @@ fi
 ssh -o StrictHostKeyChecking=no "${USERNAME}"@"${IP_ADDRESS}" "bash -s" -- "${AZUNAME}" "${AZPASS}" "${TENANT}" <./installRequirements.sh
 
 # Executes the sql query configs
-ssh -o StrictHostKeyChecking=no "${USERNAME}"@"${IP_ADDRESS}" "bash -s" -- "${SECRET}" "${USERNAME}" "${STUDENTDB}" <./executeSqlConfig.sh
+ssh -o StrictHostKeyChecking=no "${USERNAME}"@"${IP_ADDRESS}" "bash -s" -- "${SECRET}" "${USERNAME}" "${STUDENTDB}" "${STUDENTFOLDER}" <./executeSqlConfig.sh
 
 # Deletes the jump host and its dependent resources
 ./deleteJmpHost.sh

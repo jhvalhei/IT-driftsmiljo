@@ -2,14 +2,14 @@
 ## Beskrivelse
 Repo for all koden som blir produsert under bacheloroppgaven vår
 
-## Krav
+## Forhåndskrav
 - Azure abonnement
 - Github bruker
 
 
 ## Førstegangsoppsett
-
-### Steg x: Lag service principle i Azure
+De følgende stegene utføres kun første gang driftsmiljøet skal tas i bruk.
+### Steg 1: Lag service principle i Azure
 Dette steget oppretter en identitet i Azure som brukes til autentisering når du bygger infrastruktur med terraform.
 
 1. Opprett service principle. Denne kommandoen kjøres i Azure cli som du finner i Azure portalen, til høyre for søkebaren.
@@ -20,15 +20,14 @@ Ta vare på objektet som kommer i retur, da du ikke får hentet dette ut igjen.
 
 2. Tildel roller: 
    
-   "Storage blob data contributor":
+- "Storage blob data contributor":
 ```
 az role assignment create \
   --assignee <APPID> \
   --role "Storage Blob Contributor" \
   --scope "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<rg-variablestorage>/providers/Microsoft.Storage/storageAccounts/<envstoragegjovik246>"
 ```
-
-   "Key Vault Administrator":
+- "Key Vault Administrator":
 ```
 az role assignment create \
   --assignee <appId> \
@@ -36,7 +35,7 @@ az role assignment create \
   --scope /subscriptions/<SUBSCRIPTION_ID>
 ```
 
-   "Key Vaul Data Access Administrator" (sjekk om denne er nødvendig)
+- "Key Vault Data Access Administrator" (sjekk om denne er nødvendig)
 ```
 az role assignment create \
   --assignee <APPID> \
@@ -45,40 +44,69 @@ az role assignment create \
 
 ```
 
-### Steg x: Logg inn med service principle
+
+
+### Steg 2: Sett opp repo
+
+1. Fork repoet https://github.com/Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo
+
+
+2. Opprett secrets i Github repo
+
+Workflowsene i løsningen er avhengig av at visse verdier lagres som Secrets. Disse kan opprettes i Github grensesnittet, under "settings" i repoet. Opprett følgende secrets med tilhørende verdier:
+
+- ARM_CLIENT_ID      
+- ARM_CLIENT_SECRET
+- ARM_SUBSCRIPTION_ID
+- ARM_TENANT_ID
+- REG_TOKEN       //token til Github Container Registry
+- REG_UNAME       //brukernavn til Github Container Registry
+- ALLOWED_IP_RANGE   //offentlig IP-adresse i CIDR format
+
+Merk at ALLOWED_IP_RANGE brukes til studentoppgaver som skal konfigureres med begrenset nettverkstilgang. Slike studentoppgaver vil kun være tilgjengelige fra hoster innenfor nettverket som ligger i ALLOWED_IP_RANGE.
+
+
+### Steg 3: Logg inn med service principle
 Hvis du allerede har innstallert Azure CLIet kan du hoppe over punkt nr. 1.
 1. [Installer](https://learn.microsoft.com/nb-no/cli/azure/install-azure-cli) Azure CLI
 2. Logg inn med service principle:
    ```
    az login --service-principal --username <appId> --password <password> --tenant <tenant>
    ```
-3. Sett miljøvariabler:
-   
-   Eksempel i Powershell:
-   ```
-   $env:ARM_CLIENT_ID="APPID"
-   $env:ARM_CLIENT_SECRET="PASSWORD"
-   $env:ARM_TENANT_ID = "TENANTID"
-   $env:ARM_SUBSCRIPTION_ID = "SUBSCRIPTIONID"
-   ```
+3. Klon repo
+
+### Steg 4: Sett inn terraform.tfvars.json
+
+Plasser terraform.tfvars.json i /IT-driftsmiljo/terraform/infrastruktur
 
 
-### Steg x: Sett opp repo
-
-1. Klon repoet til lokal maskin.
-
-```
-git clone https://github.com/Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo.git
-```
-2. Set secrets i github repo
-
-### Steg x: Last ned Terraform
+### Steg 5: Last ned Terraform
 Om du allerede har Terraform innstallert på maskinen, kan du hoppe over dette steget. Her er en full [guide](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) til å innstallere terraform.
 
-### Steg x: Apply backend konfigurasjon
+
+
+### Steg 6: Sett miljøvariabler:
+   
+   
+   ```
+   ARM_CLIENT_ID
+   ARM_CLIENT_SECRET
+   ARM_TENANT_ID 
+   ARM_SUBSCRIPTION_ID
+
+   TF_VAR_reguname   //brukernavn til Github Container Registry
+   TF_VAR_regtoken   //token til Gtihub Container Registry
+   TF_VAR_rootPath   //full path til mappen IT-dritfsmiljø (bruk '/' til å skille mellom mappene, f.eks. "C:/Users/user1/IT-driftsmiljo")
+   TF_VAR_email_name    //navn til mottaker av e-post varsler
+   TF_VAR_sms_name   //navnt til mottaker av sms varsler
+   TF_VAR_email_address    //e-post adresse til varsling
+   TF_VAR_sms_number    //telefonnummer til sms varsling
+   ```
+
+### Steg 7: Apply backend
 Disse stegene kan gjøres både i en linux terminal og Powershell.
 
-1. Naviger til /terraform/backend mappen. 
+1. Naviger til /terraform/backend. 
 2. Sett inn subscription ID i "provider "azurerm"" blokken.
 3. Initialiser terraform:
    ```bash
@@ -92,7 +120,7 @@ Disse stegene kan gjøres både i en linux terminal og Powershell.
    ```bash
    terraform apply "main.tfplan
    ```
-### Steg 4: Apply infrastruktur
+### Steg 8: Apply infrastruktur
 
 1. Åpne /terraform/infrastruktur/main.tf.
 2. I blokken "backend "azurerm"", sett "storage_account_name" til navnet på backend storage accounten. Dette navnet finner du i azure under resource groups -> rg-backend.

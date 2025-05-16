@@ -155,7 +155,7 @@ For å se utførelse av workflows, gå til Actions fanen på repoets Github side
 ### Steg 3: Initiere database
 Dette seteget utføres kun hvis studentoppgaven trenger tilgang til en database.
 
-1. Legg DDL og DML filer inn i mappen til den aktuelle studentoppgavens rotmappe:
+1. Legg DDL og DML filer inn i database mappen til den aktuelle studentoppgaven:
 ```plaintext
 <studentoppgavenavn>/
 ├── database/

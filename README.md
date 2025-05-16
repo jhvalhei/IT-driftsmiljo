@@ -12,9 +12,11 @@ De følgende stegene utføres kun første gang driftsmiljøet skal tas i bruk.
 ### Steg 1: Lag service principle i Azure
 Dette steget oppretter en identitet i Azure som brukes til autentisering når du bygger infrastruktur med terraform.
 
+
+
 1. Opprett service principle. Denne kommandoen kjøres i Azure cli som du finner i Azure portalen, til høyre for søkebaren.
 ```
-az ad sp create-for-rbac --Scopes /subscriptions/<SUBSCRIPTION_ID> --role contributor
+az ad sp create-for-rbac --scopes /subscriptions/<SUBSCRIPTION_ID> --role contributor
 ```
 Ta vare på objektet som kommer i retur, da du ikke får hentet dette ut igjen.
 
@@ -35,7 +37,7 @@ az role assignment create \
   --scope /subscriptions/<SUBSCRIPTION_ID>
 ```
 
-- "Key Vault Data Access Administrator" (sjekk om denne er nødvendig)
+- "Key Vault Data Access Administrator"
 ```
 az role assignment create \
   --assignee <APPID> \
@@ -65,6 +67,8 @@ Workflowsene i løsningen er avhengig av at visse verdier lagres som Secrets. Di
 
 Merk at ALLOWED_IP_RANGE brukes til studentoppgaver som skal konfigureres med begrenset nettverkstilgang. Slike studentoppgaver vil kun være tilgjengelige fra hoster innenfor nettverket som ligger i ALLOWED_IP_RANGE.
 
+3. Opprett Github Container Registry
+
 
 ### Steg 3: Logg inn med service principle
 Hvis du allerede har installert Azure CLIet kan du hoppe over punkt nr. 1.
@@ -77,7 +81,12 @@ Hvis du allerede har installert Azure CLIet kan du hoppe over punkt nr. 1.
 
 ### Steg 4: Sett inn terraform.tfvars.json
 
-Plasser terraform.tfvars.json i /IT-driftsmiljo/terraform/infrastruktur
+1. Plasser terraform.tfvars.json i /IT-driftsmiljo/terraform/infrastruktur
+
+2. Sett inn verdier for følgende variabler:
+   - "alert_name"
+   - "email_address"
+   - "sms_number"
 
 
 ### Steg 5: Last ned Terraform
@@ -85,8 +94,9 @@ Om du allerede har Terraform installert på maskinen, kan du hoppe over dette st
 
 
 
-### Steg 6: Sett miljøvariabler:
+### Steg 6: Sett variabler:
    
+   Sett følgende miljøvariabler i terminalen:
    
    ```
    ARM_CLIENT_ID
@@ -97,17 +107,13 @@ Om du allerede har Terraform installert på maskinen, kan du hoppe over dette st
    TF_VAR_reguname   //brukernavn til Github Container Registry
    TF_VAR_regtoken   //token til Gtihub Container Registry
    TF_VAR_rootPath   //full path til mappen IT-dritfsmiljø (bruk '/' til å skille mellom mappene, f.eks. "C:/Users/user1/IT-driftsmiljo")
-   TF_VAR_email_name    //navn til mottaker av e-post varsler
-   TF_VAR_sms_name   //navnt til mottaker av sms varsler
-   TF_VAR_email_address    //e-post adresse til varsling
-   TF_VAR_sms_number    //telefonnummer til sms varsling
    ```
 
 ### Steg 7: Apply backend
 Disse stegene kan gjøres både i en linux terminal og Powershell.
 
-1. Naviger til /terraform/backend. 
-2. Sett inn subscription ID i "provider "azurerm"" blokken.
+1. Naviger til /terraform/backend.
+2. Gå til main.tf og sett inn subscription ID i "provider "azurerm"" blokken.
 3. Initialiser terraform:
    ```bash
    terraform init
@@ -129,7 +135,7 @@ Disse stegene kan gjøres både i en linux terminal og Powershell.
 
 ## Legge inn ny studentoppgave
 ### Steg 1: Laste ned og sjekke filer
-Last ned git repo eller finn mappen som har blitt levert av studentene. Sjekk at mappen har en Dockerfil og en databasemappe i root dersom studentoppgaven trenger en database. Databasemappen kan være tom, men den skal bare være der for å vise at studentoppgaven inneholder en database. Legg studentoppgave inn i /studentOppgaver/ mappen. Husk å eventuelle git filer i studentoppgavemappen, f.eks. .git.
+Last ned git repo eller finn mappen som har blitt levert av studentene. Sjekk at mappen har en Dockerfil og en databasemappe i root dersom studentoppgaven trenger en database. Databasemappen kan være tom, men den skal bare være der for å vise at studentoppgaven inneholder en database. Legg studentoppgave inn i /studentOppgaver/ mappen. Husk å sette eventuelle git filer i studentoppgavemappen, f.eks. .git.
 ```plaintext
 <studentoppgavenavn>/
 ├── README.md            # Dokumentasjon og installasjonsinstrukser

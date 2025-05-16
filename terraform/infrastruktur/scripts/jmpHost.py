@@ -75,7 +75,8 @@ def main():
     
     vmName = "jmphost"
     subnet = "jmphostsubnet"
-    studentFolderPath = (Path(__file__).parent / "../../../studentOppgaver" / STUDENTFOLDER).resolve()
+    studentFolderPath = (Path(__file__).parent.parent.parent.parent / "studentOppgaver" / STUDENTFOLDER).resolve()
+    databaseFolderPath =  studentFolderPath / "database"
     vmImage = "Canonical:0001-com-ubuntu-minimal-jammy:minimal-22_04-lts-gen2:latest"
 
     # Azure login
@@ -120,8 +121,9 @@ def main():
     print(f"IP-address for jump host: {IP_ADDRESS}")
 
     # Transfer SQL config files to jump host
-    if studentFolderPath.exists() and studentFolderPath.is_dir():
-        for filePath in studentFolderPath.glob("*.txt"):
+    
+    if databaseFolderPath.exists() and databaseFolderPath.is_dir():
+        for filePath in databaseFolderPath.glob("*.txt"):
             if filePath.is_file() and ("DDL" in filePath.name or "DML" in filePath.name):
                 studentDB = f"{STUDENTFOLDER.lower()}-db"
                 remotePath = f"/home/{USERNAME}/{studentDB}/{filePath.name}"

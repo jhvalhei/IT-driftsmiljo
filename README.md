@@ -27,7 +27,7 @@ az role assignment create \
 ```
 
 ### Steg x: Logg inn med service principle
-Hvis du allerede har innstallert Azure CLIet kan du hoppe over første punkt nr. 1.
+Hvis du allerede har installert Azure CLIet kan du hoppe over første punkt nr. 1.
 1. [Installer](https://learn.microsoft.com/nb-no/cli/azure/install-azure-cli) Azure CLI
 2. Logg inn med service principle:
    ```
@@ -53,7 +53,7 @@ Hvis du allerede har innstallert Azure CLIet kan du hoppe over første punkt nr.
 2. Set secrets i github repo
 
 ### Steg x: Last ned Terraform
-Om du allerede har Terraform innstallert på maskinen, kan du hoppe over dette steget. Her er en full [guide](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) til å innstallere terraform.
+Om du allerede har Terraform installert på maskinen, kan du hoppe over dette steget. Her er en full [guide](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) til å innstallere terraform.
 
 ### Steg x: Apply backend konfigurasjon
 Disse stegene kan gjøres både i en linux terminal og Powershell.

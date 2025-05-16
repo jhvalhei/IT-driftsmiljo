@@ -7,12 +7,12 @@ resource "azurerm_monitor_action_group" "mag" {
   short_name          = "email-sms"
 
   email_receiver {
-    name          = "${var.email_name}-email"
+    name          = "${var.alert_name}-email"
     email_address = var.email_address
   }
 
   sms_receiver {
-    name         = "${var.sms_name}-sms"
+    name         = "${var.alert_name}-sms"
     country_code = "47"
     phone_number = var.sms_number
   }

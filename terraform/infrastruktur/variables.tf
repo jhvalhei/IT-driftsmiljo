@@ -335,18 +335,13 @@ variable "privdnslink_name" {
 
 # Module: alerts
 
-variable "email_name" {
-    description = "Name of the email receiver for alerts"
+variable "alert_name" {
+    description = "Name of the receiver for alerts"
     type = string
 }
 
 variable "email_address" {
     description = "Email address of the email receiver for alerts"
-    type = string
-}
-
-variable "sms_name" {
-    description = "Name of the sms receiver for alerts"
     type = string
 }
 

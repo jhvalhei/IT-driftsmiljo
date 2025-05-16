@@ -3,7 +3,7 @@ name: Remove program
 
 on:
   push:
-    branches: ["testDeploy"]
+    branches: ["main"]
   
   workflow_dispatch:
 
@@ -83,7 +83,7 @@ jobs:
 
   startWF:
     needs: remove
-    uses: Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo/.github/workflows/buildTerraform.yml@testDeploy
+    uses: Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo/.github/workflows/buildTerraform.yml@main
     secrets: inherit
     with:
       STUDENT_FOLDER: ${{needs.remove.outputs.studentFolderName}}

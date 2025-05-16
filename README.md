@@ -67,7 +67,7 @@ Merk at ALLOWED_IP_RANGE brukes til studentoppgaver som skal konfigureres med be
 
 
 ### Steg 3: Logg inn med service principle
-Hvis du allerede har innstallert Azure CLIet kan du hoppe over punkt nr. 1.
+Hvis du allerede har installert Azure CLIet kan du hoppe over punkt nr. 1.
 1. [Installer](https://learn.microsoft.com/nb-no/cli/azure/install-azure-cli) Azure CLI
 2. Logg inn med service principle:
    ```
@@ -81,7 +81,7 @@ Plasser terraform.tfvars.json i /IT-driftsmiljo/terraform/infrastruktur
 
 
 ### Steg 5: Last ned Terraform
-Om du allerede har Terraform innstallert på maskinen, kan du hoppe over dette steget. Her er en full [guide](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) til å innstallere terraform.
+Om du allerede har Terraform installert på maskinen, kan du hoppe over dette steget. Her er en full [guide](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) til å installere terraform.
 
 
 
@@ -132,9 +132,12 @@ Disse stegene kan gjøres både i en linux terminal og Powershell.
 Last ned git repo eller finn mappen som har blitt levert av studentene. Sjekk at mappen har en Dockerfil og en databasemappe i root dersom studentoppgaven trenger en database. Databasemappen kan være tom, men den skal bare være der for å vise at studentoppgaven inneholder en database. Legg studentoppgave inn i /studentOppgaver/ mappen. Husk å eventuelle git filer i studentoppgavemappen, f.eks. .git.
 ```plaintext
 <studentoppgavenavn>/
-├── README.md      # Dokumentasjon og installasjonsinstrukser
-├── database/      # Databasefiler (hvis studentoppgaven trenger databasetilgang)
-└── Dockerfile     # Fil for bygging av Docker-image
+├── README.md            # Dokumentasjon og installasjonsinstrukser
+├── database/            # Databasefiler
+│   ├── *DDL*.txt        # Database skjema (CREATE, ALTER, osv.)
+│   └── *DML*.txt        # Database data (INSERT, UPDATE, osv.)
+├── Dockerfile           # Fil for bygging av Docker image
+└── ...                  # Andre filer for studentoppgaven
 ```
 
 ### Steg 2: Laste opp filer til github

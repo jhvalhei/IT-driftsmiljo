@@ -128,9 +128,8 @@ module "alerts" {
   depends_on = [ azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_global, module.containers, module.database ]
   source = "./modules/alerts"
   rg_name_alerts = var.rg_name_alerts
-  email_name = var.email_name
+  alert_name = var.alert_name
   email_address = var.email_address
-  sms_name = var.sms_name
   sms_number = var.sms_number
   capp_ids = module.containers.capp_ids
   psql_fs_id = [ module.database.server_id ]

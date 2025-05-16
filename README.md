@@ -48,6 +48,7 @@ az role assignment create \
 
 
 
+
 ### Steg 2: Sett opp repo
 
 1. Fork repoet https://github.com/Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo
@@ -72,6 +73,7 @@ Merk at ALLOWED_IP_RANGE brukes til studentoppgaver som skal konfigureres med be
 
 ### Steg 3: Logg inn med service principle
 Hvis du allerede har installert Azure CLIet kan du hoppe over punkt nr. 1.
+
 1. [Installer](https://learn.microsoft.com/nb-no/cli/azure/install-azure-cli) Azure CLI
 2. Logg inn med service principle:
    ```
@@ -161,11 +163,12 @@ For å se utførelse av workflows, gå til Actions fanen på repoets Github side
 ### Steg 3: Initiere database
 Dette seteget utføres kun hvis studentoppgaven trenger tilgang til en database.
 
-1. Legg DDL og DML filer inn i mappen til den aktuelle studentoppgavens rotmappe:
+1. Legg DDL og DML filer inn i database mappen til den aktuelle studentoppgaven:
 ```plaintext
 <studentoppgavenavn>/
-├── DML.txt
-├── DDL.txt
+├── database/
+│   ├── *DDL*.txt
+│   └── *DML*.txt
 ```
 2. Kjør scriptet "jmphost.py". Merk at "APPID" og "PASSWORD" tilhører service principle som ble opprettet tidligere.
 ```bash

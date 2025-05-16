@@ -46,6 +46,7 @@ az role assignment create \
 
 
 
+
 ### Steg 2: Sett opp repo
 
 1. Fork repoet https://github.com/Bachelorgruppe117-NTNU-Gjovik/IT-driftsmiljo
@@ -68,6 +69,7 @@ Merk at ALLOWED_IP_RANGE brukes til studentoppgaver som skal konfigureres med be
 
 ### Steg 3: Logg inn med service principle
 Hvis du allerede har installert Azure CLIet kan du hoppe over punkt nr. 1.
+
 1. [Installer](https://learn.microsoft.com/nb-no/cli/azure/install-azure-cli) Azure CLI
 2. Logg inn med service principle:
    ```
@@ -82,6 +84,8 @@ Plasser terraform.tfvars.json i /IT-driftsmiljo/terraform/infrastruktur
 
 ### Steg 5: Last ned Terraform
 Om du allerede har Terraform installert på maskinen, kan du hoppe over dette steget. Her er en full [guide](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) til å installere terraform.
+
+
 
 
 

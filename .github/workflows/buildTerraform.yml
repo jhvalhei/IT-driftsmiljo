@@ -50,23 +50,19 @@ jobs:
       # Terraform input variables
       TF_VAR_reguname: ${{ secrets.REG_UNAME }}  # Github container registry credentials
       TF_VAR_regtoken: ${{ secrets.REG_TOKEN }}
-      
       TF_VAR_rootPath: ${{ github.workspace }} # Absolute path to terraform.tfvars.json
       
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
 
+        # Fetch variables file from Azure Blob Storage
       - name: Get tfvars
         run: |
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
           az login --service-principal --username ${{env.ARM_CLIENT_ID}} --password ${{env.ARM_CLIENT_SECRET}} --tenant ${{env.ARM_TENANT_ID}}
           az storage blob download --account-name envstoragegjovik246 --container-name variables --name terraform.tfvars.json --file './terraform/infrastruktur/terraform.tfvars.json' --auth-mode login
 
-      - name: Check download
-        run: ls -ltr ./terraform/infrastruktur
-
-      
       # Set up python and run script for adding new values to variable file
       - name: Setup python
         uses: actions/setup-python@v5
@@ -82,19 +78,8 @@ jobs:
         if: ${{inputs.TYPE == 'fjern'}}
         run: |
           python ./terraform/infrastruktur/scripts/remove.py 
-
-
-      # Upload .tfvars file as artifact, will probably remove this
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: terraformVars
-          path: |
-            ./terraform/infrastruktur/terraform.tfvars.json
      
       # Runs the terraform code and builds the infrastructure in Azure
-      
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:

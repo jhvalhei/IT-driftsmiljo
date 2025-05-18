@@ -38,7 +38,7 @@ jobs:
             exit 1
           fi
       
-      # Step 2,5: Checks if folder actually exists
+      # Step 3: Checks if folder actually exists
       - name: Check Folder Existence
         id: folder_existence
         run: |
@@ -47,7 +47,7 @@ jobs:
             exit 1
           fi 
 
-      # Step 2,75: Check access
+      # Step 4: Check access
       - name: Check access
         id: check_access
         run: |
@@ -64,7 +64,7 @@ jobs:
 
     
 
-      # Step 3: Convert gitHub repository owner to Lowercase (Docker image requires lowercase name)
+      # Step 5: Convert gitHub repository owner to Lowercase (Docker image requires lowercase name)
       - name: Convert Repo Owner to Lowercase
         run: echo "REPO_OWNER=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
@@ -76,12 +76,12 @@ jobs:
           echo "DOCKER_IMAGE_NAME=ghcr.io/${{ env.REPO_OWNER }}/$(echo ${{ env.STUDENT_FOLDER }} | tr '[:upper:]' '[:lower:]')-app:latest" >> $GITHUB_ENV
           echo "imageName=$DOCKER_IMAGE_NAME" >> "$GITHUB_OUTPUT"
 
-      # Step 5: Logs in to GitHub Container Registry (GHCR)
+      # Step 6: Logs in to GitHub Container Registry (GHCR)
       - name: Docker Login to GHCR
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ env.REPO_OWNER }}" --password-stdin
 
-      # Step 6: Build and push Docker image to GHCR
+      # Step 7: Build and push Docker image to GHCR
       - name: Build and Push Docker Image
         run: |
           SUBMISSION_DIR="studentOppgaver/${{ env.STUDENT_FOLDER }}"  # Preserve original case
@@ -92,7 +92,7 @@ jobs:
           echo "Pushing Docker image: ${{ env.DOCKER_IMAGE_NAME }}"
           docker push "${{ env.DOCKER_IMAGE_NAME }}"
 
-      # Step 6.5: Check if student program has a database
+      # Step 8: Check if student program has a database
       - name: sjekk database
         id: database
         run: |

@@ -1,14 +1,3 @@
-variable "rootPath" {
-  description = "Absolute path to infrastructure project"
-  type        = string
-}
-
-variable "tfvarsPath" {
-  description = "Path to .tfvars.json file"
-  type        = string
-  default     = "/terraform/infrastruktur/terraform.tfvars.json"
-}
-
 # resource group
 variable "rg_dynamic" {
   description = "A map of resource groups variables"
@@ -309,13 +298,13 @@ variable "subnet_capp_service_delegation_actions" {
 variable "privdnszone_name" {
   description = "Name of the private dns zone"
   type        = string
-  default     = "example.postgres.database.azure.com"
+  default     = "privdnszone.postgres.database.azure.com"
 }
 
 variable "privdnslink_name" {
   description = "Name of the link between the private dns zone and the virtual network"
   type        = string
-  default     = "exampleVnetZone.com"
+  default     = "privdnslinkVnetZone.com"
 }
 
 
@@ -334,4 +323,10 @@ variable "email_address" {
 variable "sms_number" {
     description = "Number for the sms receiver for alerts"
     type = number
+}
+
+# Module: Storage
+variable "rootPath" {
+  description = "Absolute path to infrastructure project"
+  type        = string
 }

@@ -39,7 +39,7 @@ variable "rg_location_storage" {
 variable "capp_identity" {
   description = "Identity for each container"
   type = map(object({ # key name: <cAppName_id>
-    name = string     # 
+    name = string     
   }))
 }
 
@@ -74,12 +74,7 @@ variable "cenv_subnet_id" {
   description = "The id of the subnet"
   type        = string
 }
-/*
-variable "dbserversecretId" {
-  description = "ID of db secret"
-  type = string
-}
-*/
+
 variable "reguname" {
   description = "Username for github container registry"
   type        = string

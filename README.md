@@ -85,14 +85,16 @@ Hvis du allerede har installert Azure CLIet kan du hoppe over punkt nr. 1.
    ```
 3. Klon repo
 
-### Steg 4: Sett inn terraform.tfvars.json
+### Steg 4: Klargjør terraform.tfvars.json
 
 1. Plasser terraform.tfvars.json i /IT-driftsmiljo/terraform/infrastruktur
 
-2. Sett inn verdier for følgende variabler:
+2. For at varsling skal fungere, må det settes inn en e-post adresse og et telefonnummer som skal motta varslene. Sett inn verdier for følgende variabler i terraform.tfvars.json:
    - "alert_name"
    - "email_address"
    - "sms_number"
+
+Merk at du ikke trenger å skrive landskode på mobilnummeret. Landskoden er allerede satt til +47.
 
 
 ### Steg 5: Last ned Terraform
@@ -140,7 +142,7 @@ Disse stegene kan gjøres både i en linux terminal og Powershell.
 1. Åpne /terraform/infrastruktur/main.tf.
 2. I blokken "backend "azurerm"", sett "storage_account_name" til navnet på backend storage accounten. Dette navnet finner du i azure under resource groups -> rg-backend.
 3. Naviger til /terraform/infrastruktur.
-4. Repeter punkt nr. 3, 4 og 5 fra forrige steg.
+4. Repeter punkt nr. 3, 4 og 5 fra steg 6.
 
 ## Legge inn ny studentoppgave
 ### Steg 1: Laste ned og sjekke filer

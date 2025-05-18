@@ -71,9 +71,6 @@ jobs:
         with:
           string: ${{steps.extract_folder.outputs.studentFolderName}}
 
-      - name: echo string
-        run: echo ${{steps.lowerstring.outputs.lowercase}}
-
       - name: Delete package via API
         run: |
           curl -X DELETE \
@@ -89,9 +86,3 @@ jobs:
       STUDENT_FOLDER: ${{needs.remove.outputs.studentFolderName}}
       DATABASE: ${{needs.remove.outputs.database}}
       type: fjern
-
-      
-
-
-      
-    

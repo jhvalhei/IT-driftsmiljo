@@ -7,7 +7,7 @@ terraform {
   }
   backend "azurerm" {
     resource_group_name  = "rg-backend"
-    storage_account_name = "sabackendopgacne0uc"
+    storage_account_name = "sabackendopgacne0uc"  # Insert name of storage account here
     container_name       = "backend-container"
     key                  = "infragjovik.terraform.tfstate"
     use_azuread_auth     = true
@@ -50,14 +50,15 @@ resource "azurerm_resource_group" "rg_alerts" {
   location = var.rg_location_alerts
 }
 
+# Storage of terraform variable file in Azure Blob Storage
 module "storage" {
   source              = "./modules/storage"
   rg_name_storage     = azurerm_resource_group.rg_storage.name
   rg_location_storage = azurerm_resource_group.rg_storage.location
   rootPath            = var.rootPath
-  tfvarsPath          = var.tfvarsPath
 }
 
+# Resources related to container apps
 module "containers" {
   depends_on              = [azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_global]
   source                  = "./modules/containers"
@@ -78,6 +79,7 @@ module "containers" {
   regtoken       = var.regtoken
 }
 
+# Resources related to Azure Database for PostgreSQL Flexible Server
 module "database" {
   depends_on                          = [azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_global, module.network]
   source                              = "./modules/database"
@@ -100,6 +102,7 @@ module "database" {
   privdnszone_id                      = module.network.privdnszone_id
 }
 
+# Configuration of VNET and subnets
 module "network" {
   depends_on                             = [azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_global]
   source                                 = "./modules/network"
@@ -124,6 +127,7 @@ module "network" {
   privdnslink_name                       = var.privdnslink_name
 }
 
+# Resources related to alert system
 module "alerts" {
   depends_on = [ azurerm_resource_group.rg_dynamic, azurerm_resource_group.rg_global, module.containers, module.database ]
   source = "./modules/alerts"

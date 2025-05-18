@@ -7,7 +7,7 @@ resource "random_string" "randomkvname" {
   upper   = false
 }
 
-# Key vault for storage of sensitive values.
+# Key vault for storage of database passwords.
 resource "azurerm_key_vault" "kv" {
   name                       = "keyvault${random_string.randomkvname.result}"
   location                   = var.rg_location_storage
@@ -56,7 +56,7 @@ resource "azurerm_key_vault_secret" "db_admin_serversecret" {
 
 
 
-
+# Monitoring for Azure Container Apps
 resource "azurerm_log_analytics_workspace" "law" {
   name                = var.law_name
   location            = var.rg_location_global
@@ -135,7 +135,7 @@ resource "azurerm_container_app" "capp_with_db" {
   resource_group_name          = var.rg_dynamic[each.key].name
   revision_mode                = each.value.revmode
 
-  # Password for github container registry, stored in github secrets
+  # Password for github container registry
   secret {
     name  = "ghcr-password"
     value = var.regtoken
@@ -148,7 +148,7 @@ resource "azurerm_container_app" "capp_with_db" {
     password_secret_name = "ghcr-password"
   }
 
-  # Password to database, stored in key vault
+  # Password to database
   secret {
     name                = "dbsecret"
     key_vault_secret_id = azurerm_key_vault_secret.db_capp_secret[each.key].id
@@ -199,7 +199,7 @@ resource "azurerm_container_app" "capp_without_db" {
   resource_group_name          = var.rg_dynamic[each.key].name
   revision_mode                = each.value.revmode
 
-  # Password for github container registry, stored in github secrets
+  # Password for github container registry
   secret {
     name  = "ghcr-password"
     value = var.regtoken

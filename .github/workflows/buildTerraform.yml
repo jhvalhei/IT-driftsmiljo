@@ -64,20 +64,20 @@ jobs:
           az storage blob download --account-name envstoragegjovik246 --container-name variables --name terraform.tfvars.json --file './terraform/infrastruktur/terraform.tfvars.json' --auth-mode login
 
       # Set up python and run script for adding new values to variable file
-      - name: Setup python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.13' 
+      #- name: Setup python
+      #  uses: actions/setup-python@v5
+      #  with:
+      #    python-version: '3.13' 
 
       - name: Python add
         if: ${{inputs.TYPE == 'ny'}}
         run: |
-          python ./terraform/infrastruktur/scripts/add.py
+          python3 ./terraform/infrastruktur/scripts/add.py
 
       - name: Python remove
         if: ${{inputs.TYPE == 'fjern'}}
         run: |
-          python ./terraform/infrastruktur/scripts/remove.py 
+          python3 ./terraform/infrastruktur/scripts/remove.py 
      
       # Runs the terraform code and builds the infrastructure in Azure
       - name: Setup Terraform

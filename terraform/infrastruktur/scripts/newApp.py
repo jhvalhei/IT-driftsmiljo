@@ -70,19 +70,3 @@ repo.git.commit('--allow-empty', '-m', "ny studentoppgave " + studentFolder + " 
 
 # Push to remote
 repo.git.push("--set-upstream", origin, repo.head.ref)
-
-# Check for database
-for x in assignmentDirPath.iterdir():
-
-    if (x.name == "database"):
-        database = True
-
-
-
-if (database == True):
-    # run database script
-    print(database)
-
-
-#result = subprocess.run(["dir"], shell=True, capture_output=True, text=True)
-#print(result.stdout)

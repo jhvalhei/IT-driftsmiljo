@@ -63,12 +63,6 @@ jobs:
           az login --service-principal --username ${{env.ARM_CLIENT_ID}} --password ${{env.ARM_CLIENT_SECRET}} --tenant ${{env.ARM_TENANT_ID}}
           az storage blob download --account-name envstoragegjovik246 --container-name variables --name terraform.tfvars.json --file './terraform/infrastruktur/terraform.tfvars.json' --auth-mode login
 
-      # Set up python and run script for adding new values to variable file
-      #- name: Setup python
-      #  uses: actions/setup-python@v5
-      #  with:
-      #    python-version: '3.13' 
-
       - name: Python add
         if: ${{inputs.TYPE == 'ny'}}
         run: |

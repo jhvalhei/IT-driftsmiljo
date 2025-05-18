@@ -1,9 +1,11 @@
+# No rules: denies all inbound
 resource "azurerm_network_security_group" "nsg_db" {
   name                = var.nsg_name_db
   location            = var.rg_location_global
   resource_group_name = var.rg_name_global
 }
 
+# Only allows HTTPS inbound
 resource "azurerm_network_security_group" "nsg_capp" {
   name                = var.nsg_name_capp
   location            = var.rg_location_global

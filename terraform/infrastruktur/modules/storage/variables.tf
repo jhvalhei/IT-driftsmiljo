@@ -12,9 +12,3 @@ variable "rootPath" {
   description = "Absolute path to infrastructure project"
   type        = string
 }
-
-variable "tfvarsPath" {
-  description = "Path to .tfvars.json file"
-  type        = string
-  default     = "/terraform/infrastruktur/terraform.tfvars.json"
-}

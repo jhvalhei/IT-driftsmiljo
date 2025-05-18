@@ -111,14 +111,14 @@ resource "azurerm_monitor_metric_alert" "mma_connection_failed_db" {
   name                = "connection-failed-alert-db"
   resource_group_name = var.rg_name_alerts
   scopes              = var.psql_fs_id
-  description         = "Action will be triggered when connection failed equals to or exceeds 3"
+  description         = "Action will be triggered when connection failed equals to or exceeds 5"
 
   criteria {
     metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
     metric_name      = "connections_failed"
     aggregation      = "Total"
     operator         = "GreaterThanOrEqual"
-    threshold        = 3
+    threshold        = 5
   }
 
   action {

@@ -70,3 +70,4 @@ repo.git.commit('--allow-empty', '-m', "ny studentoppgave " + studentFolder + " 
 
 # Push to remote
 repo.git.push("--set-upstream", origin, repo.head.ref)
+print("Pushed to Github")

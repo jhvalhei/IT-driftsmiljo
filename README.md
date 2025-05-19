@@ -1,11 +1,18 @@
 # IT-driftsmiljø
 ## Beskrivelse
-Repo for all koden som blir produsert under bacheloroppgaven vår
+Repo for all koden som blir produsert under bacheloroppgaven vår. Inneholder Terraform konfigurasjon til et IT-driftsmiljø og workflows for utrulling/fjerning av studentoppgaver.
 
 ## Forhåndskrav
 - Azure abonnement
 - Github bruker
 
+## Krav til studentoppgaver
+For at en studenoppgave skal kunne utrulles i driftsmiljøet må følgende krav være oppfyllt:
+
+- Må være "Dockerized"
+- Må inneholde en Dockerfile
+- Dersom studentoppgaven trenger lagring, må dette være implementert med PostgreSQL
+- Passord til databasen må hentes fra miljøvariablen "DBSECRET"
 
 ## Førstegangsoppsett
 De følgende stegene utføres kun første gang driftsmiljøet skal tas i bruk.
@@ -18,7 +25,7 @@ Dette steget oppretter en identitet i Azure som brukes til autentisering når du
 ```
 az ad sp create-for-rbac --scopes /subscriptions/<SUBSCRIPTION_ID> --role contributor
 ```
-Ta vare på objektet som kommer i retur, da du ikke får hentet dette ut igjen.
+Ta vare på objektet som returneres, da du ikke får hentet dette ut igjen.
 
 2. Tildel roller: 
    
@@ -38,6 +45,13 @@ az role assignment create \
   --scope /subscriptions/<SUBSCRIPTION_ID>
 
 ```
+- Storage Blob Data Contributor
+```
+az role assignment create \
+  --assignee <APPID> \
+  --role "Storage Blob Data Contributor" \
+  --scope "/subscriptions/<SUBSCRIPTION_ID>
+```
 
 
 
@@ -55,7 +69,7 @@ az role assignment create \
 
 3. Opprett secrets i Github repo
 
-Workflowsene i løsningen er avhengig av at visse verdier lagres som Secrets. Disse kan opprettes i Github grensesnittet, under "settings" i repoet. Merk at verdien til secretsene som begynner med ARM hentes fra service principle objektet fra steg 1.  Opprett følgende secrets med tilhørende verdier:
+Workflowsene i løsningen er avhengig av at visse verdier lagres som secrets. Disse kan opprettes i Github grensesnittet, under "settings" i repoet. Merk at verdien til secretsene som begynner med ARM hentes fra service principle objektet fra steg 1.  Opprett følgende secrets med tilhørende verdier:
 
 - ARM_CLIENT_ID      //kalles "client_id" i service principle objektet.
 - ARM_CLIENT_SECRET     //kalles "password" i service principle objektet
@@ -67,16 +81,17 @@ Workflowsene i løsningen er avhengig av at visse verdier lagres som Secrets. Di
 
 Merk at ALLOWED_IP_RANGE brukes til studentoppgaver som skal konfigureres med begrenset nettverkstilgang. Slike studentoppgaver vil kun være tilgjengelige fra hoster innenfor nettverket som ligger i ALLOWED_IP_RANGE.
 
-4. Tillat Github Actions
+4. Tillat Github Actions -
+gjøres i Github grensesnittet under "Actions" i repoet.
 
-5. Tilpass workflows
-Workflowsene remove.yml og docker-build.yml bruker linken til github repoet. Siden linken inneholder brukernavnet til eieren av repoet, må riktig brukernavn settes inn. I remove.yml settes riktig brukernavn inn i steget Delete package via API og startWF. I docker-build.yml settes riktig brukernavn inn i startWf.
+5. Tilpass workflows -
+workflowsene remove.yml og docker-build.yml bruker linken til github repoet. Siden linken inneholder brukernavnet til eieren av repoet, må riktig brukernavn settes inn. I remove.yml settes brukernavn inn i steget "Delete package via API" og "startWF". I docker-build.yml settes riktig brukernavn inn i steget "startWf".
 
 
 
 
 ### Steg 3: Logg inn med service principle
-Hvis du allerede har installert Azure CLIet kan du hoppe over punkt nr. 1.
+Utfør dette steget i Hvis du allerede har installert Azure CLIet kan du hoppe over punkt nr. 1.
 
 1. [Installer](https://learn.microsoft.com/nb-no/cli/azure/install-azure-cli) Azure CLI
 2. Logg inn med service principle i terminal:
@@ -105,7 +120,7 @@ Om du allerede har Terraform installert på maskinen, kan du hoppe over dette st
 
 
 ### Steg 6: Apply backend
-Disse stegene kan gjøres både i en linux terminal og Powershell.
+Disse stegene gjøres i terminalen.
 
 1. Naviger til /terraform/backend.
 2. Gå til main.tf og sett inn subscription ID i "provider "azurerm"" blokken.
@@ -144,7 +159,8 @@ Disse stegene kan gjøres både i en linux terminal og Powershell.
 3. Naviger til /terraform/infrastruktur.
 4. Repeter punkt nr. 3, 4 og 5 fra steg 6.
 
-## Legge inn ny studentoppgave
+## Utrulling av ny studentoppgave
+De følgende stegene utføres for å utrulle en studentoppgave til driftsmiljøet.
 ### Steg 1: Laste ned og sjekke filer
 Last ned git repo eller finn mappen som har blitt levert av studentene. Sjekk at mappen har en Dockerfil og en databasemappe i root dersom studentoppgaven trenger en database. Databasemappen kan være tom, men den skal bare være der for å vise at studentoppgaven inneholder en database. Legg studentoppgave inn i /studentOppgaver/ mappen. Husk å slette eventuelle git filer i studentoppgavemappen, f.eks. .git.
 ```plaintext
@@ -156,17 +172,7 @@ Last ned git repo eller finn mappen som har blitt levert av studentene. Sjekk at
 ├── Dockerfile           # Fil for bygging av Docker image
 └── ...                  # Andre filer for studentoppgaven
 ```
-
-### Steg 2: Opprett rolle
-
-Åpne Azure ClI som du finner i Azure portalen. Kjør følgende kommando:
-
-```
-az role assignment create \
-  --assignee <APPID> \
-  --role "Storage Data Blob Contributor" \
-  --scope "/subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<rg-variablestorage>/providers/Microsoft.Storage/storageAccounts/<envstoragegjovik246>"
-```
+Studentoppgaver som trenger databasetilgang må 
 
 ### Steg 2: Laste opp filer til github
 For å legge inn en ny studentoppgave i driftsmiljøet benyttes Github workflows. Etter at studentoppgaven er plassert i /studentOppgaver/, kjøres /terraform/infrastruktur/scripts/newApp.py. Dette scriptet pusher den nye studentoppgaven til remote repoet og aktiverer workflowsene docker-build.yml og buildTerraform.yml.

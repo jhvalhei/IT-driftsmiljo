@@ -102,9 +102,10 @@ Utfør dette steget i Hvis du allerede har installert Azure CLIet kan du hoppe o
 
 ### Steg 4: Klargjør terraform.tfvars.json
 
-1. Plasser terraform.tfvars.json i /IT-driftsmiljo/terraform/infrastruktur
+1. Opprett filen "terraform.tfvars.json" i IT-Driftsmiljo/terraform/infrastruktur. Denne filen vil inneholde verdier for input variabler i Terraform. Den skal ikke lastes opp til Github og er derfor inkludert i .gitignore.
+2. Kopier og lim innholdet fra IT-Driftsmiljo/terraform/infrastruktur/templates inn i terraform.tfvars.json.
 
-2. For at varsling skal fungere, må det settes inn en e-post adresse og et telefonnummer som skal motta varslene. Sett inn verdier for følgende variabler i terraform.tfvars.json:
+3. For at varsling skal fungere, må det settes inn en e-post adresse og et telefonnummer som skal motta varslene. Sett inn verdier for følgende variabler i terraform.tfvars.json:
    - "alert_name"
    - "email_address"
    - "sms_number"

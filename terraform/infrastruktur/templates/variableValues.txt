@@ -1,0 +1,10 @@
+{
+    "rg_dynamic": {},
+    "capp_with_db": {},
+    "capp_without_db": {},
+    "capp_identity": {},
+    "postdb": {},
+    "alert_name": "",
+    "email_address": "",
+    "sms_number": ""
+}

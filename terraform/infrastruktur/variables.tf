@@ -244,7 +244,7 @@ variable "subnet_capp_name" {
 variable "subnet_db_address_prefixes" {
   description = "The address prefixes for the database subnet"
   type        = set(string)
-  default     = ["10.0.2.0/24"]
+  default     = ["10.0.16.0/20"]
 }
 
 variable "subnet_capp_address_prefixes" {

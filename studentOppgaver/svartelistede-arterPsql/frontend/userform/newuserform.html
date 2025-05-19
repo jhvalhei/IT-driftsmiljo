@@ -1,0 +1,117 @@
+{{define "content"}}
+
+<head>
+  <title>Svartelistede arter</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" type="text/css" href="/static/userformcss/newuserform.css"/>
+</head>   
+<body>
+  
+  <div class="container">
+    <form action="/sendplant" method="post" id="plantform">
+      <div class="maxWidth keepForm">
+        
+        <!-- One "tab" for each step in the form: -->
+      <div class="tab">
+        <div>
+          <label for="listname">Plante</label>
+          <select id="listname" name="listname" required onclick="checkDropdown()">
+            <option value="">-Velg plante-</option>
+
+            {{range $elem := .}}
+            <option value="{{$elem}}">{{$elem}}</option>
+            {{end}}
+            <option value="annet..">Annet..</option>
+          </select>
+        </div> 
+        <div>
+          <label id="namelabel" for="name">Plantenavn</label>
+          <input type="text" id="name" name="name" placeholder="Angi plantenavn..">
+        </div>
+  
+        <div>
+          <label for="desc">Beskrivelse</label>
+          <textarea id="desc" name="desc" placeholder="Angi beskrivelse.." style="height:120px;"></textarea>
+        </div>
+  
+        <div class="fileDiv">
+          <label class="maxWidth">Legg til bilder (maks 25MB totalt):</label>
+          <button onclick="takePicBtn()" class="userBtn" type="button" id="picBtn">Ta bilde</button>
+          <button onclick="openPicBtn()" class="userBtn" type="button">Velg bilder..</button>
+          <input type="file" multiple id="files" name="files" accept="image/*" onchange="encodeImageFileAsURL(this);" />
+        </div>
+        <div id="allPreview" class="maxWidth">
+          <img src="" width="200" id="imgPrev">
+          <div id="imgDiv">
+          </div>
+        </div>
+      </div>
+      
+      <div class="tab">
+        <div>
+          <div id="googlemap">Google maps har ikke lastet inn, oppdater siden</div>
+          <input id="lat" name="lat" type="hidden" value="" />
+          <input id="lng" name="lng" type="hidden" value="" />
+        </div>
+        <div id="divPos">
+          <p id="foundPos">
+            Vi trenger posisjonen til planten.<br>
+            Trykk på "del posisjon" eller 
+            velg posisjonen på kartet.
+          </p>
+          <button id="myLocationButton" class="userBtn" type="button">Del posisjon</button>
+        </div>
+      </div>
+      
+      <div class="tabFinish">
+        <p>
+          <h1>Takk for din henvendelse!<br></h1>
+          Ønsker du tilbakemelding, 
+          legg igjen en e-postadresse eller telefonnummer
+        </p>
+        <p>
+          <label for="mail">E-post (valgfritt)</label>
+          <input type="email" id="mail" name="mail" placeholder="Angi epost.." onchange="contactinfoUpdate()">
+
+          <label for="tel">Telefon (valgfritt)</label>
+          <input type="tel" id="tel" name="tel" placeholder="Angi telefonnummer..">
+        </p>
+        
+        <p id="checkformP">
+          <input id="checkform" name="checkform" type="checkbox">
+          <label for="checkform">Jeg godtar at Gjøvik kommune lagrer epost/tlf for
+            for tilbakemelding.</label>
+          </p>
+          <button type="button">Send inn</button>
+        </div>
+        
+      <div id="navButton" class="navButton maxWidth">
+        <button type="button" id="prevBtn" onclick="nextPrev(-1)">Forrige</button>
+        <button type="button" id="nextBtn" onclick="nextPrev(1)">Neste</button>
+        <button id="formSubmit" type="submit" form="plantform">Send inn</button>
+      </div>
+      
+      <!-- Circles which indicates the steps of the form: -->
+      <div id="navCircle" class="maxWidth navCircle"">
+        <span class="step"></span>
+        <span class="step"></span>
+      </div>
+    </div>
+  </form>
+</div>
+    
+
+  <!--Coordinates from images-->
+  <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
+  <!--Google map-->
+  <script async
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9_42zbLHemWXqG25J-z976lem9seZO58&callback=initMap">
+  </script>
+  <!--Javascript file-->
+  <script type="text/javascript" src="/static/userformjs/newuserform.js"></script>   
+
+
+</body>
+
+{{end}}

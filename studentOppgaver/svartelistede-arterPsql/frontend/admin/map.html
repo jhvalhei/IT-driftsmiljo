@@ -1,0 +1,88 @@
+{{define "content"}}
+
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/admincss/map.css"/>
+</head>   
+
+<div class="container">
+  <div class="gridSort">
+
+    <!--Adds coordinates for displaying markers-->
+    {{range $elem := .List}}
+    <p class="coord" style="display:none;" onclick="placeMarker('{{$elem.Status}}', '{{$elem.Lat}}', '{{$elem.Lng}}', '{{$elem.Listname}}', '{{$elem.StringDate}}', '{{$elem.Id}}')"></p>    
+    {{end}}
+    <p id="centered" style="display:none;">{{if .CenteredPlant}}{{.CenteredPlant.Lat}};{{.CenteredPlant.Lng}}{{end}}</p>
+    
+    <div id="googlemap">Google maps klarte ikke å laste inn, oppdater siden og prøv igjen</div>
+
+    <div id="sortDiv">
+      
+      <!--Sort by type-->
+      <h3>Status:</h3>
+      <label for="allStatuses" class="labelStyle"> 
+        Alle henvendelser
+        <input id="allStatuses" type="checkbox" value="allStatuses" onchange="checkAllStatus(this); clickCoords()">
+        <span class="newCheckmark"></span>
+      </label>
+      <label class="labelStyle"> 
+        <img src="/static/mapicons/red.png" width="25px"> Ny
+        <input type="checkbox" class="statusClass" value="new" checked onchange="clickCoords()">
+        <span class="newCheckmark"></span>
+      </label>
+      <label class="labelStyle"> 
+        <img src="/static/mapicons/yellow.png" width="25px"> Godkjent
+        <input type="checkbox" class="statusClass" value="approved" checked onchange="clickCoords()">
+        <span class="newCheckmark"></span>
+      </label>
+      <label class="labelStyle"> 
+        <img src="/static/mapicons/blue.png" width="25px"> Under bekjempning
+        <input type="checkbox" class="statusClass" value="processing" checked onchange="clickCoords()">
+        <span class="newCheckmark"></span>
+      </label>
+      <label class="labelStyle"> 
+        <img src="/static/mapicons/green.png" width="25px"> Ferdig bekjempet
+        <input type="checkbox" class="statusClass" value="combated" checked onchange="clickCoords()">
+        <span class="newCheckmark"></span>
+      </label>
+      <label class="labelStyle"> 
+        <img src="/static/mapicons/grey.png" width="25px"> Slettet
+        <input type="checkbox" class="statusClass" value="deleted" onchange="clickCoords()">
+        <span class="newCheckmark"></span>
+      </label>
+
+      <!--Sort by plant-->
+      <h3>Plante:</h3>
+      <label for="allPlants" class="labelStyle"> 
+        Alle planter
+        <input id="allPlants" type="checkbox" value="allPlants" checked onchange="checkAllPlants(this); clickCoords()">
+        <span class="newCheckmark"></span>
+      </label>
+
+      <!-- Plants -->
+      {{range $key, $value := .Plants}}
+      <label class="labelStyle"> 
+        <img src="/static/mapicons/{{$value}}.png" width="25px"> {{$key}}
+        <input type="checkbox" class="plantClass" value="{{$key}}" onchange="clickCoords()">
+        <span class="newCheckmark"></span>
+      </label>
+      {{end}}
+
+      <!-- Others -->
+      <label class="labelStyle"> 
+        <img src="/static/mapicons/square.png" width="25px"> Annet
+        <input id="otherPlants" type="checkbox" class="plantClass" value="annet" onchange="clickCoords()">
+        <span class="newCheckmark"></span>
+      </label>
+
+    </div> 
+
+  </div>
+</div>
+    
+  
+<script async
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9_42zbLHemWXqG25J-z976lem9seZO58&callback=initMap">
+</script>
+<script type="text/javascript" src="/static/adminjs/map.js"></script>  
+
+{{end}}

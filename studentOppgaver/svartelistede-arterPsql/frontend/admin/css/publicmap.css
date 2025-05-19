@@ -1,0 +1,15 @@
+
+/* Generic */
+h3{
+  margin-bottom: 1px;
+}
+
+
+/* The Google map */
+#googlemap{
+    margin: auto;
+    width: 90%;
+    height: 550px;
+    border: 5px solid #b4b4b4;
+}
+

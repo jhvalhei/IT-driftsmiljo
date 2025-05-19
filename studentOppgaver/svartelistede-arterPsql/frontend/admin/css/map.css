@@ -1,0 +1,98 @@
+
+/* Generic */
+
+h3{
+  margin-bottom: 1px;
+}
+
+
+/* Sorting for the map */
+.gridSort{
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    column-gap: 10px;
+    background-color: #ffffff;
+}
+
+/* The Google map */
+#googlemap{
+    margin: auto;
+    width: 90%;
+    height: 550px;
+    border: 5px solid #b4b4b4;
+}
+
+/* Checkbox */
+.labelStyle {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    font-size: 22px;
+  }
+  
+  /* Hide default checkbox */
+  .labelStyle input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+  
+  /* Create a custom checkbox */
+  .newCheckmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+  }
+  
+  .labelStyle:hover input ~ .newCheckmark{
+    background-color: #ccc;
+  }
+  
+  .labelStyle input:checked ~ .newCheckmark {
+    background-color: #1998ff;
+  }
+  
+  /* Create the new checkmark */
+  .newCheckmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  .labelStyle input:checked ~ .newCheckmark:after {
+    display: block;
+  }
+  
+  .labelStyle .newCheckmark:after {
+    left: 40%;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid rgb(255, 255, 255);
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+
+
+
+/* Extra styling for devices under 700px wide */
+  @media (max-width: 700px) {
+    .gridSort{
+        display: block;
+    }
+    
+    #googlemap{
+      width: 300px;
+      height: 300px;
+    }
+  
+  }

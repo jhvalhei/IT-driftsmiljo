@@ -1,0 +1,77 @@
+CREATE TABLE users ( 
+    uname VARCHAR(80) NOT NULL,
+    psw VARCHAR(100) NOT NULL,
+    PRIMARY KEY (uname)
+);
+
+--------------------------------------------------------------------
+
+-- PlantName Table
+CREATE TABLE PlantName (
+    name VARCHAR(80) NOT NULL,
+    PRIMARY KEY (name)
+);
+
+--------------------------------------------------------------------
+
+-- PlantShape Table
+CREATE TABLE PlantShape (
+    shape VARCHAR(80) NOT NULL,
+    PRIMARY KEY (shape)
+);
+
+--------------------------------------------------------------------
+
+-- PlantInquiry Table
+CREATE TABLE PlantInquiry (
+    id VARCHAR(20) NOT NULL PRIMARY KEY,
+    listname VARCHAR(80) NOT NULL,
+    name VARCHAR(80) NOT NULL,
+    description VARCHAR(300) NOT NULL,
+    mail VARCHAR(80) NOT NULL,
+    lat VARCHAR(80) NOT NULL,
+    lng VARCHAR(80) NOT NULL,
+    status VARCHAR(80) NOT NULL,
+    date DATE NOT NULL,
+    stringDate VARCHAR(80) NOT NULL,
+    private BOOLEAN NOT NULL -- Changed from TINYINT(1) to BOOLEAN
+);
+
+--------------------------------------------------------------------
+
+-- PlantImage Table
+CREATE TABLE PlantImage (
+    id VARCHAR(20) NOT NULL,
+    imgName VARCHAR(80) NOT NULL,
+    CONSTRAINT PlantImage_PlantInquiry_fk
+        FOREIGN KEY (id) REFERENCES PlantInquiry(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+--------------------------------------------------------------------
+
+-- PlantThumbnail Table
+CREATE TABLE PlantThumbnail (
+    id VARCHAR(20) NOT NULL,
+    thumbnail VARCHAR(80) NOT NULL,
+    CONSTRAINT PlantThumbnail_PlantInquiry_fk
+        FOREIGN KEY (id) REFERENCES PlantInquiry(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+--------------------------------------------------------------------
+
+-- PlantComment Table
+CREATE TABLE PlantComment (
+    id VARCHAR(20) NOT NULL,
+    comment VARCHAR(300) NOT NULL,
+    date DATE NOT NULL,
+    stringDate VARCHAR(80) NOT NULL,
+    userId VARCHAR(30) NOT NULL,
+    CONSTRAINT PlantComment_PlantInquiry_fk
+        FOREIGN KEY (id) REFERENCES PlantInquiry(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);

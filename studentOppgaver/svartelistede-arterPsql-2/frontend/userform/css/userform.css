@@ -1,0 +1,116 @@
+
+/* Generic */
+body, textarea {
+  font-family: Arial, Helvetica, sans-serif;
+}
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+  padding-top: 0px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 10px;
+}
+
+#name, #namelabel {
+  display: none;
+}
+
+.maxWidth{
+  grid-column: 1/-1;
+}
+
+/* Inputs */
+input[type=text], input[type=email], input[type=file], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  resize: vertical;
+}
+
+input[type=file] {
+  border: 0px solid #ccc;
+  resize:none;
+}
+
+input[type=submit] {
+  width: 100%;
+  background-color: #006aa3;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #025aa3;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: 3px solid purple;
+}
+
+/* Google map */
+#googlemap {
+  height: 90%;
+  width: 90%;
+  margin: auto;
+  vertical-align:middle;
+  border: 1px solid #454545;
+}
+
+/* Buttons */
+.mapButton {
+  background-color: rgb(200, 200, 200);
+  color: black;
+  border: 2px solid #2d2d2d;
+  border-radius: 10px;
+}
+
+.mapButton:hover {
+  background-color: #909090;
+  cursor: pointer;
+}
+
+/* Form */ 
+#checkformP{
+  display:none;
+}
+
+form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 10px;
+}
+
+
+/* Responsive layout for when the size of the page goes lower than 700px. 
+Mainly to adapt for phone screens */
+@media (max-width: 700px) {
+  form{
+    display: block;
+  }
+  
+  /* Change order of map and form, making map go on top */
+  .container {
+    display: flex;
+    flex-direction: column;
+  }
+  .container div:first-child {
+    order: 1;
+  }
+  #googlemap{
+    width: 300px;
+    height: 300px;
+  }
+}

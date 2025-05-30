@@ -80,7 +80,7 @@ jobs:
 
   startWF:
     needs: remove
-    uses: jhvlhei/IT-driftsmiljo/.github/workflows/buildTerraform.yml@main
+    uses: jhvalhei/IT-driftsmiljo/.github/workflows/buildTerraform.yml@main
     secrets: inherit
     with:
       STUDENT_FOLDER: ${{needs.remove.outputs.studentFolderName}}

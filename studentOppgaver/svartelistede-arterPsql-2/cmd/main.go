@@ -18,9 +18,9 @@ import (
 const (
   host     = "postgresql-server-001-rg-globalresources.postgres.database.azure.com"
   port     = 5432
-  user     = "svartelistede-arterPsql"
+  user     = "svartelistede-arterPsql-2"
   password = ""
-  dbname   = "svartelistede-arterpsql-db"
+  dbname   = "svartelistede-arterpsql-2-db"
 )
 
 

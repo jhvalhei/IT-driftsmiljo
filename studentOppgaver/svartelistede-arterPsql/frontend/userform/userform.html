@@ -1,0 +1,89 @@
+{{define "content"}}
+
+<head>
+  <title>Svartelistede arter</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" type="text/css" href="/static/userformcss/userform.css"/>
+</head>   
+<body>
+
+<div class="container">
+  <div id="plantformdiv">
+  <form action="/sendplant" method="post" id="plantform">
+
+    <p>
+    <label for="listname">Plante</label>
+    <select id="listname" name="listname" required onclick="checkDropdown()">
+      <option value="">-Velg plante-</option>
+      <option value="hagelupin">Hagelupin</option>
+      <option value="hybridslirekne">Hybridslirekne</option>
+      <option value="kjempebjørnekjeks">Kjempebjørnekjeks</option>
+      <option value="kjempeslirekne">Kjempeslirekne</option>
+      <option value="kjempespringfrø">Kjempespringfrø</option>
+      <option value="parkslirekne">Parkslirekne</option>
+      <option value="platanlønn">Platanlønn</option>
+      <option value="spisslønn">Spisslønn</option>
+      <option value="tromsøpalme">Tromsøpalme</option>
+      <option value="vet ikke">Vet ikke</option>
+      <option value="annet..">Annet..</option>
+      
+      
+    </select>
+    </p> 
+
+    <p>
+      <label id="namelabel" for="name">Plantenavn</label>
+      <input type="text" id="name" name="name" placeholder="Angi plantenavn..">
+    </p>
+
+    <p>
+      <label for="mail">Epost (valgfritt)</label>
+      <input type="email" id="mail" name="mail" placeholder="Angi epost.." onchange="contactinfoUpdate()">
+    </p>
+
+    <p>
+      <label for="files">Legg til bilder (maks 25MB totalt): </label>
+      <input type="file" multiple id="files" name="files" onchange="encodeImageFileAsURL(this); previewImage(this);" />
+      
+    </p>
+
+    <p class="maxWidth">
+      <label for="desc">Beskrivelse</label>
+      <textarea id="desc" name="desc" placeholder="Angi beskrivelse.." style="height:120px;"></textarea>
+    </p>
+
+    <p class="maxWidth">
+      <input id="lat" name="lat" type="hidden" value="" />
+      <input id="lng" name="lng" type="hidden" value="" />
+      <p>Del din posisjon eller bruk kartet til å markere posisjonen til planten. </p>
+      <button id="myLocationButton" class="mapButton" type="button">Del posisjon</button>
+    </p>
+
+    <p id="checkformP" class="maxWidth">
+      <input id ="checkform" name="checkform" type="checkbox">
+      <label for="checkform">Jeg godtar at Gjøvik kommune lagrer epost/tlf for
+         for tilbakemelding.</label>
+    </p>
+
+    <p class="maxWidth">
+      <input id="formsubmit" type="submit" value="Submit">
+    </p>
+
+    
+  </form>
+  </div>
+  <div id="googlemap"></div>
+</div>
+<img src="" width="200" id="imgPrev" onload="getCoords(this)">
+
+
+<script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
+<script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9_42zbLHemWXqG25J-z976lem9seZO58&callback=initMap">
+</script>
+<script type="text/javascript" src="/static/userformjs/userform.js"></script>   
+
+</body>
+
+{{end}}

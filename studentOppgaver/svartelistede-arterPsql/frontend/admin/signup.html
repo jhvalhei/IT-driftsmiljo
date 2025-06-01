@@ -1,0 +1,28 @@
+{{define "content"}}
+
+<div class="container">
+    <div id="signupformdiv">
+        <h1>Opprett bruker</h1>
+        <form action="/runlogin/signup" method="post" id="signupform">
+            <p>
+                <label id="unamelabel" for="uname">Brukernavn</label>
+                <input type="text" id="uname" placeholder="Angi brukernavn" name="uname" required>
+            </p>
+            <p>
+                <label id="pswlabel" for="psw">Passord</label>
+                <input type="password" id="psw" placeholder="Angi passord" name="psw" required>
+            </p>
+            <p>
+                <label id="pswlabelRept" for="pswRept">Gjenta passord</label>
+                <input type="password" id="pswRept" placeholder="Gjenta passord" name="pswRept" required>
+            </p>
+            <p>
+                <input id="formsubmit" type="submit" value="Registrer">
+            </p>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript" src="/static/adminjs/signup.js"></script>
+
+{{end}}

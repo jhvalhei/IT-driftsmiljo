@@ -1,0 +1,19 @@
+-- Insert into PlantName
+INSERT INTO PlantName (name)
+VALUES 
+    ('Kjempebjørnekjeks'), 
+    ('Kjempespringfrø'), 
+    ('Parkslirekne'), 
+    ('Spansk kjørvel'), 
+    ('Vet ikke');
+
+--------------------------------------------------------------------
+
+-- Insert into PlantShape
+INSERT INTO PlantShape (shape)
+VALUES 
+    ('circle'), 
+    ('triangle'), 
+    ('diamond'), 
+    ('hex'), 
+    ('square');
